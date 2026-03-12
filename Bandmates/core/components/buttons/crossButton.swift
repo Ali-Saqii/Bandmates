@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct crossButton: View {
+    let action: () -> Void
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+        Button {
+            action()
+        } label: {
+            Image(systemName: "xmark")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(.textPrimary)
+                .padding(10)
+                .background(Color(.systemGray6))
+                .clipShape(Circle())
+        }    }
 }
 
 #Preview {
-    crossButton()
+    crossButton(action: {})
 }

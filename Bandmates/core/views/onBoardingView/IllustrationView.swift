@@ -8,11 +8,24 @@
 import SwiftUI
 
 struct IllustrationView: View {
+    let symbolName: String
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Image(symbolName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 250, height: 250)
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [Color.brandPink, Color.brandPink.opacity(0.6)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+        }
     }
 }
 
 #Preview {
-    IllustrationView()
+    IllustrationView(symbolName: "page1logo")
 }

@@ -11,7 +11,7 @@ import SwiftUI
 struct BandmatesApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+           onboardingView()
         }
     }
 }
