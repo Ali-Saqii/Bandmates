@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct textFieldButtonsView: View {
+    @Binding var isVisible : Bool
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button {
+            isVisible.toggle()
+        } label: {
+            Image(systemName: isVisible ? "eye.fill" : "eye.slash.fill")
+                .font(.callout)
+                .foregroundStyle(.gray)
+                .frame(alignment: .center)
+        }
+
     }
 }
 
 #Preview {
-    textFieldButtonsView()
+    textFieldButtonsView(isVisible: .constant(false))
 }
