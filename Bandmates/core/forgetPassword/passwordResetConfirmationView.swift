@@ -9,7 +9,20 @@ import SwiftUI
 
 struct passwordResetConfirmationView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.white
+                .ignoresSafeArea(.all)
+            VStack(spacing:40) {
+                Image("Successmark")
+                Text("Bandmates has emailed your\npassword reset link.Please check your\nemail to confirm.")
+                    .multilineTextAlignment(.center)
+                    .font(.headline)
+                    .foregroundStyle(.opacity(0.8))
+                    .lineSpacing(0)
+                buttonView(action: {}, buttonText: "Done", height: 55)
+                    .padding(.horizontal,120)
+            }
+        }
     }
 }
 
