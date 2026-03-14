@@ -11,7 +11,7 @@ struct OnboardingContainerView: View {
     let pages: [OnboardingPage]
     @Binding var currentPage: Int
     @Binding var showLogin: Bool
-
+    @Binding var showSignUp: Bool
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
@@ -53,8 +53,12 @@ struct OnboardingContainerView: View {
                         withAnimation {
                             showLogin = true
                         }
-                    }, buttonText: "Sign in")
-                    strokebuttonView(action: {}, buttonText: "Create an Account")
+                    }, buttonText: "Sign in", height: 55)
+                    strokebuttonView(action: {
+                        withAnimation {
+                            showSignUp = true
+                        }
+                    }, buttonText: "Create an Account")
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 40)
@@ -68,5 +72,5 @@ struct OnboardingContainerView: View {
         OnboardingPage(illustration: "page2logo", title: "dfjhfjds", subtitle: "dshfgd dsgfhdgsf dsghdsfhd fdghgfd"),
         OnboardingPage(illustration: "page2logo", title: "dfjhfjds", subtitle: "dshfgd dsgfhdgsf dsghdsfhd fdghgfd"),
         OnboardingPage(illustration: "page2logo", title: "dfjhfjds", subtitle: "dshfgd dsgfhdgsf dsghdsfhd fdghgfd")
-    ], currentPage: .constant(1), showLogin: .constant(false))
+    ], currentPage: .constant(1), showLogin: .constant(false), showSignUp:.constant(false))
 }

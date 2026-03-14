@@ -16,6 +16,7 @@ struct OnboardingPage: Identifiable {
 struct onboardingView: View {
     @State private var showLogin = false
     @State private var currentPage = 0
+    @State private var showSignUP = false
 
     let pages: [OnboardingPage] = [
         OnboardingPage(
@@ -37,21 +38,23 @@ struct onboardingView: View {
 
     var body: some View {
         if showLogin {
-            LoginView(showLogin: $showLogin)
+            LoginView(showLogin: $showLogin, showSignUP: $showSignUP)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing),
+                    removal: .move(edge: .leading)
+                ))
+        } else if showSignUP {
+            SignUp(showSignUp: $showSignUP, showLogin: $showLogin)
                 .transition(.asymmetric(
                     insertion: .move(edge: .trailing),
                     removal: .move(edge: .leading)
                 ))
         } else {
-            OnboardingContainerView(
-                pages: pages,
-                currentPage: $currentPage,
-                showLogin: $showLogin
-            )
-            .transition(.asymmetric(
-                insertion: .move(edge: .leading),
-                removal: .move(edge: .trailing)
-            ))
+            OnboardingContainerView(pages: pages, currentPage: $currentPage, showLogin: $showLogin, showSignUp: $showSignUP)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing),
+                    removal: .move(edge: .leading)
+                ))
         }
     }
 }
