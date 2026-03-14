@@ -14,33 +14,40 @@ struct LoginView: View {
     @State private var rememberMe = false
     @State private var showPassword = false
     @State private var appeared = false
-
+    @State private var forgetPassword = false
+    @Binding var showSignUP : Bool
     var body: some View {
-        ZStack {
-            Color.white.ignoresSafeArea()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    headerView
-                    emailView
-                    passwordView
-                    middleButtonsView
-                    buttonView(action: {}, buttonText: "Login")
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 24)
-                    .offset(y: appeared ? 0 : 20)
-                    .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.5).delay(0.3), value: appeared)
-                    dividerView
-                    socialButtonsViews
-                    Spacer()
-                    signUpView
+        NavigationStack {
+            ZStack {
+                Color.white.ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        headerView
+                        emailView
+                        passwordView
+                        middleButtonsView
+                        buttonView(action: {}, buttonText: "Login", height: 55)
+                            .padding(.horizontal, 28)
+                            .padding(.bottom, 24)
+                            .offset(y: appeared ? 0 : 20)
+                            .opacity(appeared ? 1 : 0)
+                            .animation(.easeOut(duration: 0.5).delay(0.3), value: appeared)
+                        dividerView
+                        socialButtonsViews
+                        Spacer()
+                        signUpView
+                    }
+                }
+                .navigationDestination(isPresented: $forgetPassword) {
+                    forgetPaswordView()
                 }
             }
-        }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                appeared = true
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    appeared = true
+                    print("ligin Screen: showlogin \(showLogin) and showSignUp \(showSignUP)")
+                }
             }
         }
     }
@@ -53,6 +60,7 @@ extension LoginView {
                 Text("Bandmates")
                     .foregroundColor(.background)
                     .font(.largeTitle)
+                    .fontDesign(.serif)
                     .bold()
                 Spacer()
             }
@@ -167,7 +175,9 @@ extension LoginView {
             }
 
             Spacer()
-            textButton(action: {}, text: "forget Password?".capitalized, color: .background, textSize: 13)
+            textButton(action: {
+                forgetPassword = true
+            }, text: "forget Password?".capitalized, color: .background, textSize: 13)
         }
         .padding(.horizontal, 28)
         .padding(.bottom, 28)
@@ -212,9 +222,8 @@ extension LoginView {
                 .font(.system(size: 16))
                 .foregroundColor(.textSecondary)
             Button {
-                withAnimation(.spring()) {
                     showLogin = false
-                }
+                    showSignUP = true
             } label: {
                 Text("Sign Up")
                     .font(.system(size: 16, weight: .semibold))
@@ -227,5 +236,5 @@ extension LoginView {
     }
 }
 #Preview {
-    LoginView(showLogin: .constant(false))
+    LoginView(showLogin: .constant(true), showSignUP: .constant(false))
 }
