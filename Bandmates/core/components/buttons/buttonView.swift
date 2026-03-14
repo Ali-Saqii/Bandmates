@@ -10,17 +10,17 @@ import SwiftUI
 struct buttonView: View {
     let action: () -> Void
     let buttonText: String
-    
+    let height: CGFloat
     var body: some View {
         Button {
             action()
         } label: {
             Text(buttonText.capitalized)
                 .foregroundStyle(.white)
-                .font(.callout)
+                .font(.title3)
                 .bold()
                 .frame(maxWidth: .infinity)
-                .frame(height: 45)
+                .frame(height: height)
         }.background(Color("backgroundColor"))
             .cornerRadius(30)
 
@@ -28,6 +28,6 @@ struct buttonView: View {
 }
 
 #Preview {
-    buttonView(action: {}, buttonText: "Sign In")
+    buttonView(action: {}, buttonText: "Sign In", height: 60)
    
 }
