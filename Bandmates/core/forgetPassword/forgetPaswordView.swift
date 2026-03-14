@@ -8,11 +8,34 @@
 import SwiftUI
 
 struct forgetPaswordView: View {
+    @State private var textFieldText = ""
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.white
+                .ignoresSafeArea(.all)
+            VStack(spacing: 40) {
+                VStack(alignment: .leading) {
+                    Text("Forget Password?")
+                        .fontDesign(.rounded)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    Text("No worries! It happens!Please provide your\nemail address for Bandmates to send you a password reset link")
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(3)
+                        .lineSpacing(-3)
+                }.frame(maxWidth: .infinity)
+                VStack(spacing:50) {
+                    InputField(label: "", placeholder: "Enter email", text: $textFieldText)
+                        .padding(.horizontal,30)
+                    buttonView(action: {}, buttonText: "Send", height: 55)
+                        .padding(.horizontal,28)
+                }
+                Spacer()
+            }
+           
+        }
     }
 }
-
 #Preview {
     forgetPaswordView()
 }
