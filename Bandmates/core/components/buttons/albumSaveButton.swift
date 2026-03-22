@@ -8,11 +8,24 @@
 import SwiftUI
 
 struct albumSaveButton: View {
+    let isSaved: Bool
+    let action: () -> Void
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button {
+            action()
+        } label: {
+            Image(systemName:isSaved ? "heart.fill" : "heart")
+                .foregroundStyle(isSaved ? Color.background:Color.gray)
+                .background(
+                    Circle()
+                        .fill(.textfieldcolor.opacity(0.5))
+                        .frame(width: 30, height: 30)
+                )
+        }
+
     }
 }
 
 #Preview {
-    albumSaveButton()
+    albumSaveButton(isSaved:true, action: {})
 }
