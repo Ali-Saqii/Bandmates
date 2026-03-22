@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct seeAllView: View {
+    let text:String
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+        Text(text.capitalized)
+            .font(.title3)
+            .fontWeight(.semibold)    }
 }
 
 #Preview {
-    seeAllView()
+    seeAllView(text: "recently played")
 }
