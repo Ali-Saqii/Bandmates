@@ -8,11 +8,22 @@
 import SwiftUI
 
 struct toolBarMenuButton: View {
+    let action: () -> Void
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button {
+            action()
+        } label: {
+            Image("Menu")
+                .background(
+                    Circle()
+                        .fill(Color.textfieldcolor)
+                        .frame(width: 45, height: 45)
+                        
+                )
+        }
     }
 }
 
 #Preview {
-    toolBarMenuButton()
+    toolBarMenuButton(action: {print("Toolbar button")})
 }
