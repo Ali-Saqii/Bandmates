@@ -33,14 +33,13 @@ struct SubscriptionPackageButton: View {
             }.foregroundStyle(isSelected ? .white : .background)
             .padding(.horizontal)
             .frame(maxWidth: .infinity)
-            .frame(height: 50)
+            .frame(height: 55)
             .overlay {
                 Rectangle()
                     .stroke(Color.background,lineWidth: 1)
             }
         }
         .background(isSelected ? Color.background : Color.white)
-        .padding()
     }
 }
 #Preview {
