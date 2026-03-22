@@ -38,7 +38,9 @@ struct LoginView: View {
                         Spacer()
                         signUpView
                     }
-                }
+                }.scrollIndicators(.hidden)
+                .scrollTargetBehavior(.viewAligned)
+                    .scrollBounceBehavior(.basedOnSize)
                 .navigationDestination(isPresented: $forgetPassword) {
                     forgetPaswordView()
                 }
