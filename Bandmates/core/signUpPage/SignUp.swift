@@ -38,6 +38,8 @@ struct SignUp: View {
                         }
                     }
                 }.scrollIndicators(.hidden)
+                    .scrollTargetBehavior(.viewAligned)
+                    .scrollBounceBehavior(.basedOnSize)
                     .sheet(isPresented: $showImagePicker) {
                         ImagePicker(image: $profileImage)
                     }
