@@ -8,11 +8,36 @@
 import SwiftUI
 
 struct homeViewNotificationButton: View {
+    let action: () -> Void
+    let notificationCount : Int?
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button {
+            action()
+        } label: {
+            Image(systemName: "bell")
+                .foregroundStyle(.white)
+                .background(
+                    Circle()
+                        .fill(Color.black)
+                        .frame(width: 45, height: 45)
+                        .overlay(alignment:.topTrailing) {
+                            if let count = notificationCount {
+                                Text("\(count)")
+                                    .foregroundStyle(.white)
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .background(
+                                        Circle()
+                                            .fill(Color.background)
+                                            .frame(width: 20, height: 20)
+                                    )
+                            }
+                        }
+                )
+        }
     }
 }
 
 #Preview {
-    homeViewNotificationButton()
+    homeViewNotificationButton(action: {}, notificationCount: 4)
 }
