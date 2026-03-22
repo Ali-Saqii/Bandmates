@@ -8,11 +8,26 @@
 import SwiftUI
 
 struct seeAllButtonView: View {
+    @Binding var isSeeAll : Bool
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button {
+            withAnimation(.easeIn){
+                isSeeAll.toggle()
+            }
+        } label: {
+            HStack(spacing:5) {
+                if isSeeAll {
+                    Image(systemName: "chevron.left")
+                }
+                Text(isSeeAll ?"See Less":"see All")
+                if !isSeeAll {
+                    Image(systemName: "chevron.right")
+                }
+            }.tint(!isSeeAll ? Color.background : Color.gray.opacity(0.8))
+        }
     }
 }
 
 #Preview {
-    seeAllButtonView()
+    seeAllButtonView(isSeeAll: .constant(true))
 }
