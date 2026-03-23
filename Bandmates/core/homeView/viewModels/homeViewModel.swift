@@ -9,6 +9,16 @@ import Foundation
 import Combine
 
 class HomeViewModel: ObservableObject {
+    @Published var user = userModel(
+        profileImage: "https://randomuser.me/api/portraits/men/32.jpg",
+        fullName: "Marcus Allen",
+        userName: "@marcusbeats",
+        Bio: "🎸 Guitarist & producer. Lover of indie rock and late-night jam sessions.",
+        waiting: 5,
+        totalBandmates: 128,
+        toralSavedAlbums: 47,
+        email: "jhjhfds@email.com"
+    )
     @Published var albums: [albumModel] = [
         albumModel(
             image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400"
