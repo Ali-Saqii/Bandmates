@@ -17,4 +17,5 @@ struct userModel: Codable ,Identifiable {
     let waiting: Int
     let totalBandmates: Int
     let toralSavedAlbums: Int
+    let email: String
 }
