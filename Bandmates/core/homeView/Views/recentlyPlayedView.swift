@@ -22,10 +22,17 @@ struct recentlyPlayedView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                         
                     } else if phase.error != nil {
-                        Image(systemName: "photo")
-                            .resizable()
-                            .frame(width: 102, height: 85)
-                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                        Image("placeholderImage")
+                            .frame(width: 74, height: 78)
+                            .clipShape(
+                                RoundedRectangle(cornerRadius: 8)
+                            ).background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(
+                                        LinearGradient(colors: [Color.orange,Color.pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    )
+                                    .strokeBorder(Color.background,lineWidth: 2)
+                            )
                         
                     } else {
                         ProgressView()
