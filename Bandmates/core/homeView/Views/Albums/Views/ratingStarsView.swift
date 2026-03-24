@@ -8,11 +8,43 @@
 import SwiftUI
 
 struct ratingStarsView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    var count: Int
+    let font : Font
+    var body: some View{
+        ZStack{
+            starView
+                .overlay {
+                    overlayView.mask(starView)
+                }
+        }
+    }
+    
+   
+    
+    private var overlayView: some View {
+        
+        GeometryReader { geo in
+            
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .foregroundStyle(.yellow)
+                    .frame(width: CGFloat(count) / 5 * geo.size.width)
+            }
+            
+        }.allowsHitTesting(false)
+    }
+    var starView: some View {
+        HStack(spacing: 5){
+            ForEach(1..<6) { Index in
+                Image(systemName: "star.fill")
+                    .foregroundStyle(.gray)
+                    .font(font)
+            }
+        }
     }
 }
 
+
 #Preview {
-    ratingStarsView()
+    ratingStarsView( count: 3, font: .callout)
 }
