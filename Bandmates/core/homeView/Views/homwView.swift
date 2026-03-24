@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct homwView: View {
-    @StateObject var homeVm: HomeViewModel = HomeViewModel()
+    @EnvironmentObject var homeVm: HomeViewModel
     @State private var recentlyPlayedSeeAll = false
     @State private var recommendedAlbumsSeeAll = false
     @State private var seeAllBandmates = false
@@ -41,6 +41,17 @@ struct homwView: View {
                     }
                 }
             }.scrollIndicators(.hidden)
+        }.navigationDestination(isPresented: $seeAllBandmates) {
+            Bandmates()
+                .environmentObject(HomeViewModel())
+        }
+        .navigationDestination(isPresented: $recommendedAlbumsSeeAll) {
+            albumsView()
+                .environmentObject(HomeViewModel())
+        }
+        .navigationDestination(isPresented: $recentlyPlayedSeeAll) {
+            recentlyPlayedAlbums()
+                .environmentObject(HomeViewModel())
         }
     }
 }
@@ -79,14 +90,11 @@ extension homwView {
         }.padding(.horizontal)
     }
     private var recentlyPlayedAlbumsView: some View {
-        ScrollView(.horizontal) {
             HStack(spacing:20) {
-                ForEach(homeVm.recentlyplayed) { album in
-                    recentlyPlayedView(image: album.image, albumName: album.albumName)
+                ForEach(Array(homeVm.recentlyplayed.prefix(3).indices), id: \.self) { index in
+                    recentlyPlayedView(image: homeVm.recentlyplayed[index].image, albumName: homeVm.recentlyplayed[index].albumName)
                 }
-            }.padding(.leading)
-        }.scrollDisabled(!recentlyPlayedSeeAll)
-            .scrollIndicators(.hidden)
+            }.padding(.horizontal)
     }
     private var recommendedAlbumsButtonView: some View {
         HStack {
@@ -97,15 +105,19 @@ extension homwView {
     }
     private var recommendedAlbumsView: some View {
         VStack {
-            ForEach(recommendedAlbumsSeeAll ? Array(homeVm.albums.indices) : Array(homeVm.albums.prefix(3).indices), id: \.self) { index in
-                AlbumsRowView(
-                           albumImage: homeVm.albums[index].image,
-                           albumName: homeVm.albums[index].albumName,
-                           artistName: homeVm.albums[index].albumArtistName,
-                           ratingCount: homeVm.albums[index].averageRating,
-                           totalRatingcount: homeVm.albums[index].totalRatingCount,
-                           isAlBumSaved: $homeVm.albums[index].isSaved
-                ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+            ForEach(Array(homeVm.albums.prefix(3).indices), id: \.self) { index in
+                NavigationLink {
+                    AlbumDetailsView( album: homeVm.albums[index])
+                } label: {
+                    AlbumsRowView(
+                               albumImage: homeVm.albums[index].image,
+                               albumName: homeVm.albums[index].albumName,
+                               artistName: homeVm.albums[index].albumArtistName,
+                               ratingCount: homeVm.albums[index].averageRating,
+                               totalRatingcount: homeVm.albums[index].totalRatingCount,
+                               isAlBumSaved: $homeVm.albums[index].isSaved
+                    ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+                }
             }
         }
     }
@@ -118,7 +130,7 @@ extension homwView {
     }
     private var bandmatesView: some View {
         VStack {
-            ForEach(seeAllBandmates ? Array(homeVm.bandmates.indices) : Array(homeVm.bandmates.prefix(3).indices), id: \.self) { index in
+            ForEach( Array(homeVm.bandmates.prefix(3).indices), id: \.self) { index in
                 BandmatesRowView(
                     personImage: homeVm.bandmates[index].image,
                     PersonName: homeVm.bandmates[index].fullName,
@@ -131,4 +143,5 @@ extension homwView {
 }
 #Preview {
     homwView()
+        .environmentObject(HomeViewModel())
 }
