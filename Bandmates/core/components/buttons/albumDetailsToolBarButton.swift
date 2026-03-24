@@ -8,11 +8,23 @@
 import SwiftUI
 
 struct albumDetailsToolBarButton: View {
+    let action: () -> Void
+    let iconName: String
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Image(systemName: iconName)
+            .font(.callout.bold())
+            .foregroundStyle(.white)
+            .frame(width: 40, height: 40)
+            .background(
+                Circle()
+                    .fill(Color.black.opacity(0.7))
+            )
+            .onTapGesture {
+                action()
+            }
     }
 }
 
 #Preview {
-    albumDetailsToolBarButton()
+    albumDetailsToolBarButton(action: {}, iconName: "chevron.left")
 }
