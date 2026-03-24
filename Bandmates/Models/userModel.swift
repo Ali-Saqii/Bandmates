@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-struct userModel: Codable ,Identifiable {
+struct userModel: Codable ,Identifiable, Hashable {
     var id  = UUID().uuidString
     let profileImage : String
     let fullName: String

@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-struct albumModel: Codable, Identifiable {
+struct albumModel: Codable, Identifiable,Hashable {
     var id = UUID().uuidString
     let image : String
     let albumName : String
@@ -22,7 +22,7 @@ struct albumModel: Codable, Identifiable {
     let albumPlayLink : String = "vcgvb"
 }
 
-struct reviewsModel: Codable ,Identifiable {
+struct reviewsModel: Codable ,Identifiable, Hashable {
     var id = UUID().uuidString
     let personImage : String
     let personName : String
@@ -31,7 +31,7 @@ struct reviewsModel: Codable ,Identifiable {
     let reviewBody : String
 }
 
-struct replies: Codable, Identifiable {
+struct replies: Codable, Identifiable, Hashable {
     var id = UUID().uuidString
     let image: String
     let name: String

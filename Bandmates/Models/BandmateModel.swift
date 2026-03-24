@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-struct BandmateModel: Codable,Identifiable {
+struct BandmateModel: Codable,Identifiable, Hashable {
     var id = UUID().uuidString
     let image : String
     let fullName : String
