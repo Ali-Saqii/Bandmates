@@ -6,13 +6,41 @@
 //
 
 import SwiftUI
+enum BandmatesviewTabs: Int, CaseIterable {
+    case myBand, request, discover
+ 
+    var title: String {
+        switch self {
+        case .myBand :       return "My Band"
+        case .request : return "Request"
+        case .discover:      return "Discover"
+        }
+    }
 
+}
 struct Bandmates: View {
+    @State private var selectedTab: BandmatesviewTabs = .myBand
+    @EnvironmentObject var hvm: HomeViewModel
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.white
+                .ignoresSafeArea(edges: .all)
+            VStack {
+             BandematesViewHeader(selectedTab: $selectedTab)
+                switch selectedTab {
+                case .myBand:       MyBandView()
+                case .request: BandmatesRequestView()
+                case .discover:     DiscoverBandmatesView()
+              
+                }
+            }
+        }.navigationTitle("Bandmates")
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
     Bandmates()
+        .environmentObject(HomeViewModel())
 }
