@@ -8,11 +8,27 @@
 import SwiftUI
 
 struct detailsViewButtons: View {
+    let icon1: String
+    let icon2 : String
+    let title : String
+    let action: () -> Void
+    let isSelected: Bool
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button {
+            action()
+        } label: {
+            VStack(spacing:5) {
+                Image(systemName:isSelected ? icon2 : icon1)
+                    .foregroundStyle(isSelected ? Color.background :.black.opacity(0.5))
+                    .font(.title3)
+                Text(title)
+                    .foregroundStyle(isSelected ? Color.background :.black.opacity(0.5))
+                    .font(.dmSans(12, weight: .regular))
+            }
+        }
     }
 }
 
 #Preview {
-    detailsViewButtons()
+    detailsViewButtons(icon1:  "heart", icon2:  "heart.fill", title: "save", action: {}, isSelected: true)
 }
