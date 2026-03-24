@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 class HomeViewModel: ObservableObject {
     @Published var user = userModel(
@@ -368,5 +369,17 @@ class HomeViewModel: ObservableObject {
         }
         
         return "\(timeOfDay)!"
+    }
+    
+    // openAlbumfunction
+    func openSpotifyAlbum(albumID: String) {
+        let appURL = URL(string: "spotify://album/\(albumID)")!
+        let webURL = URL(string: "https://open.spotify.com/album/\(albumID)")!
+
+        if UIApplication.shared.canOpenURL(appURL) {
+            UIApplication.shared.open(appURL)
+        } else {
+            UIApplication.shared.open(webURL)
+        }
     }
 }
