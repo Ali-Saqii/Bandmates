@@ -10,9 +10,22 @@
 		9A722CAA2F4E3CE800EAE5E8 /* Bandmates.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bandmates.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9A762FED2F72ED7F00F6233F /* Exceptions for "Bandmates" folder in "Bandmates" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9A722CA92F4E3CE800EAE5E8 /* Bandmates */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9A722CAC2F4E3CE800EAE5E8 /* Bandmates */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9A762FED2F72ED7F00F6233F /* Exceptions for "Bandmates" folder in "Bandmates" target */,
+			);
 			path = Bandmates;
 			sourceTree = "<group>";
 		};
@@ -259,6 +272,7 @@
 				DEVELOPMENT_TEAM = 34KXK43PH8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Bandmates/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bandmat;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -294,6 +308,7 @@
 				DEVELOPMENT_TEAM = 34KXK43PH8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Bandmates/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bandmat;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
