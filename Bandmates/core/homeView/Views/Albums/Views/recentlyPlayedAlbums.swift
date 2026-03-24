@@ -8,11 +8,41 @@
 import SwiftUI
 
 struct recentlyPlayedAlbums: View {
+    @EnvironmentObject var hvm: HomeViewModel
+    let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
+    @State private var SearchText = ""
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.white
+                .ignoresSafeArea(.all)
+            VStack(spacing:0) {
+                HStack(spacing:10) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(.gray)
+                        .padding(.leading)
+                    TextField("search desire albums", text: $SearchText)
+                        .onTapGesture {
+                            
+                        }
+                }.frame(maxWidth:.infinity)
+                    .frame(height: 60)
+                    .background(Color.textfieldcolor.opacity(0.7))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.horizontal,20)
+                    .padding(.bottom)
+                ScrollView {
+                    LazyVGrid(columns: columns) {
+                        ForEach(hvm.recentlyplayed.indices , id: \.self) { index in
+                            recentlyPlayedView(image: hvm.recentlyplayed[index].image, albumName: hvm.recentlyplayed[index].albumName)
+                        }
+                    }
+                }.scrollIndicators(.hidden)
+            }
+        }
     }
 }
 
 #Preview {
     recentlyPlayedAlbums()
+        .environmentObject(HomeViewModel())
 }
