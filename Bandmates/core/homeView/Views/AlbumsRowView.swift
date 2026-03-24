@@ -26,14 +26,21 @@ struct AlbumsRowView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     
                 } else if phase.error != nil {
-                    Image(systemName: "photo")
-                        .resizable()
+                    Image("placeholderImage")
                         .frame(width: 74, height: 78)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .clipShape(
+                            RoundedRectangle(cornerRadius: 8)
+                        ).background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(
+                                    LinearGradient(colors: [Color.orange,Color.pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                )
+                                .strokeBorder(Color.background,lineWidth: 2)
+                        )
                     
                 } else {
                     ProgressView()
-                        .frame(width: 40, height: 40)
+                        .frame(width: 74, height: 78)
                 }
             }.padding(.leading,7)
             VStack(alignment:.leading,spacing:6) {
@@ -51,7 +58,7 @@ struct AlbumsRowView: View {
                     Image(systemName: "star.fill")
                         .font(.caption)
                         .foregroundStyle(.yellow)
-                    Text("\(ratingCount)")
+                    Text("\(ratingCount , specifier: "%.1f")")
                         .font(.system(size: 13))
                         .foregroundStyle(Color.background)
                     Text("(\(totalRatingcount) ratings)")
