@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct ratingStarsView: View {
-    var count: Int
+    @Binding var count: Int
     let font : Font
+    let Color: Color
     var body: some View{
         ZStack{
             starView
@@ -27,7 +28,7 @@ struct ratingStarsView: View {
             
             ZStack(alignment: .leading) {
                 Rectangle()
-                    .foregroundStyle(.yellow)
+                    .foregroundStyle(Color)
                     .frame(width: CGFloat(count) / 5 * geo.size.width)
             }
             
@@ -39,6 +40,9 @@ struct ratingStarsView: View {
                 Image(systemName: "star.fill")
                     .foregroundStyle(.gray)
                     .font(font)
+                    .onTapGesture {
+                        count = Index
+                    }
             }
         }
     }
@@ -46,5 +50,5 @@ struct ratingStarsView: View {
 
 
 #Preview {
-    ratingStarsView( count: 3, font: .callout)
+    ratingStarsView( count: .constant(3), font: .callout, Color: .yellow)
 }
