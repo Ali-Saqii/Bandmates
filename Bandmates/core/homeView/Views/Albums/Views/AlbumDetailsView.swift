@@ -10,9 +10,9 @@ import SwiftUI
 struct AlbumDetailsView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var hvm: HomeViewModel
-    @State var showComments: Bool = true
+    @State var showComments: Bool = false
     let album: albumModel
-
+    @State private var showGiveRatingView = false
     var body: some View {
         ZStack {
             Color.white
@@ -66,8 +66,23 @@ struct AlbumDetailsView: View {
                     }.sharedBackgroundVisibility(.hidden)
                    
                 }
+                .navigationDestination(isPresented: $showGiveRatingView) {
+                    AlbumFeddBackView(albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSave: $isSaved
+                    )
+                }
+        }.sheet(isPresented: $showComments) {
+            commentsView(comments: album.replies)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+                .environmentObject(HomeViewModel())
         }
     }
+    
+    @State var isSaved : Bool  = false
+    private func isAlbumSaved() {
+        self.isSaved = album.isSaved
+    }
+        
 }
 extension AlbumDetailsView {
     private var albumImageView:some View {
@@ -117,7 +132,7 @@ extension AlbumDetailsView {
                 .foregroundStyle(.gray)
                 .font(.dmSans(14, weight: .regular))
             HStack(spacing:5) {
-                ratingStarsView(count: Int(album.averageRating), font:.system(size: 14))
+//                ratingStarsView(count: album.averageRating, font:.system(size: 14), Color: .yellow)
                 HStack(spacing:0) {
                     Text("\(album.averageRating ,specifier: "%.1f")")
                         .font(.dmSans(14, weight: .medium))
@@ -126,7 +141,9 @@ extension AlbumDetailsView {
                         .font(.dmSans(14, weight: .regular))
                 }
                 Spacer()
-                requestButton(title: "give rating".capitalized, title2: "give ratings".capitalized, action: {}, height: 30, width: 100, font: .dmSans(14, weight: .regular), cornerRadius: 25, isRequested: false)
+                requestButton(title: "give rating".capitalized, title2: "give ratings".capitalized, action: {
+                    showGiveRatingView = true
+                }, height: 30, width: 100, font: .dmSans(14, weight: .regular), cornerRadius: 25, isRequested: false)
             }
         }.frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
@@ -137,8 +154,10 @@ extension AlbumDetailsView {
             detailsViewButtons(icon1: "heart", icon2: "heart.fill", title: "Save", action: {}, isSelected: album.isSaved)
             Spacer()
 
-            detailsViewButtons(icon1: "ellipsis.message", icon2: "ellipsis.message.fill", title: "\(14) comments", action: {
-                showComments.toggle()
+            detailsViewButtons(icon1: "ellipsis.message", icon2: "ellipsis.message.fill", title: "\(album.replies.count) comments", action: {
+        
+                    showComments.toggle()
+                
             }, isSelected: showComments)
             Spacer()
             detailsViewButtons(icon1: "square.and.arrow.up", icon2: "square.and.arrow.up.fill", title: "save", action: {}, isSelected: false)
@@ -164,7 +183,7 @@ extension AlbumDetailsView {
     }
 }
 #Preview {
-    AlbumDetailsView(album: albumModel(
+    AlbumDetailsView(album: (albumModel(
         image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400",
         albumName: "For All The Dogs",
         albumArtistName: "Drake",
@@ -176,9 +195,9 @@ extension AlbumDetailsView {
             reviewsModel(personImage: "user7", personName: "Tasha B.", dateOfRating: ISO8601DateFormatter().date(from: "2023-10-08T13:00:00Z")!, rating: 3.5, reviewBody: "Has its moments but too bloated at 23 tracks.")
         ],
         replies: [
-            replies(image: "user8", name: "Kevin O.", replieText: "Slime You Out was everywhere that fall.", replieTime: ISO8601DateFormatter().date(from: "2023-10-08T14:00:00Z")!)
+            CommentModel(image: "user8", name: "Kevin O.", replieText: "Slime You Out was everywhere that fall.", replieTime: ISO8601DateFormatter().date(from: "2023-10-08T14:00:00Z")!)
         ],
         isSaved: true
-    ))
+    )))
     .environmentObject(HomeViewModel())
 }
