@@ -34,8 +34,8 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
             ],
             replies: [
-                replies(image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                replies(image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                CommentModel(image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                CommentModel(image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
             ],
             isSaved: true
         ),
@@ -52,7 +52,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user6", personName: "Tom H.", dateOfRating: ISO8601DateFormatter().date(from: "2024-08-26T16:00:00Z")!, rating: 4.0, reviewBody: "Catchy from start to finish. She really levelled up.")
             ],
             replies: [
-                replies(image: "user7", name: "Nina P.", replieText: "Please please please is stuck in my head forever.", replieTime: ISO8601DateFormatter().date(from: "2024-08-26T17:00:00Z")!)
+                CommentModel(image: "user7", name: "Nina P.", replieText: "Please please please is stuck in my head forever.", replieTime: ISO8601DateFormatter().date(from: "2024-08-26T17:00:00Z")!)
             ],
             isSaved: false
         ),
@@ -69,7 +69,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user9", personName: "Sam L.", dateOfRating: ISO8601DateFormatter().date(from: "2024-06-10T18:00:00Z")!, rating: 4.5, reviewBody: "360 and Von dutch are instant classics.")
             ],
             replies: [
-                replies(image: "user10", name: "Ella F.", replieText: "This album changed the entire summer aesthetic.", replieTime: ISO8601DateFormatter().date(from: "2024-06-10T19:00:00Z")!)
+                CommentModel(image: "user10", name: "Ella F.", replieText: "This album changed the entire summer aesthetic.", replieTime: ISO8601DateFormatter().date(from: "2024-06-10T19:00:00Z")!)
             ],
             isSaved: true
         ),
@@ -85,7 +85,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user2", personName: "Maya K.", dateOfRating: ISO8601DateFormatter().date(from: "2024-05-19T13:00:00Z")!, rating: 4.5, reviewBody: "Deeply personal and sonically gorgeous.")
             ],
             replies: [
-                replies(image: "user3", name: "Leo B.", replieText: "Lunch is so underrated on this project.", replieTime: ISO8601DateFormatter().date(from: "2024-05-19T14:00:00Z")!)
+                CommentModel(image: "user3", name: "Leo B.", replieText: "Lunch is so underrated on this project.", replieTime: ISO8601DateFormatter().date(from: "2024-05-19T14:00:00Z")!)
             ],
             isSaved: false
         ),
@@ -101,7 +101,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user5", personName: "Ryan C.", dateOfRating: ISO8601DateFormatter().date(from: "2024-04-21T15:00:00Z")!, rating: 4.0, reviewBody: "Long but there are genuine moments of brilliance scattered throughout.")
             ],
             replies: [
-                replies(image: "user6", name: "Sophie T.", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
+                CommentModel(image: "user6", name: "Sophie T.", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
             ],
             isSaved: true
         ),
@@ -117,7 +117,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user8", personName: "Imani O.", dateOfRating: ISO8601DateFormatter().date(from: "2024-09-02T14:00:00Z")!, rating: 4.8, reviewBody: "She raps, she sings, she performs. Truly a complete artist.")
             ],
             replies: [
-                replies(image: "user9", name: "Kai M.", replieText: "Nissan Altima is criminally underplayed.", replieTime: ISO8601DateFormatter().date(from: "2024-09-02T15:00:00Z")!)
+                CommentModel(image: "user9", name: "Kai M.", replieText: "Nissan Altima is criminally underplayed.", replieTime: ISO8601DateFormatter().date(from: "2024-09-02T15:00:00Z")!)
             ],
             isSaved: true
         ),
@@ -133,7 +133,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user1", personName: "Camille N.", dateOfRating: ISO8601DateFormatter().date(from: "2024-03-31T12:00:00Z")!, rating: 4.0, reviewBody: "We Still Don't Trust You was the real sequel we needed.")
             ],
             replies: [
-                replies(image: "user2", name: "Travis Y.", replieText: "Young Metro produced this and it shows every second.", replieTime: ISO8601DateFormatter().date(from: "2024-03-31T13:00:00Z")!)
+                CommentModel(image: "user2", name: "Travis Y.", replieText: "Young Metro produced this and it shows every second.", replieTime: ISO8601DateFormatter().date(from: "2024-03-31T13:00:00Z")!)
             ],
             isSaved: false
         ),
@@ -149,7 +149,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user4", personName: "Brett H.", dateOfRating: ISO8601DateFormatter().date(from: "2024-03-31T14:00:00Z")!, rating: 4.5, reviewBody: "Daughter and Protector gave me chills. She poured everything into this.")
             ],
             replies: [
-                replies(image: "user5", name: "Monique R.", replieText: "II Most Wanted with Miley was the collab of the year.", replieTime: ISO8601DateFormatter().date(from: "2024-03-31T15:00:00Z")!)
+                CommentModel(image: "user5", name: "Monique R.", replieText: "II Most Wanted with Miley was the collab of the year.", replieTime: ISO8601DateFormatter().date(from: "2024-03-31T15:00:00Z")!)
             ],
             isSaved: true
         ),
@@ -165,7 +165,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user7", personName: "Tasha B.", dateOfRating: ISO8601DateFormatter().date(from: "2023-10-08T13:00:00Z")!, rating: 3.5, reviewBody: "Has its moments but too bloated at 23 tracks.")
             ],
             replies: [
-                replies(image: "user8", name: "Kevin O.", replieText: "Slime You Out was everywhere that fall.", replieTime: ISO8601DateFormatter().date(from: "2023-10-08T14:00:00Z")!)
+                CommentModel(image: "user8", name: "Kevin O.", replieText: "Slime You Out was everywhere that fall.", replieTime: ISO8601DateFormatter().date(from: "2023-10-08T14:00:00Z")!)
             ],
             isSaved: false
         ),
@@ -181,7 +181,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user10", personName: "Fatima S.", dateOfRating: ISO8601DateFormatter().date(from: "2024-10-30T15:00:00Z")!, rating: 4.8, reviewBody: "He keeps evolving and it never feels forced. A true artist at work.")
             ],
             replies: [
-                replies(image: "user1", name: "Caleb M.", replieText: "Thought I was ready for this album. I was not.", replieTime: ISO8601DateFormatter().date(from: "2024-10-30T16:00:00Z")!)
+                CommentModel(image: "user1", name: "Caleb M.", replieText: "Thought I was ready for this album. I was not.", replieTime: ISO8601DateFormatter().date(from: "2024-10-30T16:00:00Z")!)
             ],
             isSaved: true
         )
@@ -201,8 +201,8 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
             ],
             replies: [
-                replies(image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                replies(image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                CommentModel(image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                CommentModel(image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
             ],
             isSaved: true
         ),
@@ -219,7 +219,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user6", personName: "Tom H.", dateOfRating: ISO8601DateFormatter().date(from: "2024-08-26T16:00:00Z")!, rating: 4.0, reviewBody: "Catchy from start to finish. She really levelled up.")
             ],
             replies: [
-                replies(image: "user7", name: "Nina P.", replieText: "Please please please is stuck in my head forever.", replieTime: ISO8601DateFormatter().date(from: "2024-08-26T17:00:00Z")!)
+                CommentModel(image: "user7", name: "Nina P.", replieText: "Please please please is stuck in my head forever.", replieTime: ISO8601DateFormatter().date(from: "2024-08-26T17:00:00Z")!)
             ],
             isSaved: false
         ),
@@ -236,7 +236,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user9", personName: "Sam L.", dateOfRating: ISO8601DateFormatter().date(from: "2024-06-10T18:00:00Z")!, rating: 4.5, reviewBody: "360 and Von dutch are instant classics.")
             ],
             replies: [
-                replies(image: "user10", name: "Ella F.", replieText: "This album changed the entire summer aesthetic.", replieTime: ISO8601DateFormatter().date(from: "2024-06-10T19:00:00Z")!)
+                CommentModel(image: "user10", name: "Ella F.", replieText: "This album changed the entire summer aesthetic.", replieTime: ISO8601DateFormatter().date(from: "2024-06-10T19:00:00Z")!)
             ],
             isSaved: true
         ),
@@ -252,7 +252,7 @@ class HomeViewModel: ObservableObject {
                 reviewsModel(personImage: "user2", personName: "Maya K.", dateOfRating: ISO8601DateFormatter().date(from: "2024-05-19T13:00:00Z")!, rating: 4.5, reviewBody: "Deeply personal and sonically gorgeous.")
             ],
             replies: [
-                replies(image: "user3", name: "Leo B.", replieText: "Lunch is so underrated on this project.", replieTime: ISO8601DateFormatter().date(from: "2024-05-19T14:00:00Z")!)
+                CommentModel(image: "user3", name: "Leo B.", replieText: "Lunch is so underrated on this project.", replieTime: ISO8601DateFormatter().date(from: "2024-05-19T14:00:00Z")!)
             ],
             isSaved: false
         )
@@ -356,6 +356,17 @@ class HomeViewModel: ObservableObject {
             )
         ]
     }
+    
+    // add a comment
+    func addComment(commentBody: String) -> CommentModel {
+        let image = user.profileImage
+        let name = user.userName
+        let text = commentBody
+        let time = Date.now
+        return CommentModel(image: image, name: name, replieText: text, replieTime: time)
+        
+    }
+    
     // greeting textfunction
     func greetingMessage() -> String {
         let hour = Calendar.current.component(.hour, from: Date())
