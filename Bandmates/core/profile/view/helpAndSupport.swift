@@ -98,7 +98,7 @@ struct helpAndSupport: View {
                         Image("gmail")
                             .font(.title)
                             .foregroundStyle(.green)
-                        Text("bandmatesofficial@gmail.com")
+                        Text("sadagull0994@gmail.com")
                             .font(.dmSans(14, weight: .medium))
                             .foregroundStyle(.black)
                     }.frame(maxWidth: .infinity, alignment: .leading)
