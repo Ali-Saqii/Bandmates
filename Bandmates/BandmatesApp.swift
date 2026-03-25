@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct BandmatesApp: App {
+    @StateObject var vm: HomeViewModel = HomeViewModel()
     var body: some Scene {
         WindowGroup {
-           onboardingView()
+            NavigationStack {
+                tabView()
+                    .environmentObject(HomeViewModel())
+            }
         }
     }
 }
