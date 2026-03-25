@@ -17,7 +17,7 @@ struct albumModel: Codable, Identifiable,Hashable {
     let averageRating : Double
     let totalRatingCount : Int
     let reviews: [reviewsModel]
-    let replies: [replies]
+    let replies: [CommentModel]
     var isSaved: Bool
     let albumPlayLink : String = "vcgvb"
 }
@@ -31,7 +31,7 @@ struct reviewsModel: Codable ,Identifiable, Hashable {
     let reviewBody : String
 }
 
-struct replies: Codable, Identifiable, Hashable {
+struct CommentModel: Codable, Identifiable, Hashable {
     var id = UUID().uuidString
     let image: String
     let name: String
