@@ -108,6 +108,7 @@ extension homwView {
             ForEach(Array(homeVm.albums.prefix(3).indices), id: \.self) { index in
                 NavigationLink {
                     AlbumDetailsView( album: homeVm.albums[index])
+                        .environmentObject(homeVm)
                 } label: {
                     AlbumsRowView(
                                albumImage: homeVm.albums[index].image,
