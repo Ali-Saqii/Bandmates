@@ -6,3 +6,11 @@
 //
 
 import Foundation
+import Combine
+
+struct CollectionModel: Codable,Identifiable,Hashable {
+    var id = UUID().uuidString
+    let collectionTitle: String
+    let collectionDescription: String
+    let albums:[albumModel]
+}
