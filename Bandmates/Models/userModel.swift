@@ -18,4 +18,5 @@ struct userModel: Codable ,Identifiable, Hashable {
     let totalBandmates: Int
     let toralSavedAlbums: Int
     let email: String
+    let Collections: [CollectionModel]
 }
