@@ -16,6 +16,7 @@ struct LoginView: View {
     @State private var appeared = false
     @State private var forgetPassword = false
     @Binding var showSignUP : Bool
+    @State private var showTabView = false
     var body: some View {
         NavigationStack {
             ZStack {
@@ -27,7 +28,9 @@ struct LoginView: View {
                         emailView
                         passwordView
                         middleButtonsView
-                        buttonView(action: {}, buttonText: "Login", height: 55)
+                        buttonView(action: {
+                            showTabView.toggle()
+                        }, buttonText: "Login", height: 55)
                             .padding(.horizontal, 28)
                             .padding(.bottom, 24)
                             .offset(y: appeared ? 0 : 20)
@@ -44,7 +47,9 @@ struct LoginView: View {
                 .navigationDestination(isPresented: $forgetPassword) {
                     forgetPaswordView()
                 }
-            }
+            }.navigationDestination(isPresented: $showTabView, destination: {
+                tabView()
+            })
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     appeared = true
