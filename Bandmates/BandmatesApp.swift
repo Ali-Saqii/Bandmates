@@ -13,7 +13,7 @@ struct BandmatesApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                tabView()
+                onboardingView()
                     .environmentObject(HomeViewModel())
             }
         }
