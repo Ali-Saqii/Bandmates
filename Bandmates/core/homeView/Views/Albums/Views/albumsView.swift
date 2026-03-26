@@ -55,6 +55,7 @@ struct albumsView: View {
         }.navigationTitle("Albums")
             .navigationDestination(item: $selectedAlbum) { album in
                 AlbumDetailsView(album: album)
+                    .environmentObject(hvm)
             }
     }
 }
