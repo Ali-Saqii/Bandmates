@@ -13,6 +13,7 @@ struct AlbumDetailsView: View {
     @State var showComments: Bool = false
     let album: albumModel
     @State private var showGiveRatingView = false
+    @State private var SaveAlbum = false
     var body: some View {
         ZStack {
             Color.white
@@ -69,20 +70,73 @@ struct AlbumDetailsView: View {
                 .navigationDestination(isPresented: $showGiveRatingView) {
                     AlbumFeddBackView(albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSave: $isSaved
                     )
+                }.onAppear {
+                    isAlbumSaved()
+                    albumRating()
                 }
+            if SaveAlbum {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        SaveAlbum = false
+                    }
+                SaveAlbumPopover(collections: hvm.user.Collections)
+                    .environmentObject(hvm)
+                    .transition(AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
+            }
         }.sheet(isPresented: $showComments) {
             commentsView(comments: album.replies)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
-                .environmentObject(HomeViewModel())
+                .environmentObject(hvm)
         }
+        .environmentObject(hvm)
     }
-    
+
     @State var isSaved : Bool  = false
     private func isAlbumSaved() {
         self.isSaved = album.isSaved
     }
-        
+  @State private  var rating : Int  = 0
+    private func albumRating() {
+        self.rating = Int(album.averageRating)
+    }
+    private var albumInformationView:some View {
+        VStack(alignment:.leading,spacing: 5) {
+            Text(album.albumName)
+                .font(.dmSans(18, weight: .black))
+            HStack(spacing:5) {
+                Image("artist")
+                    .resizable()
+                    .frame(width: 15, height: 15)
+                Text(album.albumArtistName)
+                    .foregroundStyle(Color.background)
+                    .font(.dmSans(14, weight: .regular))
+            }.frame(height: 16)
+            Text("\(album.releaseDate.billingFormatted)")
+                .foregroundStyle(.gray)
+                .font(.dmSans(14, weight: .regular))
+            HStack(spacing:5) {
+                ratingStarsView(count: $rating, font:.system(size: 14), Color: .yellow)
+                    .overlay {
+                        Rectangle()
+                            .fill(.white.opacity(0.1))
+                    }
+                HStack(spacing:0) {
+                    Text("\(album.averageRating ,specifier: "%.1f")")
+                        .font(.dmSans(14, weight: .medium))
+                    Text("(\(album.totalRatingCount) ratings)")
+                        .foregroundStyle(.gray)
+                        .font(.dmSans(14, weight: .regular))
+                }
+                Spacer()
+                requestButton(title: "give rating".capitalized, title2: "give ratings".capitalized, action: {
+                    showGiveRatingView = true
+                }, height: 30, width: 100, font: .dmSans(14, weight: .regular), cornerRadius: 25, isRequested: false)
+            }
+        }.frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+    }
 }
 extension AlbumDetailsView {
     private var albumImageView:some View {
@@ -115,43 +169,18 @@ extension AlbumDetailsView {
 
         }.frame(maxWidth: .infinity)
             .frame(height: UIScreen.main.bounds.height * 0.225)
+        
     }
-    private var albumInformationView:some View {
-        VStack(alignment:.leading,spacing: 5) {
-            Text(album.albumName)
-                .font(.dmSans(18, weight: .black))
-            HStack(spacing:5) {
-                Image("artist")
-                    .resizable()
-                    .frame(width: 15, height: 15)
-                Text(album.albumArtistName)
-                    .foregroundStyle(Color.background)
-                    .font(.dmSans(14, weight: .regular))
-            }.frame(height: 16)
-            Text("\(album.releaseDate.billingFormatted)")
-                .foregroundStyle(.gray)
-                .font(.dmSans(14, weight: .regular))
-            HStack(spacing:5) {
-//                ratingStarsView(count: album.averageRating, font:.system(size: 14), Color: .yellow)
-                HStack(spacing:0) {
-                    Text("\(album.averageRating ,specifier: "%.1f")")
-                        .font(.dmSans(14, weight: .medium))
-                    Text("(\(album.totalRatingCount) ratings)")
-                        .foregroundStyle(.gray)
-                        .font(.dmSans(14, weight: .regular))
-                }
-                Spacer()
-                requestButton(title: "give rating".capitalized, title2: "give ratings".capitalized, action: {
-                    showGiveRatingView = true
-                }, height: 30, width: 100, font: .dmSans(14, weight: .regular), cornerRadius: 25, isRequested: false)
-            }
-        }.frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal)
-    }
+   
+
     private var buttionsView: some View {
         HStack {
 
-            detailsViewButtons(icon1: "heart", icon2: "heart.fill", title: "Save", action: {}, isSelected: album.isSaved)
+            detailsViewButtons(icon1: "heart", icon2: "heart.fill", title: "Save", action: {
+                if album.isSaved == false {
+                    SaveAlbum.toggle()
+                }
+            }, isSelected: album.isSaved)
             Spacer()
 
             detailsViewButtons(icon1: "ellipsis.message", icon2: "ellipsis.message.fill", title: "\(album.replies.count) comments", action: {
