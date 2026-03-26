@@ -20,6 +20,7 @@ struct SignUp: View {
     @Binding var showSignUp : Bool
     @Binding var showLogin : Bool
     @State private var appeared = false
+    @State private var showTabView = false
     var body: some View {
             ZStack {
                 Color.white
@@ -31,7 +32,9 @@ struct SignUp: View {
                         textFieldsView
                         VStack(spacing:40) {
                             termsAndConditionView
-                            buttonView(action: {}, buttonText: "Sign Up", height: 55)
+                            buttonView(action: {
+                                showTabView.toggle()
+                            }, buttonText: "Sign Up", height: 55)
                                 .padding(.horizontal)
                                 .offset(y: appeared ? 0 : 20)
                             footerSignInButton
@@ -43,7 +46,10 @@ struct SignUp: View {
                     .sheet(isPresented: $showImagePicker) {
                         ImagePicker(image: $profileImage)
                     }
-            }.onAppear {
+            }.navigationDestination(isPresented: $showTabView, destination: {
+                tabView()
+            })
+            .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     withAnimation(.spring) {
                         appeared = true
