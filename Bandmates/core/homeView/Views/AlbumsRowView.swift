@@ -79,7 +79,10 @@ struct AlbumsRowView: View {
                     withAnimation(.easeIn){
                         isAlBumSaved.toggle()
                     }
-                }.padding(.trailing,20)
+                    
+                }
+                .padding(.trailing,20)
+             
             })
             .shadow(color: Color.textfieldcolor.opacity(0.7), radius: 5)
             .padding(.horizontal)
