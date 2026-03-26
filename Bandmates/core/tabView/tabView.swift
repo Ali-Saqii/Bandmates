@@ -34,6 +34,7 @@ struct tabView: View {
     @State private var showMenu = false
     @State private var showShareSheet = false
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.dismiss) var dismiss
     let appID = "YOUR_APP_ID"
     
     var appStoreURL: URL {
@@ -45,10 +46,10 @@ struct tabView: View {
             VStack(spacing: 0) {
                 ZStack {
                     switch selectedTab {
-                    case .home:       homwView()
-                    case .collection: collectionView()
-                    case .charts:     chartView()
-                    case .profile:    profileView()
+                    case .home:       homwView().environmentObject(HomeViewModel())
+                    case .collection: collectionView().environmentObject(HomeViewModel())
+                    case .charts:     chartView().environmentObject(HomeViewModel())
+                    case .profile:    profileView().environmentObject(HomeViewModel())
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -89,14 +90,14 @@ struct tabView: View {
                     homeButtonAction: {selectedTab = .home},
                     ratingButtonAction: {
                         requestReview()
-
+                        
                     },
                     shareButtonAction: {
                         withAnimation(.spring(.bouncy(duration: 0.5, extraBounce: 2.0))){
                             showShareSheet = true
                         }
                     },
-                    logoutButtonAction: {}
+                    logoutButtonAction: { dismiss() }
                 ).frame(maxWidth: .infinity,alignment: .leading)
                     .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
                     .background(.gray.opacity(0.8))
@@ -105,8 +106,8 @@ struct tabView: View {
         
         }.sheet(isPresented: $showShareSheet) {
             ShareSheet(items: [appStoreURL])
-        }
-            }
+        }.navigationBarBackButtonHidden(true)
+    }
         
     private func toolBarText() -> String {
         if selectedTab == .home {
@@ -135,4 +136,5 @@ struct ShareSheet: UIViewControllerRepresentable {
 }
 #Preview {
     tabView()
+        .environmentObject(HomeViewModel())
 }
