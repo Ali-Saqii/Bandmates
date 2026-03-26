@@ -155,6 +155,7 @@ struct MenuView: View {
                 }.frame(maxWidth: .infinity,alignment: .leading)
                     .onTapGesture {
                         print("logout")
+                        logoutButtonAction()
                         showMenu = false
 
                     }
