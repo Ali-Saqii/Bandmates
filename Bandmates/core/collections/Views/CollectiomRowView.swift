@@ -11,11 +11,15 @@ struct CollectiomRowView: View {
     let Collection: CollectionModel
     let editAction: () -> Void
     let DeleteActin: () -> Void
-
+    let ontapGesture: () -> Void
     @State private var showActionSheet = false
     var body: some View {
         ZStack(alignment:.trailing) {
-            HStack {
+            HStack(spacing: 0) {
+                Rectangle()
+                    .fill(Color.background)
+                    .frame(width: 3, height: 90)
+                    
                 VStack(alignment:.leading) {
                     Text(Collection.collectionTitle)
                         .foregroundStyle(.black)
@@ -29,23 +33,30 @@ struct CollectiomRowView: View {
                     Text(Collection.collectionDescription)
                         .font(.dmSans(11.5, weight: .medium))
                         .foregroundStyle(.gray)
+                        .lineLimit(2)
                 }.frame(maxWidth: .infinity,alignment: .leading)
                     .padding(.horizontal)
-                    Image(systemName: "ellipsis")
-                        .padding()
-                        .onTapGesture {
-                            showActionSheet.toggle()
-                        }
-
+                    .overlay(content: {
+                        Rectangle()
+                            .fill(.textfieldcolor.opacity(0.1))
+                    })
+                    .onTapGesture {
+                        ontapGesture()
+                       showActionSheet = false
+                       
+                    }
+                Image(systemName: "ellipsis")
+                    .padding(20)
+                    .onTapGesture {
+                        showActionSheet.toggle()
+                    }.background(
+                        Circle()
+                            .fill(.clear)
+                    )
             }.frame(maxWidth: .infinity)
                 .frame(height: 106)
                 .background(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .overlay(alignment:.leading,content: {
-                    Rectangle()
-                        .fill(Color.background)
-                        .frame(width: 3, height: 85)
-                })
                 .shadow(color: .textfieldcolor, radius: 10)
             //            .padding(.horizontal)
             if showActionSheet {
@@ -54,13 +65,13 @@ struct CollectiomRowView: View {
                         .font(.dmSans(11, weight: .semiBold))
                         .padding(.all,2.5)
                         .onTapGesture {
-                            
+                            editAction()
                         }
                     Text("Delete Collection")
                         .font(.dmSans(11, weight: .semiBold))
                         .padding(.all,2.5)
                         .onTapGesture {
-                            
+                            DeleteActin()
                         }
                 }.padding(.all,5)
                     .background(.white)
@@ -74,5 +85,5 @@ struct CollectiomRowView: View {
 }
 
 #Preview {
-    CollectiomRowView(Collection: DeveloperPreview.instance.collection,editAction: {print("edit")},DeleteActin: {print("delete")})
+    CollectiomRowView(Collection: DeveloperPreview.instance.collection,editAction: {print("edit")},DeleteActin: {print("delete")}, ontapGesture: {})
 }
