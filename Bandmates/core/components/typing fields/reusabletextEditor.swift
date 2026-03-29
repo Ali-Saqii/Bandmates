@@ -9,7 +9,7 @@ import SwiftUI
 
 struct reusabletextEditor: View {
     @Binding var text : String
-    var  PlaceHolder : String
+    let  PlaceHolder : String
     let height: CGFloat
     let color : Color
     @State private var placeHolder = ""
@@ -32,7 +32,7 @@ struct reusabletextEditor: View {
                     .overlay(alignment:.topLeading) {
                         Text(placeHolder)
                             .font(.callout)
-                            .foregroundStyle(.gray.opacity(0.7))
+                            .foregroundStyle(.black.opacity(0.7))
                             .padding(.horizontal)
                             .padding()
                     }.onTapGesture {
@@ -47,5 +47,5 @@ struct reusabletextEditor: View {
 }
 
 #Preview {
-    reusabletextEditor(text: .constant(""), PlaceHolder: "dfjhfdsjkfh", height: 150, color: .textfieldcolor.opacity(0.3))
+    reusabletextEditor(text: .constant(""), PlaceHolder: "dfjhfdsggb jkfh", height: 150, color: .textfieldcolor.opacity(0.3))
 }
