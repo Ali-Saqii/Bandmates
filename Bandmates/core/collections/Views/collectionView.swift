@@ -115,17 +115,23 @@ struct collectionView: View {
             CollectionAlbumsView(Collection: collection)
                 .environmentObject(homeVm) 
         }.fullScreenCover(isPresented: $DeleteCollection, content: {
-            reUsableBottomSheet(
-                                sheetTitle: "Delete Collection",
-                                sheetWarning: "Are you sure want to delete this collection",
-                                buttonTitle1: "cancel",
-                                buttonTitle2: "Yes,Delete",
-                                button1Action: {},
-                                button2Action: {},
-                                button1Role: .cancel,
-                                button2Role: .destructive,
-                                showSheet: $DeleteCollection
-            )
+            ZStack {
+                Color.black.opacity(0.6)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        DeleteCollection = false
+                    }
+                reUsableBottomSheet(
+                    sheetTitle: "Delete Collection",
+                    sheetWarning: "Are you sure want to delete this collection",
+                    buttonTitle1: "cancel",
+                    buttonTitle2: "Yes,Delete",
+                    button1Action: {},
+                    button2Action: {},
+                    button1Role: .cancel,
+                    button2Role: .destructive
+                )
+            }
             .background(ClearBackgroundView())
         })
         .environmentObject(homeVm)
