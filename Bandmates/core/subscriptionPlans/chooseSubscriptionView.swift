@@ -11,14 +11,14 @@ struct chooseSubscriptionView: View {
     @State private var club = true
     @State private var arena = false
     @State private var stadium = false
-    
+    @Environment(\.dismiss) var  dismiss
     var body: some View {
         ZStack {
             Color.white
                 .ignoresSafeArea(.all)
             ScrollView {
                 VStack(spacing: 35) {
-                    crossButton(action: {})
+                    crossButton(action: {dismiss()})
                         .frame(maxWidth: .infinity, alignment: .leading)
                     VStack {
                         Text("Choose the right plan for you")
@@ -49,7 +49,8 @@ struct chooseSubscriptionView: View {
             }.scrollIndicators(.hidden)
                 .scrollTargetBehavior(.viewAligned)
                 .scrollBounceBehavior(.basedOnSize)
-        }
+        }.navigationBarBackButtonHidden(true)
+            .toolbar(removing: .none)
     }
 }
 extension chooseSubscriptionView {

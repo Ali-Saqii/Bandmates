@@ -64,7 +64,7 @@ struct tabView: View {
             .toolbar {
                 ToolbarItem(placement:.topBarLeading) {
                     toolBarMenuButton(action: {
-                        withAnimation(.easeInOut) {
+                        withAnimation() {
                             showMenu.toggle()
                         }
                         print("tool bar menu button")
@@ -85,6 +85,13 @@ struct tabView: View {
                 }
             }
             if showMenu {
+                Color.black.opacity(0.6)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation() {
+                            showMenu = false
+                        }
+                    }
                 MenuView(
                     showMenu: $showMenu,
                     homeButtonAction: {selectedTab = .home},
@@ -100,8 +107,8 @@ struct tabView: View {
                     logoutButtonAction: { dismiss() }
                 ).frame(maxWidth: .infinity,alignment: .leading)
                     .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
-                    .background(.gray.opacity(0.8))
-                    .allowsHitTesting(true)
+                   
+                    
             }
         
         }.sheet(isPresented: $showShareSheet) {
