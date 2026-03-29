@@ -12,10 +12,14 @@ struct CollectionAlbumsView: View {
     @State private var ellipseTab = false
     @State private var editCollection = false
     @State private var DeleteCollection = false
+    @State private var reMoveAlbum = false
     @State private var CollectionNewName = ""
     @State private var CollectionNewDescriptione = ""
     @EnvironmentObject var homeVm: HomeViewModel
     @Environment(\.dismiss) var dismiss
+    @State private  var selectedAbbum: albumModel? = nil
+    @State private var sjowAlbumDetails = false
+
     var body: some View {
             ZStack {
                 Color.white
@@ -23,7 +27,16 @@ struct CollectionAlbumsView: View {
                 ScrollView {
                     VStack {
                         ForEach(Collection.albums){ album in
-                            albumsRowView(album: album, ButtonAction: {})
+                            albumsRowView(album: album, ButtonAction: {
+                                withAnimation() {
+                                    reMoveAlbum.toggle()
+                                    DeleteCollection = false
+                                    ellipseTab = false
+                                    editCollection = false
+                                }
+                            }).onTapGesture {
+                                selectedAbbum = album
+                            }
                         }
                     }.padding()
                        
@@ -51,19 +64,56 @@ struct CollectionAlbumsView: View {
                   ).transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
                 }
                 if DeleteCollection {
+                    Color.black.opacity(0.6)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation() {
+                                DeleteCollection = false
+                            }
+                        }
                     reUsableBottomSheet(
                         sheetTitle: "Delete Collection",
                         sheetWarning: "Are you sure want to delete this collection",
                         buttonTitle1: "cancel",
                         buttonTitle2: "Yes,Delete",
-                        button1Action: {},
+                        button1Action: {
+                            withAnimation() {
+                                DeleteCollection = false
+                            }
+                        },
                         button2Action: {},
                         button1Role: .cancel,
-                        button2Role: .destructive, showSheet: $DeleteCollection
+                        button2Role: .destructive 
+                    ).transition(AnyTransition.asymmetric(insertion: .move(edge: .bottom), removal:.move(edge: .bottom)))
+                }
+                if reMoveAlbum {
+                    Color.black.opacity(0.6)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation() {
+                                reMoveAlbum = false
+                            }
+                        }
+                    reUsableBottomSheet(
+                        sheetTitle: "Remove Album",
+                        sheetWarning: "Are you sure want to remove this album from your collectin",
+                        buttonTitle1: "cancel",
+                        buttonTitle2: "Yes,Remove",
+                        button1Action: {
+                            withAnimation() {
+                                reMoveAlbum = false
+                            }
+                        },
+                        button2Action: {},
+                        button1Role: .cancel,
+                        button2Role: .destructive
                     ).transition(AnyTransition.asymmetric(insertion: .move(edge: .bottom), removal:.move(edge: .bottom)))
                 }
             }.environmentObject(homeVm)
-        
+            .navigationDestination(item: $selectedAbbum, destination: { album in
+                AlbumDetailsView(album: album)
+                .environmentObject(homeVm)
+            })
             .navigationBarBackButtonHidden(true)
             .navigationTitle(Collection.collectionTitle)
                 .onTapGesture {
@@ -114,8 +164,10 @@ extension CollectionAlbumsView {
                     .padding(.all,2.5)
             }
             Button {
-                ellipseTab = false    // ✅ Close the menu
-                DeleteCollection = true
+                withAnimation() {
+                    ellipseTab = false    // ✅ Close the menu
+                    DeleteCollection = true
+                }
             } label: {
                 Text("Delete Collection")
                     .font(.dmSans(11, weight: .semiBold))
