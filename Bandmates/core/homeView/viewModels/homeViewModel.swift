@@ -334,11 +334,16 @@ class HomeViewModel: ObservableObject {
     ]
     @Published var bandmates: [BandmateModel] = []
 
+    // search results
+    var searchResults: (albums: [albumModel], bandmates: [BandmateModel]) {
+        search(query: searchText)
+    }
+
     var greeting: String {
         greetingMessage()
     }
     init() {
-        bandmates = [
+        bandmates =  [
             BandmateModel(
                 image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
                 fullName: "Marcus Thompson",
@@ -346,7 +351,10 @@ class HomeViewModel: ObservableObject {
                 Bio: "Guitar player and producer based in LA. Into jazz, soul and indie rock.",
                 bandmates: 312,
                 collections: 48,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: false
+                savedCollection: [],
+                BandMates: [], isRequested: false,
+                aretheyRequested: false,
+                isFriend: false
             ),
             BandmateModel(
                 image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",
@@ -355,7 +363,10 @@ class HomeViewModel: ObservableObject {
                 Bio: "Singer-songwriter. Lover of RnB and neo-soul. Always in the studio.",
                 bandmates: 540,
                 collections: 73,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: false
+                savedCollection: [],
+                BandMates: [], isRequested: false,
+                aretheyRequested: false,
+                isFriend: false
             ),
             BandmateModel(
                 image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400",
@@ -364,7 +375,10 @@ class HomeViewModel: ObservableObject {
                 Bio: "Drummer and beatmaker. Hip hop head. Currently working on my debut EP.",
                 bandmates: 198,
                 collections: 29,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: false
+                savedCollection: [],
+                BandMates: [], isRequested: false,
+                aretheyRequested: false,
+                isFriend: true
             ),
             BandmateModel(
                 image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400",
@@ -373,7 +387,11 @@ class HomeViewModel: ObservableObject {
                 Bio: "Classically trained vocalist exploring pop and electronic fusion.",
                 bandmates: 421,
                 collections: 61,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: false
+                savedCollection: [],
+                BandMates: [],
+                isRequested: false,
+                aretheyRequested: false,
+                isFriend: true
             ),
             BandmateModel(
                 image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400",
@@ -382,7 +400,11 @@ class HomeViewModel: ObservableObject {
                 Bio: "Music producer and DJ. Trap, afrobeats and everything in between.",
                 bandmates: 876,
                 collections: 112,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: false
+                savedCollection: [],
+                BandMates: [],
+                isRequested: false,
+                aretheyRequested: false,
+                isFriend: false
             ),
             BandmateModel(
                 image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400",
@@ -391,43 +413,11 @@ class HomeViewModel: ObservableObject {
                 Bio: "Bassist and composer. Jazz by night, session musician by day.",
                 bandmates: 267,
                 collections: 44,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: true
-            ),
-            BandmateModel(
-                image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400",
-                fullName: "Darius Webb",
-                userName: "@dariuswebb",
-                Bio: "Multi-instrumentalist. Keys, bass and guitar. Influenced by Stevie and Prince.",
-                bandmates: 633,
-                collections: 89,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: true
-            ),
-            BandmateModel(
-                image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400",
-                fullName: "Lily Monroe",
-                userName: "@lilymonroe",
-                Bio: "Indie pop artist and lyricist. Writing songs about life, love and late nights.",
-                bandmates: 455,
-                collections: 57,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: false
-            ),
-            BandmateModel(
-                image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400",
-                fullName: "Camille Fontaine",
-                userName: "@camillef",
-                Bio: "Vocalist and music educator. Passionate about bringing music to communities.",
-                bandmates: 189,
-                collections: 33,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: true
-            ),
-            BandmateModel(
-                image: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=400",
-                fullName: "Kai Nakamura",
-                userName: "@kaidrums",
-                Bio: "Percussionist blending traditional Japanese music with modern electronic sounds.",
-                bandmates: 724,
-                collections: 96,
-                savedCollection: Array(albums.shuffled().prefix(Int.random(in: 2...4))), isRequested: false
+                savedCollection: [],
+                BandMates: [],
+                isRequested: true,
+                aretheyRequested: false,
+                isFriend: true
             )
         ]
     }
@@ -467,5 +457,27 @@ class HomeViewModel: ObservableObject {
         } else {
             UIApplication.shared.open(webURL)
         }
+    }
+    
+    // search album and viewModel
+    func search(query: String) -> (albums: [albumModel], bandmates: [BandmateModel]) {
+        let trimmed = query.trimmingCharacters(in: .whitespaces).lowercased()
+
+        guard !trimmed.isEmpty else {
+//            return (albums, bandmates)
+            return ([], [])  
+        }
+
+        let filteredAlbums = albums.filter {
+            $0.albumName.lowercased().contains(trimmed) ||
+            $0.albumArtistName.lowercased().contains(trimmed)
+        }
+
+        let filteredBandmates = bandmates.filter {
+            $0.fullName.lowercased().contains(trimmed) ||
+            $0.userName.lowercased().contains(trimmed)
+        }
+
+        return (filteredAlbums, filteredBandmates)
     }
 }
