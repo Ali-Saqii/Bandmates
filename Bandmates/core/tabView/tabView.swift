@@ -30,9 +30,12 @@ enum AppTab: Int, CaseIterable {
     }
 }
 struct tabView: View {
+    @StateObject private var Nvm = NotificationViewModel()
     @State private var selectedTab: AppTab = .home
     @State private var showMenu = false
     @State private var showShareSheet = false
+    @State private var showNotifications = false
+    @State private var notiCount : Int? = nil
     @Environment(\.requestReview) private var requestReview
     @Environment(\.dismiss) var dismiss
     let appID = "YOUR_APP_ID"
@@ -79,7 +82,9 @@ struct tabView: View {
                 }.sharedBackgroundVisibility(.hidden)
                 if selectedTab == .home {
                     ToolbarItem {
-                        homeViewNotificationButton(action: {}, notificationCount: 5)
+                        homeViewNotificationButton(action: {
+                            showNotifications.toggle()
+                        }, notificationCount: Nvm.UnReadNotifications?.count)
                         
                     }.sharedBackgroundVisibility(.hidden)
                 }
@@ -113,7 +118,12 @@ struct tabView: View {
         
         }.sheet(isPresented: $showShareSheet) {
             ShareSheet(items: [appStoreURL])
-        }.navigationBarBackButtonHidden(true)
+        }
+        .navigationBarBackButtonHidden(true)
+        .navigationDestination(isPresented: $showNotifications) {
+            NotifiCationsView()
+                .environmentObject(Nvm)
+        }
     }
         
     private func toolBarText() -> String {
