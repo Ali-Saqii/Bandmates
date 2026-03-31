@@ -32,5 +32,34 @@ extension Date {
             formatter.unitsStyle = .abbreviated
             return formatter.localizedString(for: self, relativeTo: Date())
         }
+    
+    func toRelativeString() -> String {
+        let calendar = Calendar.current
+        let now = Date()
+
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "h:mm a"
+        let timeString = timeFormatter.string(from: self)
+
+        if calendar.isDateInToday(self) {
+            return "Today at \(timeString)"
+        } else if calendar.isDateInYesterday(self) {
+            return "Yesterday at \(timeString)"
+        }
+
+        let startOfNow = calendar.startOfDay(for: now)
+        let startOfSelf = calendar.startOfDay(for: self)
+        let components = calendar.dateComponents([.day], from: startOfSelf, to: startOfNow)
+
+        if let days = components.day, days < 7 {
+            let dayFormatter = DateFormatter()
+            dayFormatter.dateFormat = "EEEE"
+            return "Last \(dayFormatter.string(from: self)) at \(timeString)"
+        }
+
+        let fullFormatter = DateFormatter()
+        fullFormatter.dateFormat = "MMM d 'at' h:mm a"
+        return fullFormatter.string(from: self)
+    }
     }
 
