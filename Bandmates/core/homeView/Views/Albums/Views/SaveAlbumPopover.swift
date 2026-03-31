@@ -11,7 +11,7 @@ struct SaveAlbumPopover: View {
     @EnvironmentObject var hvm : HomeViewModel
     let collections: [CollectionModel]
     @State private var SelectedCollection: CollectionModel? = nil
-    @Environment(\.dismiss) var dismiss
+    @Binding var showPopUp : Bool
     var body: some View {
         
         GeometryReader { geo in
@@ -25,7 +25,9 @@ struct SaveAlbumPopover: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(.black)
                         .onTapGesture {
-                            dismiss()
+                            withAnimation() {
+                                showPopUp.toggle()
+                            }
                         }
                 }.padding(.horizontal)
                     .padding(.top)
@@ -78,6 +80,6 @@ struct SaveAlbumPopover: View {
 }
 
 #Preview {
-    SaveAlbumPopover(collections: DeveloperPreview.instance.collections)
+    SaveAlbumPopover(collections: DeveloperPreview.instance.collections, showPopUp: .constant(false))
         .environmentObject(HomeViewModel())
 }
