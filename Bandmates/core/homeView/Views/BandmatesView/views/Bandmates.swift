@@ -21,23 +21,32 @@ enum BandmatesviewTabs: Int, CaseIterable {
 struct Bandmates: View {
     @State private var selectedTab: BandmatesviewTabs = .myBand
     @EnvironmentObject var hvm: HomeViewModel
-
+    @StateObject private var Bvm = BandMatesViewModel()
     var body: some View {
         ZStack {
-            Color.white
-                .ignoresSafeArea(edges: .all)
-            VStack {
-             BandematesViewHeader(selectedTab: $selectedTab)
-                switch selectedTab {
-                case .myBand:       MyBandView()
-                case .request: BandmatesRequestView()
-                case .discover:     DiscoverBandmatesView()
-              
+          
+                VStack {
+                    BandematesViewHeader(selectedTab: $selectedTab)
+                    switch selectedTab {
+                    case .myBand:       MyBandView()
+                            .transition(transition)
+                            .environmentObject(Bvm)
+                    case .request: BandmatesRequestView()
+                            .transition(transition)
+                            .environmentObject(Bvm)
+                    case .discover:     DiscoverUsersView()
+                            .transition(transition)
+                            .environmentObject(Bvm)
+                        
+                    }
                 }
-            }
+            
         }.navigationTitle("Bandmates")
             .navigationBarTitleDisplayMode(.inline)
+            .environmentObject(Bvm)
     }
+    var transition: AnyTransition = .asymmetric(insertion: .move(edge: .trailing).animation(.easeIn), removal: .move(edge: .leading).animation(.easeIn))
+
 }
 
 #Preview {
