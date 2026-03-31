@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+import Combine
+
+struct NotificationModel: Codable, Identifiable, Hashable {
+    var id = UUID().uuidString
+    let title: String
+    let body: String
+    let Date : Date
+    let isRead : Bool
+}
