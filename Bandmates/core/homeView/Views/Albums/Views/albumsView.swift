@@ -41,7 +41,7 @@ struct albumsView: View {
                                     artistName: hvm.albums[index].albumArtistName,
                                     ratingCount: hvm.albums[index].averageRating,
                                     totalRatingcount: hvm.albums[index].totalRatingCount,
-                                    isAlBumSaved: $hvm.albums[index].isSaved
+                                    isAlBumSaved: hvm.albums[index].isSaved
                                 ).onTapGesture {
                                     selectedAlbum = hvm.albums[index] // ✅ this triggers the navigation
                                 }
