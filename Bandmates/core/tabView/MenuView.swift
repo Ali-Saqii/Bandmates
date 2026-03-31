@@ -100,6 +100,7 @@ struct MenuView: View {
                             .font(.system(size: 18, weight: .semibold))
 
                     }.frame(maxWidth: .infinity,alignment: .leading)
+                    
                 }
 
                 HStack {
