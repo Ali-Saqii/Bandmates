@@ -12,7 +12,7 @@ struct homwView: View {
     @State private var recentlyPlayedSeeAll = false
     @State private var recommendedAlbumsSeeAll = false
     @State private var seeAllBandmates = false
-
+    @State private var search = false
     var body: some View {
         ZStack {
             Color.white
@@ -53,13 +53,17 @@ struct homwView: View {
             recentlyPlayedAlbums()
                 .environmentObject(HomeViewModel())
         }
+        .navigationDestination(isPresented: $search) {
+            searchResults()
+                .environmentObject(HomeViewModel())
+        }
     }
 }
 
 extension homwView {
     private var greetinTextView: some View {
         HStack {
-            Text("hey Xyz,".capitalized)
+            Text("hey \(homeVm.user.fullName),".capitalized)
             Text(homeVm.greeting)
                 .font(.headline)
                 .bold()
@@ -73,14 +77,20 @@ extension homwView {
                 .foregroundStyle(.gray)
                 .padding(.leading)
             TextField("search albums,artists and bandmates", text: $homeVm.searchText)
-                .onTapGesture {
-                    
-                }
+               
         }.frame(maxWidth:.infinity)
             .frame(height: 60)
             .background(Color.textfieldcolor.opacity(0.7))
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal,20)
+            .overlay(content: {
+                Rectangle()
+                    .fill(.white.opacity(0.01))
+                    .onTapGesture {
+                        search.toggle()
+                    }
+            })
+            
     }
     private var recentlyPlayedButtonView: some View {
         HStack {
@@ -116,7 +126,7 @@ extension homwView {
                                artistName: homeVm.albums[index].albumArtistName,
                                ratingCount: homeVm.albums[index].averageRating,
                                totalRatingcount: homeVm.albums[index].totalRatingCount,
-                               isAlBumSaved: $homeVm.albums[index].isSaved
+                               isAlBumSaved: homeVm.albums[index].isSaved
                     ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
                 }
             }
@@ -131,13 +141,17 @@ extension homwView {
     }
     private var bandmatesView: some View {
         VStack {
-            ForEach( Array(homeVm.bandmates.prefix(3).indices), id: \.self) { index in
-                BandmatesRowView(
-                    personImage: homeVm.bandmates[index].image,
-                    PersonName: homeVm.bandmates[index].fullName,
-                    personUserName: homeVm.bandmates[index].userName,
-                    isRequested: $homeVm.bandmates[index].isRequested
-                ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+            ForEach( Array(homeVm.bandmates.prefix(3))) { mate in
+                NavigationLink {
+                    orthersProfile(bandmate: mate)
+                } label: {
+                    OrtherUsersRowView(
+                        personImage: mate.image,
+                        PersonName: mate.fullName,
+                        personUserName: mate.userName,
+                        isRequested: mate.isRequested, buttonAction: {}
+                    ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+                }
             }
         }
     }
