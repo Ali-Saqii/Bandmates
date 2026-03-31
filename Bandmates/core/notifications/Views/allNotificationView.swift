@@ -8,11 +8,30 @@
 import SwiftUI
 
 struct allNotificationView: View {
+    @EnvironmentObject var nvm : NotificationViewModel
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.white
+                .ignoresSafeArea()
+            ScrollView {
+                if let allNotifications = nvm.Notifications {
+                    VStack(spacing: 10) {
+                        ForEach(allNotifications) { notification in
+                                notificationRowView(Notification: notification)
+                                    .padding(.horizontal)
+                                Divider()
+                        }
+                    }
+                } else {
+                    
+                }
+            }
+        }.scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize)
     }
 }
 
 #Preview {
     allNotificationView()
+        .environmentObject(NotificationViewModel())
 }
