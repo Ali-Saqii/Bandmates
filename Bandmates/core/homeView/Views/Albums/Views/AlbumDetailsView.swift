@@ -80,7 +80,7 @@ struct AlbumDetailsView: View {
                     .onTapGesture {
                         SaveAlbum = false
                     }
-                SaveAlbumPopover(collections: hvm.user.Collections)
+                SaveAlbumPopover(collections: hvm.user.Collections, showPopUp: $SaveAlbum)
                     .environmentObject(hvm)
                     .transition(AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
             }
@@ -178,7 +178,9 @@ extension AlbumDetailsView {
 
             detailsViewButtons(icon1: "heart", icon2: "heart.fill", title: "Save", action: {
                 if album.isSaved == false {
-                    SaveAlbum.toggle()
+                    withAnimation() {
+                        SaveAlbum.toggle()
+                    }
                 }
             }, isSelected: album.isSaved)
             Spacer()
