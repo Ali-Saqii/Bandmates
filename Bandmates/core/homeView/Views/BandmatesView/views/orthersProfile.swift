@@ -8,11 +8,131 @@
 import SwiftUI
 
 struct orthersProfile: View {
+    @EnvironmentObject var Bvm : BandMatesViewModel
+    let bandmate: BandmateModel?
+    @State private var showBandmates = false
+
+    @State private var collectionCount = 0
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.white.ignoresSafeArea()
+            if let bandMate = bandmate {
+                VStack(spacing:15) {
+                    VStack(alignment:.center) {
+                        AsyncImage(url: URL(string: bandMate.image)) { phase in
+                            if let image = phase.image {
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                            } else if phase.error != nil {
+                                Text(bandMate.fullName.initials ?? "")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 80, height: 80)
+                                    .background(
+                                        Circle()
+                                            .fill(.secondary.opacity(0.6))
+                                    )
+                            } else if bandMate.image.isEmpty {
+                                Text(bandMate.fullName.initials ?? "")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 80, height: 80)
+                                    .background(
+                                        Circle()
+                                            .fill(.secondary.opacity(0.6))
+                                    )
+                            } else {
+                                ProgressView()
+                            }
+                        }
+                        .frame(width: 80, height: 80)
+                        .clipShape(Circle())
+                        .padding(.leading)
+                        Text(bandMate.fullName)
+                            .foregroundStyle(.black)
+                            .font(.dmSans(18, weight: .semiBold))
+                        Text(bandMate.userName)
+                            .foregroundStyle(.gray)
+                            .font(.dmSans(14, weight: .medium))
+                        Text(bandMate.Bio)
+                            .foregroundStyle(.gray)
+                            .font(.dmSans(14, weight: .medium))
+                            .lineLimit(1)
+                            .frame(width: 250)
+                    }
+                    HStack() {
+                        Spacer()
+                        VStack {
+                            Text("\(bandMate.BandMates.count)")
+                                .foregroundStyle(.black)
+                                .font(.dmSans(16, weight: .semiBold))
+                            Text("Bandmates")
+                                .foregroundStyle(.black)
+                                .font(.dmSans(14, weight: .medium))
+                            
+                        }
+                        .onTapGesture {
+                            showBandmates.toggle()
+                        }
+                        Spacer()
+                        VStack {
+                            Text("\(bandMate.savedCollection.count )")
+                                .foregroundStyle(.black)
+                                .font(.dmSans(16, weight: .semiBold))
+                            Text("Collections")
+                                .foregroundStyle(.black)
+                                .font(.dmSans(14, weight: .medium))
+                        }
+                        Spacer()
+                    }.padding(.horizontal,40)
+                    
+                    buttonView(action: {}, buttonText: "Send Band Request", height: 55)
+                        .padding(.horizontal,40)
+                    VStack {
+                        Text("Saved Collections")
+                            .foregroundStyle(Color.background)
+                            .font(.dmSans(16, weight: .bold))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading)
+                        
+                        Divider()
+                            .overlay(alignment: .leading) {
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(Color.background)
+                                    .frame(width: 149, height: 3)
+                                    .padding(.leading,11)
+                            }
+                    }
+                    VStack {
+                        ScrollView {
+                            
+                            ForEach(bandMate.savedCollection) { collection in
+                              
+                                    ForEach(collection.albums) { album in
+                                        AlbumsRowView(albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSaved: album.isSaved)
+                                        
+                                    }
+                                }
+                            
+                        }.scrollIndicators(.hidden)
+                    }
+                }
+            } else {}
+        }.navigationTitle("orther's profile".capitalized)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showBandmates) {
+                personBandMateView(bandmates: bandmate?.BandMates ?? [], name: bandmate?.fullName ?? "")
+            }
+    }
+    private func getcollectionCount(count: Int) {
+       collectionCount = collectionCount + count
     }
 }
 
 #Preview {
-    orthersProfile()
+    orthersProfile(bandmate: DeveloperPreview.instance.Bandmate)
+        .environmentObject(BandMatesViewModel())
 }
