@@ -34,7 +34,7 @@ struct AlbumFeddBackView: View {
         ZStack {
             Color.white.ignoresSafeArea()
             VStack(spacing:20) {
-              AlbumsRowView(albumImage: albumImage, albumName: albumName, artistName: artistName, ratingCount: ratingCount, totalRatingcount: totalRatingcount, isAlBumSaved: $isAlBumSave)
+              AlbumsRowView(albumImage: albumImage, albumName: albumName, artistName: artistName, ratingCount: ratingCount, totalRatingcount: totalRatingcount, isAlBumSaved: isAlBumSave)
                 Text("Please rate your experience with this album.")
                     .font(.dmSans(20, weight: .semiBold))
                     .frame(maxWidth: .infinity, alignment: .leading)
