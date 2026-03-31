@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  personBandMateView.swift
 //  Bandmates
 //
 //  Created by Mac mini on 30/03/2026.
@@ -7,12 +7,28 @@
 
 import SwiftUI
 
-struct SwiftUIView: View {
+struct personBandMateView: View {
+    let bandmates: [BandmateModel]
+    let name: String
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color.white
+                .ignoresSafeArea()
+            ScrollView {
+                VStack {
+                    if !bandmates.isEmpty {
+                        ForEach(bandmates) { bandmate in
+                            MyBandRowView(personImage: bandmate.image, fullName: bandmate.fullName, userName: bandmate.userName)
+                        }
+                        
+                    } else {}
+                }
+            }.scrollIndicators(.hidden)
+                
+        }.navigationTitle("\(name)'s Bandmates")
     }
 }
 
 #Preview {
-    SwiftUIView()
+    personBandMateView(bandmates: DeveloperPreview.instance.Bandmates, name: DeveloperPreview.instance.profile.fullName)
 }
