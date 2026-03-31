@@ -16,7 +16,10 @@ struct BandmateModel: Codable,Identifiable, Hashable {
     let Bio : String
     let bandmates: Int
     let collections: Int
-    let savedCollection: [albumModel]
-    var isRequested: Bool
+    let savedCollection: [CollectionModel]
+    let BandMates: [BandmateModel]
+    let isRequested : Bool
+    let aretheyRequested : Bool
+    let isFriend : Bool
 
 }

@@ -60,7 +60,7 @@ struct BandmatesRowView: View {
                 Text(PersonName)
                     .font(.callout)
                     .fontWeight(.semibold)
-                Text("@" + personUserName)
+                Text(personUserName)
                     .font(.caption)
                     .fontWeight(.semibold)
             }
