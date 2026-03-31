@@ -13,8 +13,8 @@ struct AlbumsRowView: View {
     let artistName: String
     let ratingCount: Double
     let totalRatingcount: Int
-    @Binding var isAlBumSaved: Bool
-    
+    let  isAlBumSaved: Bool
+    @State private var isSaved = false
     var body: some View {
         HStack {
             AsyncImage(url: URL(string:albumImage)) { phase in
@@ -45,6 +45,7 @@ struct AlbumsRowView: View {
             }.padding(.leading,7)
             VStack(alignment:.leading,spacing:6) {
                 Text(albumName)
+                    .foregroundStyle(.black)
                     .font(.callout)
                     .fontWeight(.semibold)
                 HStack(spacing:5) {
@@ -75,17 +76,15 @@ struct AlbumsRowView: View {
                 RoundedRectangle(cornerRadius: 12)
             )
             .overlay(alignment: .trailing, content: {
-                albumSaveButton(isSaved: isAlBumSaved) {
-                    withAnimation(.easeIn){
-                        isAlBumSaved.toggle()
-                    }
-                    
-                }
+                albumSaveButton(isSaved: isSaved) {}
                 .padding(.trailing,20)
              
             })
             .shadow(color: Color.textfieldcolor.opacity(0.7), radius: 5)
             .padding(.horizontal)
+            .onAppear {
+                isSaved = isAlBumSaved
+            }
     }
 }
 
@@ -94,6 +93,6 @@ struct AlbumsRowView: View {
                   albumName: "",
                   artistName: "",
                   ratingCount: 4.5,
-                  totalRatingcount: 89, isAlBumSaved: .constant(true)
+                  totalRatingcount: 89, isAlBumSaved: true 
 )
 }
