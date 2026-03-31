@@ -1,5 +1,5 @@
 //
-//  BandmatesRowView.swift
+//  OrtherUsersRowView.swift
 //  Bandmates
 //
 //  Created by Mac mini on 20/03/2026.
@@ -7,21 +7,13 @@
 
 import SwiftUI
 
-struct BandmatesRowView: View {
+struct OrtherUsersRowView: View {
     let personImage: String
     let PersonName: String
     let personUserName: String
-    @Binding var isRequested : Bool
-    var initialise: String? {
-        let formatter = PersonNameComponentsFormatter()
-        guard let components = formatter.personNameComponents(from: PersonName) else {
-            return nil
-            
-        }
-        formatter.style = .abbreviated
-        return formatter.string(from: components)
-    }
-    
+    let isRequested : Bool
+    let buttonAction : () -> Void
+    @State private var isrequested = false
     var body: some View {
         HStack {
             AsyncImage(url: URL(string: personImage)) { phase in
@@ -30,7 +22,7 @@ struct BandmatesRowView: View {
                         .resizable()
                         .scaledToFill()
                 } else if phase.error != nil {
-                    Text(initialise ?? "")
+                    Text(PersonName.initials ?? "")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
@@ -40,7 +32,7 @@ struct BandmatesRowView: View {
                                 .fill(.secondary.opacity(0.6))
                         )
                 } else if personImage.isEmpty {
-                    Text(initialise ?? "")
+                    Text(PersonName.initials ?? "")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
@@ -58,9 +50,11 @@ struct BandmatesRowView: View {
             .padding(.leading)
             VStack(alignment:.leading) {
                 Text(PersonName)
+                    .foregroundStyle(.black)
                     .font(.callout)
                     .fontWeight(.semibold)
                 Text(personUserName)
+                    .foregroundStyle(.black)
                     .font(.caption)
                     .fontWeight(.semibold)
             }
@@ -69,15 +63,13 @@ struct BandmatesRowView: View {
                 title: "Send Request",
                 title2: "waiting to jam",
                 action: {
-                    withAnimation(.spring) {
-                        isRequested.toggle()
-                    }
+                    buttonAction()
                 },
                 height: 27,
                 width: 95,
                 font: .caption2,
                 cornerRadius: 25,
-                isRequested: isRequested
+                isRequested: isrequested
             )
             .padding(.horizontal)
         }.frame(maxWidth: .infinity, alignment: .leading)
@@ -88,9 +80,15 @@ struct BandmatesRowView: View {
             )
             .shadow(color: Color.textfieldcolor.opacity(0.8), radius: 12)
             .padding(.horizontal)
+            .onAppear {
+                getISRequested()
+            }
+    }
+    private func getISRequested() {
+        isrequested = isRequested
     }
 }
 
 #Preview {
-    BandmatesRowView(personImage: "", PersonName: "jhfgjd", personUserName: "dfgfdg", isRequested: .constant(false))
+    OrtherUsersRowView(personImage: "", PersonName: "jhfgjd", personUserName: "dfgfdg", isRequested: true, buttonAction: {})
 }
