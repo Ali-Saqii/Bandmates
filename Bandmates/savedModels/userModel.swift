@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 struct userModel: Codable ,Identifiable, Hashable {
-    var id  = UUID().uuidString
+    let id  = UUID().uuidString
     let profileImage : String
     let fullName: String
     let userName: String
@@ -18,7 +18,7 @@ struct userModel: Codable ,Identifiable, Hashable {
     let totalBandmates: Int
     let toralSavedAlbums: Int
     let email: String
-    let Collections: [CollectionModel]
+    let albums: [CollectionModel]
 }
 struct AuthResponse: Codable {
     let success: Bool
