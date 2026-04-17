@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct SignUp: View {
+    @EnvironmentObject var AuthVm : AuthViewModel
     @State private var fullName: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
-    @State private var agreedToTerms: Bool = true
+    @State private var agreedToTerms: Bool = false
     @State private var showPassword: Bool = false
     @State private var showConfirmPassword: Bool = false
     @State private var profileImage: UIImage? = nil
@@ -31,10 +32,22 @@ struct SignUp: View {
                         headerImagePickerView
                         textFieldsView
                         VStack(spacing:40) {
+                            if !AuthVm.errorMessage.isEmpty {
+                                                 Text(AuthVm.errorMessage)
+                                                     .foregroundColor(.red)
+                                                     .font(.caption)
+                                                     .padding(.horizontal, 24)
+                                             }
                             termsAndConditionView
                             buttonView(action: {
-                                showPlanSubscriptionView.toggle()
+                                signUp()
+                                
                             }, buttonText: "Sign Up", height: 55)
+                            .overlay(content: {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Validations.shared.isValidSignUp(userName: fullName, email: email, password: password, confirmPassword: confirmPassword) ? Color.textfieldcolor.opacity(0) : Color.textfieldcolor.opacity(0.5))
+                                if AuthVm.isLoading {ProgressView()}
+                            })
                                 .padding(.horizontal)
                                 .offset(y: appeared ? 0 : 20)
                             footerSignInButton
@@ -46,8 +59,12 @@ struct SignUp: View {
                     .sheet(isPresented: $showImagePicker) {
                         ImagePicker(image: $profileImage)
                     }
-            }.navigationDestination(isPresented: $showPlanSubscriptionView, destination: {
+            }.onChange(of: AuthVm.isSignedUp) { oldValue, newValue in
+                if newValue { showPlanSubscriptionView = true }
+            }
+            .navigationDestination(isPresented: $showPlanSubscriptionView, destination: {
                 chooseSubscriptionView()
+                    .environmentObject(AuthVm)
             })
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -58,6 +75,11 @@ struct SignUp: View {
                 }
             }
         }
+    private func signUp() {
+        
+        AuthVm.SignUp(
+            userName: fullName, email: email, password: password, confirmPassword: confirmPassword,avatar: profileImage, termsAndCondition: agreedToTerms)
+    }
     }
 extension SignUp {
     private var headerTextView: some View {
@@ -132,6 +154,11 @@ extension SignUp {
                 text: $fullName
             )
             .offset(y: appeared ? 0 : 20)
+            if let err = AuthVm.fieldErrors["username"] {
+                         Text(err).foregroundColor(.red).font(.caption)
+                             .frame(maxWidth: .infinity, alignment: .leading)
+                             .padding(.horizontal, 24)
+                     }
             InputField(
                 label: "Email",
                 placeholder: "Enter email",
@@ -139,6 +166,11 @@ extension SignUp {
                 keyboardType: .emailAddress
             )
             .offset(y: appeared ? 0 : 20)
+            if let err = AuthVm.fieldErrors["email"] {
+                       Text(err).foregroundColor(.red).font(.caption)
+                           .frame(maxWidth: .infinity, alignment: .leading)
+                           .padding(.horizontal, 24)
+                   }
             HStack(alignment: .center) {
                 Group {
                     if showPassword {
@@ -158,7 +190,11 @@ extension SignUp {
                         .offset(x: -10,y:20)
                 }
             }
-            
+            if let err = AuthVm.fieldErrors["password"] {
+                         Text(err).foregroundColor(.red).font(.caption)
+                             .frame(maxWidth: .infinity, alignment: .leading)
+                             .padding(.horizontal, 24)
+                     }
             Group {
                 if showConfirmPassword {
                     InputField(label: "Confirm Password", placeholder: "············", text: $confirmPassword, keyboardType: .default)
@@ -174,6 +210,11 @@ extension SignUp {
             }.overlay(alignment: .trailing) {
                 textFieldButtonsView(isVisible: $showConfirmPassword)
                     .offset(x: -10,y:10)
+                if let err = AuthVm.fieldErrors["confirm_password"] {
+                            Text(err).foregroundColor(.red).font(.caption)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 24)
+                        }
             }
         }
         .padding(.horizontal, 24)
@@ -223,4 +264,5 @@ extension SignUp {
 }
 #Preview {
     SignUp(showSignUp: .constant(true), showLogin: .constant(false))
+        .environmentObject(AuthViewModel())
 }
