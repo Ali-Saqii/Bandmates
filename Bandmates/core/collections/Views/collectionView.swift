@@ -9,6 +9,7 @@ import SwiftUI
 
 struct collectionView: View {
     @EnvironmentObject var homeVm : HomeViewModel
+    @StateObject var collectionVM = collectionViewModel()
     @State private var searchText = ""
     @State private var showAddCollection = false
     @State private var showEditCollection = false
@@ -38,16 +39,20 @@ struct collectionView: View {
                     .padding(.horizontal,20)
                 ScrollView{
                     VStack(spacing:15) {
-                        ForEach(homeVm.user.Collections) { collection in
-                            CollectiomRowView(Collection: collection, editAction: {
-                                withAnimation() {
-                                    showEditCollection.toggle()
-                                }
-                            }, DeleteActin:{
-                                withAnimation(){
-                                    DeleteCollection.toggle()
-                                }
-                            }, ontapGesture: {selesctedCollection = collection})
+                        if let Collection = collectionVM.collections, !Collection.isEmpty {
+                            ForEach(Collection) { collection in
+                                CollectiomRowView(Collection: collection, editAction: {
+                                    withAnimation() {
+                                        showEditCollection.toggle()
+                                    }
+                                }, DeleteActin:{
+                                    withAnimation(){
+                                        DeleteCollection.toggle()
+                                    }
+                                }, ontapGesture: {selesctedCollection = collection})
+                            }
+                        }else{
+                            NoBandmatesView(icon: "photo.on.rectangle.angled.fill", height: 60, width: 70, title: "no collection yet".capitalized, subTitle: "Add acollection to save desire alums..", titleFont: .dmSans(18, weight: .semiBold), subTitleFont: .dmSans(18, weight: .semiBold), color: Color.background.opacity(0.6))
                         }
                     }.padding(.horizontal)
                 }.scrollIndicators(.hidden)
@@ -103,8 +108,8 @@ struct collectionView: View {
                 collectionTitle: $CollectionNewName,
                 description: $CollectionNewDescriptione,
                 popupTitle: "Edit Your Collection",
-                titlePlaceHolder: (homeVm.user.Collections.first?.collectionTitle)!,
-                testEditorPlaceHolder: (homeVm.user.Collections.first?.collectionDescription)!,
+                titlePlaceHolder: ($homeVm.user.albums.first?.collectionTitle)!,
+                testEditorPlaceHolder: ($homeVm.user.albums.first?.collectionDescription)!,
                 buttonAction: {},
                 buttonTitle: "Save Changes",
                 dismiss: $showEditCollection
