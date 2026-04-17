@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject var AuthVm: AuthViewModel
+
     @Binding var showLogin: Bool
     @State private var email = ""
     @State private var password = ""
@@ -28,9 +30,33 @@ struct LoginView: View {
                         emailView
                         passwordView
                         middleButtonsView
+                        if let emailErr = AuthVm.fieldErrors["email"] {
+                            Text(emailErr)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                                .padding(.horizontal, 28)
+                        }
+                        if let passErr = AuthVm.fieldErrors["password"] {
+                            Text(passErr)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                                .padding(.horizontal, 28)
+                        }
+                        if !AuthVm.errorMessage.isEmpty {
+                                                 Text(AuthVm.errorMessage)
+                                                     .foregroundColor(.red)
+                                                     .font(.caption)
+                                                     .padding(.horizontal, 28)
+                                             }
                         buttonView(action: {
-                            showTabView.toggle()
+                            AuthVm.Login(email: email, password: password)
                         }, buttonText: "Login", height: 55)
+                        .disabled(AuthVm.isLoading )
+                        .overlay {
+                            if AuthVm.isLoading {
+                                ProgressView().tint(.white)
+                            }
+                        }
                             .padding(.horizontal, 28)
                             .padding(.bottom, 24)
                             .offset(y: appeared ? 0 : 20)
@@ -47,7 +73,10 @@ struct LoginView: View {
                 .navigationDestination(isPresented: $forgetPassword) {
                     forgetPaswordView()
                 }
-            }.navigationDestination(isPresented: $showTabView, destination: {
+            }.onChange(of: AuthVm.isLoggedIn) { oldValue, newValue in
+                if newValue { showTabView = true }
+            }
+            .navigationDestination(isPresented: $AuthVm.isLoggedIn, destination: {
                 tabView()
             })
             .onAppear {
@@ -244,4 +273,5 @@ extension LoginView {
 }
 #Preview {
     LoginView(showLogin: .constant(true), showSignUP: .constant(false))
+        .environmentObject(AuthViewModel())
 }
