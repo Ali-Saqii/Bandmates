@@ -32,8 +32,12 @@ struct AlbumDetailsView: View {
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .padding(.horizontal)
                                             .font(.dmSans(20, weight: .bold))
-                                        ForEach(album.reviews) { review in
-                                            reviewsView(reView: review)
+                                        if !album.reviews.isEmpty {
+                                            ForEach(album.reviews) { review in
+                                                reviewsView(reView: review)
+                                            }
+                                        }else {
+                                            NoBandmatesView(icon: "exclamationmark.message.fill", height: 50, width: 70, title: "No reviews yet".capitalized, subTitle: "Give feddback on this album to get review", titleFont: .dmSans(18, weight: .semiBold), subTitleFont: .dmSans(16, weight: .medium), color: Color.background)
                                         }
                                     }
                                 } header: {
@@ -191,11 +195,14 @@ extension AlbumDetailsView {
                 
             }, isSelected: showComments)
             Spacer()
-            detailsViewButtons(icon1: "square.and.arrow.up", icon2: "square.and.arrow.up.fill", title: "save", action: {}, isSelected: false)
+            detailsViewButtons(icon1: "square.and.arrow.up", icon2: "square.and.arrow.up.fill", title: "Share", action: {hvm.shareAlbum(album)}, isSelected: false)
         }.padding(.horizontal,30)
     }
     private var playButtonView: some View {
-        buttonView(action: {}, buttonText: "play AlBum".capitalized, height: 50)
+        buttonView(action: {
+            hvm.addTorecentlyPlayed(album: album)
+            hvm.openLink(album.albumPlayLink)
+        }, buttonText: "play AlBum".capitalized, height: 50)
             .overlay(content: {
                 HStack {
                     Spacer()
@@ -214,21 +221,45 @@ extension AlbumDetailsView {
     }
 }
 #Preview {
-    AlbumDetailsView(album: (albumModel(
-        image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400",
-        albumName: "For All The Dogs",
-        albumArtistName: "Drake",
-        releaseDate: ISO8601DateFormatter().date(from: "2023-10-06T00:00:00Z")!,
-        averageRating: 3.9,
-        totalRatingCount: 142100,
-        reviews: [
-            reviewsModel(personImage: "user6", personName: "Andre P.", dateOfRating: ISO8601DateFormatter().date(from: "2023-10-07T10:00:00Z")!, rating: 4.0, reviewBody: "Rich Flex and Hours in Silence are the highlights for me."),
-            reviewsModel(personImage: "user7", personName: "Tasha B.", dateOfRating: ISO8601DateFormatter().date(from: "2023-10-08T13:00:00Z")!, rating: 3.5, reviewBody: "Has its moments but too bloated at 23 tracks.")
-        ],
-        replies: [
-            CommentModel(image: "user8", name: "Kevin O.", replieText: "Slime You Out was everywhere that fall.", replieTime: ISO8601DateFormatter().date(from: "2023-10-08T14:00:00Z")!)
-        ],
-        isSaved: true
-    )))
+    AlbumDetailsView(
+        album: albumModel(
+            id: "1",
+            image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400",
+            albumName: "For All The Dogs",
+            albumArtistName: "Drake",
+            releaseDate: ISO8601DateFormatter().date(from: "2023-10-06T00:00:00Z")!,
+            averageRating: 3.9,
+            totalRatingCount: 142100,
+            reviews: [
+                reviewsModel(
+                    id: "r1",
+                    personImage: "user6",
+                    personName: "Andre P.",
+                    dateOfRating: ISO8601DateFormatter().date(from: "2023-10-07T10:00:00Z")!,
+                    rating: 4.0,
+                    reviewBody: "Rich Flex and Hours in Silence are the highlights for me."
+                ),
+                reviewsModel(
+                    id: "r2",
+                    personImage: "user6",
+                    personName: "Andre P.",
+                    dateOfRating: ISO8601DateFormatter().date(from: "2023-10-07T10:00:00Z")!,
+                    rating: 4.0,
+                    reviewBody: "Rich Flex and Hours in Silence are the highlights for me."
+                )
+            ],
+            replies: [
+                CommentModel(
+                    id: "c1",
+                    image: "user6",
+                    name: "Andre P.",
+                    replieText: "Rich Flex and Hours in Silence are the highlights for me.",
+                    replieTime: ISO8601DateFormatter().date(from: "2023-10-07T10:00:00Z")!
+                )
+            ],
+            isSaved: true,
+            albumPlayLink: ""
+        )
+    )
     .environmentObject(HomeViewModel())
 }
