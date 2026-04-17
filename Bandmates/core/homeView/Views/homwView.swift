@@ -102,7 +102,10 @@ extension homwView {
     private var recentlyPlayedAlbumsView: some View {
             HStack(spacing:20) {
                 ForEach(Array(homeVm.recentlyplayed.prefix(3).indices), id: \.self) { index in
-                    recentlyPlayedView(image: homeVm.recentlyplayed[index].image, albumName: homeVm.recentlyplayed[index].albumName)
+                    recentlyPlayedView(image: homeVm.recentlyplayed[index].image ?? "", albumName: homeVm.recentlyplayed[index].name ?? "")
+                        .onTapGesture {
+                            homeVm.openLink(homeVm.recentlyplayed[index].playLink ?? "")
+                        }
                 }
             }.padding(.horizontal)
     }
@@ -115,20 +118,27 @@ extension homwView {
     }
     private var recommendedAlbumsView: some View {
         VStack {
-            ForEach(Array(homeVm.albums.prefix(3).indices), id: \.self) { index in
-                NavigationLink {
-                    AlbumDetailsView( album: homeVm.albums[index])
-                        .environmentObject(homeVm)
-                } label: {
-                    AlbumsRowView(
-                               albumImage: homeVm.albums[index].image,
-                               albumName: homeVm.albums[index].albumName,
-                               artistName: homeVm.albums[index].albumArtistName,
-                               ratingCount: homeVm.albums[index].averageRating,
-                               totalRatingcount: homeVm.albums[index].totalRatingCount,
-                               isAlBumSaved: homeVm.albums[index].isSaved
-                    ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+            if let albums  = homeVm.albums, !albums.isEmpty {
+                ForEach(Array(albums.prefix(3)).indices, id: \.self) { index in
+                    NavigationLink {
+                        AlbumDetailsView( album: albums[index])
+                            .environmentObject(homeVm)
+                    } label: {
+                        AlbumsRowView(
+                            albumImage: albums[index].image,
+                            albumName:albums[index].albumName,
+                            artistName: albums[index].albumArtistName,
+                            ratingCount: albums[index].averageRating,
+                            totalRatingcount: albums[index].totalRatingCount,
+                            isAlBumSaved: albums[index].isSaved
+                        ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+                    }
                 }
+            }else if homeVm.isLoading {
+                ProgressView()
+                    .frame(height: 150)
+            }else {
+                NoBandmatesView(icon: "photo.artframe", height: 77, width: 77, title: "no albums".capitalized, subTitle: "refrest to get albums or check your internet", titleFont: .dmSans(18, weight: .semiBold), subTitleFont: .dmSans(16,weight: .medium), color: Color.background.opacity(0.5))
             }
         }
     }
@@ -141,17 +151,24 @@ extension homwView {
     }
     private var bandmatesView: some View {
         VStack {
-            ForEach( Array(homeVm.bandmates.prefix(3))) { mate in
-                NavigationLink {
-                    orthersProfile(bandmate: mate)
-                } label: {
-                    OrtherUsersRowView(
-                        personImage: mate.image,
-                        PersonName: mate.fullName,
-                        personUserName: mate.userName,
-                        isRequested: mate.isRequested, buttonAction: {}
-                    ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+            if let bandmates = homeVm.bandmates , !bandmates.isEmpty{
+                ForEach(Array(bandmates.prefix(3))) { mate in
+                    NavigationLink {
+                        orthersProfile(bandmate: mate)
+                    } label: {
+                        OrtherUsersRowView(
+                            personImage: mate.image,
+                            PersonName: mate.fullName,
+                            personUserName: mate.userName,
+                            isRequested: mate.isRequested, buttonAction: {}
+                        ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+                    }
                 }
+            }else if homeVm.isLoading {
+                ProgressView()
+                    .frame(height: 150)
+            }else {
+                NoBandmatesView(icon: "figure.2", height: 70, width: 70, title: "no Bandmates".capitalized, subTitle: "refrest to get bandmates or check your internet", titleFont: .dmSans(18, weight: .semiBold), subTitleFont: .dmSans(16,weight: .medium), color: Color.background.opacity(0.5))
             }
         }
     }

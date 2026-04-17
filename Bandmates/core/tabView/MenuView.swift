@@ -24,7 +24,7 @@ struct MenuView: View {
     let ratingButtonAction: () -> Void
     let shareButtonAction: () -> Void
     let logoutButtonAction: () -> Void
-
+  
     var body: some View {
         VStack(spacing: 0) {
             HStack {

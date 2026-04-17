@@ -32,6 +32,7 @@ struct profileView: View {
                     }
                 profieGridView
                 buttonsListView
+              
                 Spacer()
             }.padding(.horizontal)
         }.fullScreenCover(isPresented: $logoutAccount, content: {
@@ -55,10 +56,11 @@ struct profileView: View {
                 )
             }
             .background(ClearBackgroundView())
+            
         })
         .environmentObject(profileVm)
         .navigationDestination(isPresented: $editProfileView) {
-            EditProfileView(user: profileVm.user)
+            EditProfileView(user: profileVm.user ?? userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", Collections: []))
                 .environmentObject(profileVm)
         }
         .navigationDestination(isPresented: $showHelpAndSupport) {
@@ -101,113 +103,120 @@ extension profileView {
     // MARK : profile View
     private var profieGridView: some View {
         VStack {
-            HStack{
-                AsyncImage(url: URL(string: profileVm.user.profileImage)) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } else if phase.error != nil {
-                        Text(profileVm.user.fullName.initials ?? "")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .frame(width: 46, height: 46)
-                            .background(
-                                Circle()
-                                    .fill(.secondary.opacity(0.6))
-                            )
-                    } else if profileVm.user.profileImage.isEmpty {
-                        Text(profileVm.user.fullName.initials  ?? "")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .frame(width: 46, height: 46)
-                            .background(
-                                Circle()
-                                    .fill(.secondary.opacity(0.6))
-                            )
-                    } else {
-                        ProgressView()
-                    }
-                }
-                .frame(width: 46, height: 46)
-                .clipShape(Circle())
-                VStack(alignment: .leading) {
-                    Text(profileVm.user.fullName)
-                        .font(.dmSans(15, weight: .semiBold))
-                        .foregroundStyle(.black)
-                    Text(profileVm.user.userName)
-                        .font(.dmSans(12, weight: .medium))
-                        .foregroundStyle(.gray)
-                }
-                Spacer()
-                Image(systemName: "pencil.line")
-                    .font(.caption)
-                    .foregroundStyle(.white)
-                    .frame(width: 25, height: 25)
-                    .background(
-                        Circle()
-                            .fill(Color.background)
-                    ).onTapGesture {
-                        withAnimation() {
-                            editProfileView = true
+            if let user  = profileVm.user {
+                HStack{
+                    
+                    AsyncImage(url: URL(string:user.profileImage)) { phase in
+                        if let image = phase.image {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        } else if phase.error != nil {
+                            Text(user.fullName.initials ?? "")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .frame(width: 46, height: 46)
+                                .background(
+                                    Circle()
+                                        .fill(.secondary.opacity(0.6))
+                                )
+                        } else if user.profileImage.isEmpty {
+                            Text(user.fullName.initials  ?? "")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .frame(width: 46, height: 46)
+                                .background(
+                                    Circle()
+                                        .fill(.secondary.opacity(0.6))
+                                )
+                        } else {
+                            ProgressView()
                         }
                     }
-            }.padding(.horizontal)
-                .padding(.top)
-            VStack(alignment:.leading) {
-                Text("Bio")
-                    .font(.dmSans(14, weight: .bold))
-                    .foregroundStyle(.black)
-                Text(profileVm.user.Bio)
-                    .font(.dmSans(12, weight: .regular))
-                    .foregroundStyle(.gray)
-            }.frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
-            Divider()
-            HStack {
-                VStack{
-                    Text("\(profileVm.user.waiting)")
-                        .font(.dmSans(15, weight: .semiBold))
-                        .foregroundStyle(.black)
-                    Text("Waiting\nto Jam")
-                        .multilineTextAlignment(.center)
-                        .font(.dmSans(12, weight: .medium))
-                        .foregroundStyle(.gray)
-                }.frame(maxWidth: .infinity)
-                    .frame(height:55)
-                Divider()
-                VStack{
-                    Text("\(profileVm.user.totalBandmates)")
-                        .font(.dmSans(15, weight: .semiBold))
-                        .foregroundStyle(.black)
-                       
-                    Text("Total\nBandmates")
-                        .multilineTextAlignment(.center)
-                        .font(.dmSans(12, weight: .medium))
-                        .foregroundStyle(.gray)
-                }.frame(maxWidth: .infinity)
-                    .frame(height:55)
-                Divider()
-                VStack{
-                    Text("\(profileVm.user.toralSavedAlbums)")
-                        .font(.dmSans(15, weight: .semiBold))
-                        .foregroundStyle(.black)
-                    Text("Albums\nSaved")
-                        .multilineTextAlignment(.center)
-                        .font(.dmSans(12, weight: .medium))
-                        .foregroundStyle(.gray)
-                        .lineLimit(2)
-                }.frame(maxWidth: .infinity)
-                    .frame(height:55)
+                    .frame(width: 46, height: 46)
+                    .clipShape(Circle())
                     
-            }.padding(.bottom)
-        }.frame(maxWidth: .infinity, alignment: .leading)
-            .frame(height: 200)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .shadow(color: .gray.opacity(0.3), radius: 8)
+                    VStack(alignment: .leading) {
+                        
+                        Text(user.fullName)
+                            .font(.dmSans(15, weight: .semiBold))
+                            .foregroundStyle(.black)
+                        Text(user.userName)
+                            .font(.dmSans(12, weight: .medium))
+                            .foregroundStyle(.gray)
+                        
+                    }
+                    Spacer()
+                    Image(systemName: "pencil.line")
+                        .font(.caption)
+                        .foregroundStyle(.white)
+                        .frame(width: 25, height: 25)
+                        .background(
+                            Circle()
+                                .fill(Color.background)
+                        ).onTapGesture {
+                            withAnimation() {
+                                editProfileView = true
+                            }
+                        }
+                }.padding(.horizontal)
+                    .padding(.top)
+                VStack(alignment:.leading) {
+                    Text("Bio")
+                        .font(.dmSans(14, weight: .bold))
+                        .foregroundStyle(.black)
+                    Text(user.Bio)
+                        .font(.dmSans(12, weight: .regular))
+                        .foregroundStyle(.gray)
+                }.frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                Divider()
+                HStack {
+                    VStack{
+                        Text("\(user.waiting)")
+                            .font(.dmSans(15, weight: .semiBold))
+                            .foregroundStyle(.black)
+                        Text("Waiting\nto Jam")
+                            .multilineTextAlignment(.center)
+                            .font(.dmSans(12, weight: .medium))
+                            .foregroundStyle(.gray)
+                    }.frame(maxWidth: .infinity)
+                        .frame(height:55)
+                    Divider()
+                    VStack{
+                        Text("\(user.totalBandmates)")
+                            .font(.dmSans(15, weight: .semiBold))
+                            .foregroundStyle(.black)
+                        
+                        Text("Total\nBandmates")
+                            .multilineTextAlignment(.center)
+                            .font(.dmSans(12, weight: .medium))
+                            .foregroundStyle(.gray)
+                    }.frame(maxWidth: .infinity)
+                        .frame(height:55)
+                    Divider()
+                    VStack{
+                        Text("\(user.toralSavedAlbums)")
+                            .font(.dmSans(15, weight: .semiBold))
+                            .foregroundStyle(.black)
+                        Text("Albums\nSaved")
+                            .multilineTextAlignment(.center)
+                            .font(.dmSans(12, weight: .medium))
+                            .foregroundStyle(.gray)
+                            .lineLimit(2)
+                    }.frame(maxWidth: .infinity)
+                        .frame(height:55)
+                    
+                }.padding(.bottom)
+            }
+            }.frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: 200)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .shadow(color: .gray.opacity(0.3), radius: 8)
+    
     }
     // MARK : buttonsListView
 

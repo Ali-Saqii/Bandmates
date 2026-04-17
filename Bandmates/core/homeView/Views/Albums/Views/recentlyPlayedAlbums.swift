@@ -33,7 +33,10 @@ struct recentlyPlayedAlbums: View {
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(hvm.recentlyplayed.indices , id: \.self) { index in
-                            recentlyPlayedView(image: hvm.recentlyplayed[index].image, albumName: hvm.recentlyplayed[index].albumName)
+                            recentlyPlayedView(image: hvm.recentlyplayed[index].image ?? "", albumName: hvm.recentlyplayed[index].name ?? ""
+                            ).onTapGesture {
+                                hvm.openLink(hvm.recentlyplayed[index].playLink ?? "")
+                            }
                         }
                     }
                 }.scrollIndicators(.hidden)

@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct chooseSubscriptionView: View {
+    @EnvironmentObject var authVm : AuthViewModel
     @State private var club = true
     @State private var arena = false
     @State private var stadium = false
-    @Environment(\.dismiss) var  dismiss
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         ZStack {
             Color.white
@@ -51,6 +52,7 @@ struct chooseSubscriptionView: View {
                 .scrollBounceBehavior(.basedOnSize)
         }.navigationBarBackButtonHidden(true)
             .toolbar(removing: .none)
+          
     }
 }
 extension chooseSubscriptionView {
@@ -93,7 +95,9 @@ extension chooseSubscriptionView {
             }
         }.frame(maxWidth: .infinity, alignment: .leading)
     }
+
 }
 #Preview {
     chooseSubscriptionView()
+        .environmentObject(AuthViewModel())
 }

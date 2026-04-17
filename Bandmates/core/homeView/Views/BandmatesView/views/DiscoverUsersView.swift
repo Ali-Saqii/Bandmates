@@ -14,26 +14,30 @@ struct DiscoverUsersView: View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
-            ScrollView {
-                VStack {
-                    if let users = Bvm.users {
-                        ForEach(users) { user in
-                                   OrtherUsersRowView(
+            if Bvm.users != nil && Bvm.users != [] {
+                ScrollView {
+                    VStack {
+                        if let users = Bvm.users {
+                            ForEach(users) { user in
+                                OrtherUsersRowView(
                                     personImage: user.image,
                                     PersonName: user.fullName,
                                     personUserName: user.userName,
                                     isRequested: user.isRequested,
-                                       buttonAction: {
-                                           
-                                       }
-                                   ).onTapGesture {
-                                       selectedPerson = user
-                                   }
-                               }
-                    } else{}
-                }
-            }.scrollIndicators(.hidden)
-                .scrollBounceBehavior(.basedOnSize)
+                                    buttonAction: {
+                                        
+                                    }
+                                ).onTapGesture {
+                                    selectedPerson = user
+                                }
+                            }
+                        } else{}
+                    }
+                }.scrollIndicators(.hidden)
+                    .scrollBounceBehavior(.basedOnSize)
+            } else {
+                NoBandmatesView(icon: "network.slash",height: 70,width: 80, title: "No internet!", subTitle: "Check your internet and try again later!!!", titleFont: .dmSans(20, weight: .semiBold), subTitleFont: .dmSans(14, weight: .semiBold), color: Color.background.opacity(0.5))
+            }
         }
         .navigationDestination(item: $selectedPerson, destination: { person in
             orthersProfile(bandmate: person)

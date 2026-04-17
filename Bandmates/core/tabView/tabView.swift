@@ -37,7 +37,7 @@ struct tabView: View {
     @State private var showNotifications = false
     @State private var notiCount : Int? = nil
     @Environment(\.requestReview) private var requestReview
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var authVM: AuthViewModel
     let appID = "YOUR_APP_ID"
     
     var appStoreURL: URL {
@@ -51,7 +51,10 @@ struct tabView: View {
                     switch selectedTab {
                     case .home:       homwView().environmentObject(HomeViewModel())
                     case .collection: collectionView().environmentObject(HomeViewModel())
-                    case .charts:     chartView().environmentObject(HomeViewModel())
+                    case .charts:      StarDistributionChart(
+                        distribution: [10, 18, 55, 95, 42],
+                        growthPercent: 20
+                    ).environmentObject(HomeViewModel())
                     case .profile:    profileView().environmentObject(HomeViewModel())
                     }
                 }
@@ -109,7 +112,7 @@ struct tabView: View {
                             showShareSheet = true
                         }
                     },
-                    logoutButtonAction: { dismiss() }
+                    logoutButtonAction: { authVM.signOut() }
                 ).frame(maxWidth: .infinity,alignment: .leading)
                     .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
                    
@@ -154,4 +157,5 @@ struct ShareSheet: UIViewControllerRepresentable {
 #Preview {
     tabView()
         .environmentObject(HomeViewModel())
+        .environmentObject(AuthViewModel())
 }

@@ -48,6 +48,8 @@ struct recentlyPlayedView: View {
             .shadow(color: Color.textfieldcolor.opacity(0.7), radius: 5)
             Text(albumName)
                 .font(.system(size: 14,weight: .bold))
+                .frame(width: 130)
+                .lineLimit(2)
         }
     }
 }

@@ -34,18 +34,26 @@ struct albumsView: View {
                         .padding(.horizontal,20)
                     ScrollView {
                         VStack {
-                            ForEach(hvm.albums.indices, id: \.self) { index in
-                                AlbumsRowView(
-                                    albumImage: hvm.albums[index].image,
-                                    albumName: hvm.albums[index].albumName,
-                                    artistName: hvm.albums[index].albumArtistName,
-                                    ratingCount: hvm.albums[index].averageRating,
-                                    totalRatingcount: hvm.albums[index].totalRatingCount,
-                                    isAlBumSaved: hvm.albums[index].isSaved
-                                ).onTapGesture {
-                                    selectedAlbum = hvm.albums[index] // ✅ this triggers the navigation
+                            if let albums = hvm.albums {
+                                ForEach(albums.indices, id: \.self) { index in
+                                    AlbumsRowView(
+                                        albumImage: albums[index].image,
+                                        albumName: albums[index].albumName,
+                                        artistName: albums[index].albumArtistName,
+                                        ratingCount: albums[index].averageRating,
+                                        totalRatingcount: albums[index].totalRatingCount,
+                                        isAlBumSaved: albums[index].isSaved
+                                    ).onTapGesture {
+                                        selectedAlbum = albums[index] // ✅ this triggers the navigation
+                                    }
+                                    .transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
                                 }
-                                .transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+                            }else if hvm.isLoading {
+                                ProgressView()
+                                    .frame(maxHeight: .infinity, alignment: .center)
+                            }else {
+                                NoBandmatesView(icon: "photo.artframe", height: 77, width: 77, title: "no albums".capitalized, subTitle: "refrest to get albums or check your internet", titleFont: .dmSans(18, weight: .semiBold), subTitleFont: .dmSans(16,weight: .medium), color: Color.background.opacity(0.5))
+                                    .frame(maxHeight: .infinity, alignment: .center)
                             }
                         }
                     }.scrollIndicators(.hidden)

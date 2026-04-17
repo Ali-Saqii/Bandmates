@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditProfileView: View {
     @EnvironmentObject var pvm: ProfileViewModel
-    let user: userModel
+    let user: userModel?
     @State private var showImagePicker = false
     @State private var newProfileImage : UIImage? = nil
     @State private var newFullName = ""
@@ -40,6 +40,7 @@ struct EditProfileView: View {
     }
     
     private func getNames() {
+        guard let user = user  else {return}
         newFullName = user.fullName
         newUserName = user.userName
         newBio = user.Bio
@@ -56,6 +57,7 @@ extension EditProfileView {
                     )
                     .frame(width: 100, height: 100)
                     .overlay(
+                        
                         Group {
                             if let image = newProfileImage {
                                 Image(uiImage: image)
@@ -63,34 +65,36 @@ extension EditProfileView {
                                     .scaledToFill()
                                     .clipShape(Circle())
                             } else {
-                                AsyncImage(url: URL(string: pvm.user.profileImage)) { phase in
-                                    if let image = phase.image {
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                    } else if phase.error != nil {
-                                        Text(pvm.user.fullName.initials ?? "")
-                                            .font(.headline)
-                                            .fontWeight(.semibold)
-                                            .foregroundStyle(.white)
-                                            .background(
-                                                Circle()
-                                                    .fill(.secondary.opacity(0.6))
-                                            )
-                                    } else if pvm.user.profileImage.isEmpty {
-                                        Text(pvm.user.fullName.initials  ?? "")
-                                            .font(.headline)
-                                            .fontWeight(.semibold)
-                                            .foregroundStyle(.white)
-                                            .background(
-                                                Circle()
-                                                    .fill(.secondary.opacity(0.6))
-                                            )
-                                    } else {
-                                        ProgressView()
+                                if let user = pvm.user {
+                                    AsyncImage(url: URL(string: user.profileImage)) { phase in
+                                        if let image = phase.image {
+                                            image
+                                                .resizable()
+                                                .scaledToFill()
+                                        } else if phase.error != nil {
+                                            Text(user.fullName.initials ?? "")
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(.white)
+                                                .background(
+                                                    Circle()
+                                                        .fill(.secondary.opacity(0.6))
+                                                )
+                                        } else if user.profileImage.isEmpty {
+                                            Text(user.fullName.initials  ?? "")
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(.white)
+                                                .background(
+                                                    Circle()
+                                                        .fill(.secondary.opacity(0.6))
+                                                )
+                                        } else {
+                                            ProgressView()
+                                        }
                                     }
+                                    .clipShape(Circle())
                                 }
-                                .clipShape(Circle())
                                 
                             }
                         }
@@ -112,9 +116,10 @@ extension EditProfileView {
     
     private var inputFieldsView: some View {
         VStack(spacing: 20) {
-            InputField(label: "Full Name", placeholder: "Edit Your Name" ,text: $newFullName)
-            InputField(label: "Username", placeholder: "Edit UserName" ,text: $newUserName)
-                .overlay(alignment:.trailing) {
+            if let user = user {
+                InputField(label: "Full Name", placeholder: "Edit Your Name" ,text: $newFullName)
+                InputField(label: "Username", placeholder: "Edit UserName" ,text: $newUserName)
+                    .overlay(alignment:.trailing) {
                         Image(systemName: newUserName.contains("@") ? "checkmark" : "exclamationmark")
                             .font(.caption2)
                             .fontWeight(.bold)
@@ -124,19 +129,21 @@ extension EditProfileView {
                                 Circle()
                                     .fill(
                                         newUserName.contains("@") ? Color.background : Color .red
-                                         )
+                                    )
                             )
                             .offset(x: -10, y: 10)
-                }
-            InputField(label: "Email", placeholder: user.email ,text: $newEmail)
+                    }
+                InputField(label: "Email", placeholder: user.email ,text: $newEmail)
+            }
         }
     }
-    
     private var inputBioView: some View {
         VStack(alignment: .leading,spacing: 20) {
-            Text("Bio")
-                .padding(.leading)
-            reusabletextEditor(text: $newBio, PlaceHolder: user.Bio, height: 150, color: .textfieldcolor.opacity(0.4))
+            if let user = user {
+                Text("Bio")
+                    .padding(.leading)
+                reusabletextEditor(text: $newBio, PlaceHolder: user.Bio, height: 150, color: .textfieldcolor.opacity(0.4))
+            }
         }
     }
 }
