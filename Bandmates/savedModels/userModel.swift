@@ -20,3 +20,9 @@ struct userModel: Codable ,Identifiable, Hashable {
     let email: String
     let Collections: [CollectionModel]
 }
+struct AuthResponse: Codable {
+    let success: Bool
+    let message: String?
+    let token:   String?
+    let errors:  [String: String]?
+}

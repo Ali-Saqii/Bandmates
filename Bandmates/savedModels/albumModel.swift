@@ -8,8 +8,15 @@
 import Foundation
 import Combine
 
+struct AlbumResponse: Codable {
+    let success: Bool
+    let plan: String
+    let total: Int
+    let data: [albumModel]
+}
+
 struct albumModel: Codable, Identifiable,Hashable {
-    var id = UUID().uuidString
+    let id: String
     let image : String
     let albumName : String
     let albumArtistName  : String
@@ -19,11 +26,11 @@ struct albumModel: Codable, Identifiable,Hashable {
     let reviews: [reviewsModel]
     let replies: [CommentModel]
     var isSaved: Bool
-    let albumPlayLink : String = "vcgvb"
+    let albumPlayLink : String 
 }
 
 struct reviewsModel: Codable ,Identifiable, Hashable {
-    var id = UUID().uuidString
+    let id: String
     let personImage : String
     let personName : String
     let dateOfRating : Date
@@ -32,7 +39,7 @@ struct reviewsModel: Codable ,Identifiable, Hashable {
 }
 
 struct CommentModel: Codable, Identifiable, Hashable {
-    var id = UUID().uuidString
+    let id: String
     let image: String
     let name: String
     let replieText : String

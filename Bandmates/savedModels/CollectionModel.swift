@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 struct CollectionModel: Codable,Identifiable,Hashable {
-    var id = UUID().uuidString
+    let id : String
     let collectionTitle: String
     let collectionDescription: String
     let albums:[albumModel]
