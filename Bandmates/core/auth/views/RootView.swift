@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
-
 struct RootView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    
+    @EnvironmentObject var authVm: AuthViewModel
 
-#Preview {
-    RootView()
+    var body: some View {
+        Group {
+            if authVm.isLoggedIn {
+                tabView()
+            } else {
+                onboardingView()
+            }
+        }
+    }
 }
