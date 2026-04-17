@@ -10,11 +10,16 @@ import SwiftUI
 @main
 struct BandmatesApp: App {
     @StateObject var vm: HomeViewModel = HomeViewModel()
+    @StateObject var authVM = AuthViewModel()
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                onboardingView()
-                    .environmentObject(HomeViewModel())
+                RootView()
+                    .environmentObject(vm)
+                    .environmentObject(authVM)
+                    .onAppear {
+                        authVM.checkAuthStatus()
+                    }
             }
         }
     }
