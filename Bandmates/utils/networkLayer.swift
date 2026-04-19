@@ -83,4 +83,91 @@ class NetworkLayer {
             print("❌ Error:", error.localizedDescription)
         }
     }
+    
+    // post
+    static func post <T: Encodable> (
+        url: URL,
+        body: T,
+        headers: [String:String] = [:]
+    ) -> AnyPublisher <Data ,Error> {
+        do {
+            let request = try buildRequest(url: url,
+                                           method: "POST",
+                                           body: body,
+                                           headers: headers
+            )
+            
+            return download(request: request)
+        }catch {
+            print("\(error)")
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
+    // put
+    static func put<T: Encodable>(
+          url: URL,
+          body: T,
+          headers: [String: String] = [:]
+      ) -> AnyPublisher<Data, Error> {
+          do {
+              let request = try buildRequest(
+                  url: url,
+                  method: "PUT",
+                  body: body,
+                  headers: headers
+              )
+              return download(request: request)
+          } catch {
+              print("\(error)")
+
+              return Fail(error: error).eraseToAnyPublisher()
+          }
+      }
+    //patch
+    static func patch<T: Encodable>(
+        url: URL,
+        body: T,
+        headers: [String: String] = [:]
+    ) -> AnyPublisher<Data, Error> {
+        do {
+            let request = try buildRequest(
+                url: url,
+                method: "PATCH",
+                body: body,
+                headers: headers
+            )
+            return download(request: request)
+        } catch {
+            print("\(error)")
+
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
+    // delete
+    static func delete(
+         url: URL,
+         headers: [String: String] = [:]
+     ) -> AnyPublisher<Data, Error> {
+         var request = URLRequest(url: url)
+         request.httpMethod = "DELETE"
+         headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }
+         return download(request: request)
+     }
+    
+    // request builder
+    private static func buildRequest<T: Encodable>(
+        url: URL,
+        method: String,
+        body: T,
+        headers: [String: String]
+    ) throws -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }
+        request.httpBody = try JSONEncoder().encode(body)
+        return request
+    }
 }
+
+
