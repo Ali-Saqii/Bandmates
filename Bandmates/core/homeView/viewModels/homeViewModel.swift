@@ -10,7 +10,7 @@ import Combine
 import UIKit
 
 class HomeViewModel: ObservableObject {
-    @Published var user = userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", Collections: [])
+    @Published var user = userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", albums: 0,subscriptionPlan: "club",isOnTrial:false)
     @Published var albums: [albumModel]? = nil
     @Published var searchText = ""
     @Published var recentlyplayed : [SavedAlbums] = []

@@ -60,7 +60,7 @@ struct profileView: View {
         })
         .environmentObject(profileVm)
         .navigationDestination(isPresented: $editProfileView) {
-            EditProfileView(user: profileVm.user ?? userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", Collections: []))
+            EditProfileView(user: profileVm.user ?? userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", albums: 0,subscriptionPlan: "Club",isOnTrial: false))
                 .environmentObject(profileVm)
         }
         .navigationDestination(isPresented: $showHelpAndSupport) {
