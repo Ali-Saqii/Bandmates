@@ -82,7 +82,7 @@ class DeveloperPreview {
         waiting: 5,
         totalBandmates: 128,
         toralSavedAlbums: 47,
-        email: "jhjhfds@email.com", albums: 0,
+        email: "jhjhfds@email.com", 
         subscriptionPlan: "club",isOnTrial: false
     )
     
