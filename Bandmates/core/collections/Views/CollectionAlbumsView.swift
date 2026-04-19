@@ -44,25 +44,25 @@ struct CollectionAlbumsView: View {
                     .onTapGesture {
                         ellipseTab = false
                     }
-                if editCollection {
-                    Color.black.opacity(0.6)
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            withAnimation() {
-                                editCollection = false
-                            }
-                        }
-                  reuseablePopup(
-                    collectionTitle: $CollectionNewName,
-                    description: $CollectionNewDescriptione,
-                    popupTitle: "Edit Your Collection",
-                    titlePlaceHolder: (homeVm.user.Collections.first?.collectionTitle)!,
-                    testEditorPlaceHolder: (homeVm.user.Collections.first?.collectionDescription)!,
-                    buttonAction: {},
-                    buttonTitle: "Save Changes",
-                    dismiss: $editCollection
-                  ).transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
-                }
+//                if editCollection {
+//                    Color.black.opacity(0.6)
+//                        .ignoresSafeArea()
+//                        .onTapGesture {
+//                            withAnimation() {
+//                                editCollection = false
+//                            }
+//                        }
+//                  reuseablePopup(
+//                    collectionTitle: $CollectionNewName,
+//                    description: $CollectionNewDescriptione,
+//                    popupTitle: "Edit Your Collection",
+//                    titlePlaceHolder: (homeVm.user.albums.first?.collectionTitle)!,
+//                    testEditorPlaceHolder: (homeVm.user.albums.first?.collectionDescription)!,
+//                    buttonAction: {},
+//                    buttonTitle: "Save Changes",
+//                    dismiss: $editCollection
+//                  ).transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
+//                }
                 if DeleteCollection {
                     Color.black.opacity(0.6)
                         .ignoresSafeArea()
