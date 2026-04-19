@@ -96,26 +96,26 @@ struct collectionView: View {
               ).environmentObject(homeVm)
                     .transition(AnyTransition.asymmetric(insertion: .scale, removal: .move(edge: .leading)))
             }
-            if showEditCollection {
-                Color.black.opacity(0.6)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation() {
-                            showEditCollection = false
-                        }
-                    }
-              reuseablePopup(
-                collectionTitle: $CollectionNewName,
-                description: $CollectionNewDescriptione,
-                popupTitle: "Edit Your Collection",
-                titlePlaceHolder: ($homeVm.user.albums.first?.collectionTitle)!,
-                testEditorPlaceHolder: ($homeVm.user.albums.first?.collectionDescription)!,
-                buttonAction: {},
-                buttonTitle: "Save Changes",
-                dismiss: $showEditCollection
-              ).environmentObject(homeVm)
-                    .transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
-            }
+//            if showEditCollection {
+//                Color.black.opacity(0.6)
+//                    .ignoresSafeArea()
+//                    .onTapGesture {
+//                        withAnimation() {
+//                            showEditCollection = false
+//                        }
+//                    }
+//              reuseablePopup(
+//                collectionTitle: $CollectionNewName,
+//                description: $CollectionNewDescriptione,
+//                popupTitle: "Edit Your Collection",
+//                titlePlaceHolder: (homeVm.user.albums.first?.$collectionTitle),
+//                testEditorPlaceHolder: ($homeVm.user.albums.first?.collectionDescription),
+//                buttonAction: {},
+//                buttonTitle: "Save Changes",
+//                dismiss: $showEditCollection
+//              ).environmentObject(homeVm)
+//                    .transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
+//            }
         }.navigationDestination(item: $selesctedCollection) { collection in
             CollectionAlbumsView(Collection: collection)
                 .environmentObject(homeVm) 
