@@ -78,16 +78,16 @@ struct AlbumDetailsView: View {
                     isAlbumSaved()
                     albumRating()
                 }
-            if SaveAlbum {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        SaveAlbum = false
-                    }
-                SaveAlbumPopover(collections: hvm.user.Collections, showPopUp: $SaveAlbum)
-                    .environmentObject(hvm)
-                    .transition(AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
-            }
+//            if SaveAlbum {
+//                Color.black.opacity(0.4)
+//                    .ignoresSafeArea()
+//                    .onTapGesture {
+//                        SaveAlbum = false
+//                    }
+//                SaveAlbumPopover(collections: hvm.user.Collections, showPopUp: $SaveAlbum)
+//                    .environmentObject(hvm)
+//                    .transition(AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
+//            }
         }.sheet(isPresented: $showComments) {
             commentsView(comments: album.replies)
                 .presentationDetents([.large])
