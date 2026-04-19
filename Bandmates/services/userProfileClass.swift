@@ -12,10 +12,11 @@ import UIKit
 class UserClass {
     
     @Published var user: userModel? = nil
-    
+    static let updateVisibilityUrl = "http://localhost:3000/user/saved-albums-visibility"
     static let getUserProfileUrl = "http://localhost:3000/user/profile"
-    static let deleteUserAccountUrl = "http://localhost:3000/user/delete"   // ✅ add your real endpoint
-
+    static let deleteUserAccountUrl = "http://localhost:3000/user/delete"
+    static let updateUserUrl = "http://localhost:3000/user/update"
+    static let updatePassword = "http://localhost:3000/user/changePassword"
     private var token: String {
          UserDefaults.standard.string(forKey: "auth_token") ?? ""
      }
@@ -48,9 +49,107 @@ class UserClass {
                   .compactMap { $0.data?.toUserModel() }
                   .eraseToAnyPublisher()
     }
+    // update user
+    func updateUser(
+        username    : String? = nil,
+        displayName : String? = nil,
+        description : String? = nil,
+        avatar      : String? = nil,
+        email       : String? = nil
+    ) -> AnyPublisher<Bool, Error> {
+        guard let url = URL(string: UserClass.updateUserUrl) else {
+            print("Invalid url")
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        let body = UpdateUserBody(
+            username    : username,
+            displayName : displayName,
+            description : description,
+            avatar      : avatar,
+            email: email
+        )
+
+        do {
+            let request = try NetworkLayer.buildRequest(url: url, method: "PUT", body: body, headers: ["Authorization": "Bearer \(token)"] )
+            return NetworkLayer.download(request: request)
+                .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
+                .handleEvents(receiveOutput: { [weak self] response in
+                    self?.user = response.data?.toUserModel()
+                })
+                .map { $0.sucess }
+                .eraseToAnyPublisher()
+        } catch {
+            print("Error: \(error.localizedDescription)")
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
     
+    // update password
+    func updatePassword(
+        oldPassword     : String,
+        newPassword     : String,
+        confirmPassword : String
+    ) -> AnyPublisher<Bool, Error> {
+
+        guard let url = URL(string: UserClass.updatePassword) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        // MARK: - Client Side Validation
+        guard !oldPassword.isEmpty else {
+            return Fail(error: NSError(domain: "", code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "Old password cannot be empty"]))
+                .eraseToAnyPublisher()
+        }
+
+        guard newPassword.count >= 8 else {
+            return Fail(error: NSError(domain: "", code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "Password must be at least 8 characters"]))
+                .eraseToAnyPublisher()
+        }
+
+        guard newPassword == confirmPassword else {
+            return Fail(error: NSError(domain: "", code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "Passwords do not match"]))
+                .eraseToAnyPublisher()
+        }
+
+        guard newPassword != oldPassword else {
+            return Fail(error: NSError(domain: "", code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "New password must be different from old password"]))
+                .eraseToAnyPublisher()
+        }
+
+        let body = UpdatePasswordBody(
+            oldPassword     : oldPassword,
+            newPassword     : newPassword,
+            confirmPassword : confirmPassword
+        )
+
+        do {
+            let request = try NetworkLayer.buildRequest(
+                url     : url,
+                method  : "PUT",
+                body    : body,
+                headers : ["Authorization": "Bearer \(token)"]
+            )
+
+            return NetworkLayer.download(request: request)
+                .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
+                .handleEvents(receiveOutput: { response in
+                    print(response.sucess ? "✅ Password updated" : "❌ \(response.message)")
+                })
+                .map { $0.sucess }
+                .eraseToAnyPublisher()
+        } catch {
+            print("Error\(error.localizedDescription)")
+
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
     // delete
-    func deleteUser() -> AnyPublisher<String, Error> {
+    func deleteUser() -> AnyPublisher<Bool, Error> {
         guard let url = URL(string: UserClass.deleteUserAccountUrl) else {
             print("❌ Error: invalid URL")
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
@@ -67,9 +166,48 @@ class UserClass {
                     print("✅ Account deleted:", response.message)
                 }
             })
-            .map { $0.message }
+            .map { $0.sucess }
             .eraseToAnyPublisher()
     }
     
-    
+    // collection visibility
+    func updateSavedAlbumsVisibility(isPrivate: Bool) -> AnyPublisher<Bool, Error> {
+        guard let url = URL(string: UserClass.updateVisibilityUrl) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        do {
+            let request = try NetworkLayer.buildRequest(
+                url     : url,
+                method  : "PUT",
+                body    : ["isPrivate": isPrivate],     // ✅ inline dictionary, no separate struct
+                headers : ["Authorization": "Bearer \(token)"]
+            )
+
+            return NetworkLayer.download(request: request)
+                .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
+                .handleEvents(receiveOutput: { response in
+                    print(response.sucess ? "✅ Visibility updated: \(isPrivate)" : "❌ \(response.message)")
+                })
+                .map { $0.sucess }
+                .eraseToAnyPublisher()
+        } catch {
+            print("Error\(error.localizedDescription)")
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
+}
+
+
+struct UpdateUserBody: Codable {
+    var username    : String?
+    var displayName : String?
+    var description : String?
+    var avatar      : String?
+    var email       : String?
+}
+struct UpdatePasswordBody: Codable {
+    let oldPassword     : String
+    let newPassword     : String
+    let confirmPassword : String
 }
