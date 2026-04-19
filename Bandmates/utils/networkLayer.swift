@@ -155,7 +155,7 @@ class NetworkLayer {
      }
     
     // request builder
-    private static func buildRequest<T: Encodable>(
+     static func buildRequest<T: Encodable>(
         url: URL,
         method: String,
         body: T,
