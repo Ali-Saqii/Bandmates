@@ -16,6 +16,7 @@ struct buttonModel {
 }
 struct profileView: View {
     @StateObject var profileVm = ProfileViewModel()
+    @EnvironmentObject var aVm: AuthViewModel
     @State private var editProfileView = false
     @State private var showHelpAndSupport = false
     @State private var logoutAccount = false
@@ -26,10 +27,15 @@ struct profileView: View {
             Color.white
                 .ignoresSafeArea(.all)
             VStack(spacing:20) {
-                headerButtonView
-                    .onTapGesture {
-                        showBillingPlans = true
+                if let user = profileVm.user {
+                    
+                    if user.subscriptionPlan == "club" || user.isOnTrial {
+                        headerButtonView
+                            .onTapGesture {
+                                showBillingPlans = true
+                            }
                     }
+                }
                 profieGridView
                 buttonsListView
               
@@ -48,9 +54,13 @@ struct profileView: View {
                     buttonTitle1: "cancel",
                     buttonTitle2: "Yes,Logout",
                     button1Action: {
+                       
                         logoutAccount = false
                     },
-                    button2Action: {},
+                    button2Action: {
+                        aVm.signOut()
+                        logoutAccount = false
+                    },
                     button1Role: .cancel,
                     button2Role: .destructive,
                 )
@@ -60,7 +70,7 @@ struct profileView: View {
         })
         .environmentObject(profileVm)
         .navigationDestination(isPresented: $editProfileView) {
-            EditProfileView(user: profileVm.user ?? userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", albums: 0,subscriptionPlan: "Club",isOnTrial: false))
+            EditProfileView(user: profileVm.user ?? userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "",subscriptionPlan: "Club",isOnTrial: false))
                 .environmentObject(profileVm)
         }
         .navigationDestination(isPresented: $showHelpAndSupport) {
@@ -251,5 +261,6 @@ extension profileView {
 #Preview {
     profileView()
         .environmentObject(ProfileViewModel())
+        .environmentObject(AuthViewModel())
 }
 
