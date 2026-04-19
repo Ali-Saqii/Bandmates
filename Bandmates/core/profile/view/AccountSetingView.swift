@@ -64,10 +64,20 @@ struct AccountSetingView: View {
                             DeleteAccount = false
                         }
                     },
-                    button2Action: {},
+                    button2Action: {
+                        withAnimation() {
+                            pVm.deleteAccount()
+                            DeleteAccount = false
+                        }
+                    },
                     button1Role: nil,
                     button2Role: nil
                 ).transition(.asymmetric(insertion:.move(edge: .bottom), removal: .move(edge: .bottom)))
+                    .overlay {
+                        if pVm.isLoading {
+                            ProgressView()
+                        }
+                    }
             }
             if CollectionVisibility {
                 Color.black.opacity(0.6)
@@ -95,6 +105,9 @@ struct AccountSetingView: View {
             .navigationDestination(isPresented: $NotificationSettings) {
                 NotificationSettinfView()
                     .environmentObject(pVm)
+            }
+            .navigationDestination(isPresented: $pVm.isDeleted) {
+                onboardingView()
             }
         
     }
