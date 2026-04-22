@@ -9,9 +9,9 @@ import SwiftUI
 
 struct SaveAlbumPopover: View {
     @EnvironmentObject var hvm : HomeViewModel
-    let collections: [CollectionModel]
-    @State private var SelectedCollection: CollectionModel? = nil
+    @State private var SelectedCollection: MapedCollection? = nil
     @Binding var showPopUp : Bool
+    let albumId: String
     var body: some View {
         
         GeometryReader { geo in
@@ -39,31 +39,46 @@ struct SaveAlbumPopover: View {
                     .padding(.horizontal)
                 ScrollView{
                     VStack {
-                        ForEach(collections) { collection in
-                            Divider()
-                            HStack {
-                                Text(collection.collectionTitle)
-                                    .foregroundStyle(.black)
-                                    .font(.dmSans(17, weight: .medium))
-                                Spacer()
-                                Circle()
-                                    .stroke((SelectedCollection != nil) ? Color.background : .gray, lineWidth: 2.5)
-                                    .frame(width: 20, height: 20)
-                                    .overlay {
-                                        Circle()
-                                            .fill((SelectedCollection != nil) ? Color.background : .white)
-                                            .frame(width: 10, height: 10)
-                                            
-                                    }
-                            }.onTapGesture {
-                                SelectedCollection = collection
+                        if !hvm.mapedCollection.isEmpty {
+                            ForEach(hvm.mapedCollection) { collection in
+                                Divider()
+                                HStack {
+                                    Text(collection.title)
+                                        .foregroundStyle(.black)
+                                        .font(.dmSans(17, weight: .medium))
+                                        .frame(maxWidth: .infinity,alignment: .leading)
+                                    
+                                    Circle()
+                                        .stroke(SelectedCollection?.id == collection.id ? Color.background : .gray, lineWidth: 2.5)
+                                        .frame(width: 20, height: 20)
+                                        .overlay {
+                                            Circle()
+                                                .fill(SelectedCollection?.id == collection.id ? Color.background : .white)
+                                                .frame(width: 10, height: 10)
+                                        }
+                                }.overlay(content: {
+                                    Rectangle().fill(.textfieldcolor.opacity(0.1))
+                                })
+                                .onTapGesture {
+                                    SelectedCollection = collection
+                                }
+                                
                             }
-                        
+                        }else {
+                            Text("You have no collection yet please add collection first !!!!")
+                                .multilineTextAlignment(.center)
+                                .font(.dmSans(14, weight: .medium))
+                                .foregroundStyle(.red)
                         }
                     }.padding(.horizontal)
                 }.scrollIndicators(.hidden)
-
-                buttonView(action: {}, buttonText: "Save Album", height: 45)
+                    .onChange(of: hvm.isAlbumSaved) { _, newValue in
+                        if newValue {
+                            showPopUp = false
+                            hvm.isAlbumSaved = false
+                        }
+                    }
+                buttonView(action: {hvm.saveAlbum(albumId: albumId, collectionId: SelectedCollection?.id ?? "")}, buttonText: "Save Album", height: 45)
                     .padding(.horizontal)
                     .padding(.bottom)
             }.frame(maxWidth: .infinity)
@@ -80,6 +95,6 @@ struct SaveAlbumPopover: View {
 }
 
 #Preview {
-    SaveAlbumPopover(collections: DeveloperPreview.instance.collections, showPopUp: .constant(false))
+    SaveAlbumPopover(showPopUp: .constant(false), albumId: "")
         .environmentObject(HomeViewModel())
 }
