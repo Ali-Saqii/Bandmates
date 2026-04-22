@@ -72,24 +72,26 @@ struct AlbumDetailsView: View {
                    
                 }
                 .navigationDestination(isPresented: $showGiveRatingView) {
-                    AlbumFeddBackView(albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSave: $isSaved
+                    AlbumFeddBackView(albumId: album.id,
+                        albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSave: $isSaved
                     )
+                    .environmentObject(hvm)
                 }.onAppear {
                     isAlbumSaved()
                     albumRating()
                 }
-//            if SaveAlbum {
-//                Color.black.opacity(0.4)
-//                    .ignoresSafeArea()
-//                    .onTapGesture {
-//                        SaveAlbum = false
-//                    }
-//                SaveAlbumPopover(collections: hvm.user.Collections, showPopUp: $SaveAlbum)
-//                    .environmentObject(hvm)
-//                    .transition(AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
-//            }
+            if SaveAlbum {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        SaveAlbum = false
+                    }
+                SaveAlbumPopover( showPopUp: $SaveAlbum, albumId: album.id)
+                    .environmentObject(hvm)
+                    .transition(AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
+            }
         }.sheet(isPresented: $showComments) {
-            commentsView(comments: album.replies)
+            commentsView(albumId: album.id, comments: album.replies)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
                 .environmentObject(hvm)
@@ -252,7 +254,7 @@ extension AlbumDetailsView {
                 CommentModel(
                     id: "c1",
                     image: "user6",
-                    name: "Andre P.",
+                    name: "Andre P.", disPlayName: "jfdghfjkdgh",
                     replieText: "Rich Flex and Hours in Silence are the highlights for me.",
                     replieTime: ISO8601DateFormatter().date(from: "2023-10-07T10:00:00Z")!
                 )
@@ -262,4 +264,5 @@ extension AlbumDetailsView {
         )
     )
     .environmentObject(HomeViewModel())
+    
 }
