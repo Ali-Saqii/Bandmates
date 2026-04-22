@@ -41,6 +41,10 @@ struct homwView: View {
                     }
                 }
             }.scrollIndicators(.hidden)
+                .refreshable {
+                   await homeVm.fetchItems()
+                }
+                .tint(Color.background)
         }.navigationDestination(isPresented: $seeAllBandmates) {
             Bandmates()
                 .environmentObject(HomeViewModel())
