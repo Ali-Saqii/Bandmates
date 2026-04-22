@@ -12,7 +12,7 @@ import UIKit
 class UserClass {
     
     @Published var user: userModel? = nil
-    static let updateVisibilityUrl = "http://localhost:3000/user/saved-albums-visibility"
+    static let updateVisibilityUrl = "http://localhost:3000/user/hideCollection"
     static let getUserProfileUrl = "http://localhost:3000/user/profile"
     static let deleteUserAccountUrl = "http://localhost:3000/user/delete"
     static let updateUserUrl = "http://localhost:3000/user/update"
@@ -54,19 +54,19 @@ class UserClass {
         username    : String? = nil,
         displayName : String? = nil,
         description : String? = nil,
-        avatar      : String? = nil,
+        avatar      : UIImage?,
         email       : String? = nil
     ) -> AnyPublisher<Bool, Error> {
         guard let url = URL(string: UserClass.updateUserUrl) else {
             print("Invalid url")
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-
+        let avatarData = avatar?.jpegData(compressionQuality: 0.8)
         let body = UpdateUserBody(
             username    : username,
             displayName : displayName,
             description : description,
-            avatar      : avatar,
+            avatar      : avatarData,
             email: email
         )
 
@@ -77,7 +77,7 @@ class UserClass {
                 .handleEvents(receiveOutput: { [weak self] response in
                     self?.user = response.data?.toUserModel()
                 })
-                .map { $0.sucess }
+                .map { $0.success }
                 .eraseToAnyPublisher()
         } catch {
             print("Error: \(error.localizedDescription)")
@@ -136,11 +136,16 @@ class UserClass {
             )
 
             return NetworkLayer.download(request: request)
+                .tryMap { data -> Data in
+                        print("📦 Raw:", String(data: data, encoding: .utf8) ?? "nil")
+                        return data
+                    }
                 .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
                 .handleEvents(receiveOutput: { response in
-                    print(response.sucess ? "✅ Password updated" : "❌ \(response.message)")
+                    print(response.success ? "✅ Password updated" : "❌ \(response.message)")
+                    print(response.message)
                 })
-                .map { $0.sucess }
+                .map { $0.success }
                 .eraseToAnyPublisher()
         } catch {
             print("Error\(error.localizedDescription)")
@@ -160,13 +165,13 @@ class UserClass {
         return NetworkLayer.download(request: request)
             .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
             .handleEvents(receiveOutput: { [weak self] response in
-                if response.sucess {
+                if response.success {
                     self?.user = nil
                     UserDefaults.standard.removeObject(forKey: "auth_token")
                     print("✅ Account deleted:", response.message)
                 }
             })
-            .map { $0.sucess }
+            .map { $0.success }
             .eraseToAnyPublisher()
     }
     
@@ -187,9 +192,9 @@ class UserClass {
             return NetworkLayer.download(request: request)
                 .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
                 .handleEvents(receiveOutput: { response in
-                    print(response.sucess ? "✅ Visibility updated: \(isPrivate)" : "❌ \(response.message)")
+                    print(response.success ? "✅ Visibility updated: \(isPrivate)" : "❌ \(response.message)")
                 })
-                .map { $0.sucess }
+                .map { $0.success }
                 .eraseToAnyPublisher()
         } catch {
             print("Error\(error.localizedDescription)")
@@ -203,7 +208,7 @@ struct UpdateUserBody: Codable {
     var username    : String?
     var displayName : String?
     var description : String?
-    var avatar      : String?
+    var avatar      : Data? 
     var email       : String?
 }
 struct UpdatePasswordBody: Codable {
