@@ -64,7 +64,7 @@ extension UserDTO {
 
 // MARK: - API Response Wrapper
 struct UserResponse: Codable {
-    let sucess : Bool           // keeping your API's spelling
+    let success : Bool           // keeping your API's spelling
     let message: String
     let data   : UserDTO?       // ✅ UserDTO not userModel — maps JSON keys correctly
 }

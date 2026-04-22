@@ -42,6 +42,7 @@ struct CommentModel: Codable, Identifiable, Hashable {
     let id: String
     let image: String
     let name: String
+    let disPlayName: String?
     let replieText : String
     let replieTime : Date
 }
