@@ -10,6 +10,7 @@ import SwiftUI
 struct AlbumFeddBackView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var hvm: HomeViewModel
+    let albumId : String
     let albumImage: String
     let albumName: String
     let artistName: String
@@ -19,7 +20,7 @@ struct AlbumFeddBackView: View {
     @State var starCount = 0
     @State private var feddBackText = ""
     @State private var feedBackPlaceHolder = "How was your experience?"
-
+  @State private var message = ""
     var ratingText : String? {
         if starCount == 0   { return ""} else if starCount == 1   { return "Average"
         } else if starCount == 2   { return "Average"
@@ -75,24 +76,57 @@ struct AlbumFeddBackView: View {
                                 feedBackPlaceHolder = ""
                             }
                     })
-                buttonView(action: {}, buttonText: "Submit Review", height: 50)
+                buttonView(action: {
+                    addFeedBack()
+                    
+                }, buttonText: "Submit Review", height: 50)
                     .padding()
                     .padding(.horizontal)
+                        Text(message)
+                            .font(.dmSans(16,weight: .medium))
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(hvm.reviewSuccess ? .green : .red)
+                
+            
                 Spacer()
             }
-        }.navigationTitle("Album Feedback")
+        }.overlay(content: {
+            if hvm.isLoading {
+                Rectangle()
+                    .fill(Color.textfieldcolor.opacity(0.5))
+                    .ignoresSafeArea()
+                    .overlay {
+                        ProgressView().tint(Color.background)
+                    }
+            }
+        })
+        .navigationTitle("Album Feedback")
             .navigationBarBackButtonHidden(true)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement:.topBarLeading) {
-                    crossButton(action: { dismiss() })
+                    crossButton(action: {
+                        dismiss()
+                       
+                    })
                         
                 }.sharedBackgroundVisibility(.hidden)
+         
             }
+    }
+    private func addFeedBack() {
+        hvm.postReview(albumId:albumId , rating: starCount, reviewText: feddBackText)
+        message = hvm.reviewSuccess ? "Error while posting review" : "Sucesfully posted"
+        if hvm.reviewSuccess {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            message = ""
+                dismiss()
+            }
+        }
     }
 }
 #Preview {
-    AlbumFeddBackView( albumImage:  "https://images.unsplash.com/photo-1463453091185-61582044d556?w=400", albumName: "For All The Dogs", artistName: "Drake", ratingCount: 4.9, totalRatingcount: 111, isAlBumSave: .constant(false)
+    AlbumFeddBackView( albumId: "fdjksfh", albumImage:  "https://images.unsplash.com/photo-1463453091185-61582044d556?w=400", albumName: "For All The Dogs", artistName: "Drake", ratingCount: 4.9, totalRatingcount: 111, isAlBumSave: .constant(false)
     )
     .environmentObject(HomeViewModel())
 }
