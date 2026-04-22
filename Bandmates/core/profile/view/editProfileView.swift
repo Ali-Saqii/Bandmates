@@ -25,12 +25,23 @@ struct EditProfileView: View {
                 inputFieldsView
                     .padding(.horizontal)
                 inputBioView
-                buttonView(action: {}, buttonText: "Save Changes", height: 50)
+                buttonView(action: {updateProfile()}, buttonText: "Save Changes", height: 50)
                     .padding()
                 Spacer()
             }
         }.onAppear(perform: {
             getNames()
+        })
+        .overlay(content: {
+            if pvm.isLoading {
+                Rectangle()
+                    .fill(.textfieldcolor.opacity(0.5))
+                    .ignoresSafeArea()
+                    .overlay {
+                        ProgressView()
+                            .tint(Color.background)
+                    }
+            }
         })
         .navigationTitle("edit profile".capitalized)
             .navigationBarTitleDisplayMode(.inline)
@@ -44,6 +55,9 @@ struct EditProfileView: View {
         newFullName = user.fullName
         newUserName = user.userName
         newBio = user.Bio
+    }
+    private func updateProfile() {
+        pvm.updateProfile(username: newFullName,displayName: newUserName,description: newBio,avatar: newProfileImage)
     }
 }
 extension EditProfileView {
