@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct collectionVisiBilityView: View {
-    @EnvironmentObject var pvm : HomeViewModel
+    @EnvironmentObject var pvm : ProfileViewModel
     @Binding var showSheet : Bool
     @State private var isVisibilityPrivate = false
     @State private var isVisibilityPublic = true
@@ -59,6 +59,7 @@ struct collectionVisiBilityView: View {
             HStack(spacing: 20) {
                 Button(role: nil) {
                         withAnimation(){
+                            collectionVisibility()
                             showSheet = false
                         }
                 } label: {
@@ -69,7 +70,11 @@ struct collectionVisiBilityView: View {
                 }.background(.textfieldcolor)
                     .clipShape(RoundedRectangle(cornerRadius: 25))
                 Button(role: nil) {
-                    
+                
+                        collectionVisibility()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                        showSheet = false
+                    }
                 } label: {
                     Text("Save")
                         .foregroundStyle(.white)
@@ -85,8 +90,28 @@ struct collectionVisiBilityView: View {
             .background(.white)
             .clipShape(RoundedRectangle(cornerRadius: 25))
             .shadow(color: .textfieldcolor, radius: 25)
+            .overlay {
+                if pvm.isLoading {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(.textfieldcolor.opacity(0.5))
+                        .overlay {
+                            ProgressView()
+                        }
+                }
+            }
             .frame(maxHeight: .infinity, alignment: .bottom)
+        
             .ignoresSafeArea(edges:.bottom)
+          
+    }
+    
+    private func collectionVisibility() {
+        if isVisibilityPrivate {
+            pvm.updateSavedAlbumsVisibility(isPrivate: true)
+        } else if isVisibilityPublic {
+            pvm.updateSavedAlbumsVisibility(isPrivate: false)
+        }
+        
     }
 }
 
