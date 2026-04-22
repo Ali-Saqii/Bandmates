@@ -63,7 +63,7 @@ struct OnboardingContainerView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 40)
             }
-        }
+        }.navigationBarBackButtonHidden(true)
     }
 }
 
