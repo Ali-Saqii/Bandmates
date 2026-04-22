@@ -47,7 +47,7 @@ class ProfileViewModel:ObservableObject {
         username    : String? = nil,
         displayName : String? = nil,
         description : String? = nil,
-        avatar      : String? = nil
+        avatar      : UIImage?
     ) {
         isLoading       = true
         errorMessage    = nil
@@ -62,6 +62,7 @@ class ProfileViewModel:ObservableObject {
         .sink(receiveCompletion: { [weak self] completion in
             self?.isLoading = false
             if case .failure(let error) = completion {
+                print("Error: \(error)")
                 self?.errorMessage = error.localizedDescription
             }
         }, receiveValue: { [weak self] success in
@@ -93,6 +94,7 @@ class ProfileViewModel:ObservableObject {
         .sink(receiveCompletion: { [weak self] completion in
             self?.isLoading = false
             if case .failure(let error) = completion {
+                print("Error: \(error)")
                 self?.passwordError = error.localizedDescription
             }
         }, receiveValue: { [weak self] success in
@@ -137,6 +139,7 @@ class ProfileViewModel:ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
+                    print("Error: \(error)")
                     self?.visibilityError = error.localizedDescription
                 }
             }, receiveValue: { [weak self] success in
@@ -149,3 +152,5 @@ class ProfileViewModel:ObservableObject {
             .store(in: &cancellables)
     }
 }
+
+
