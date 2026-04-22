@@ -16,10 +16,11 @@ struct CollectionAlbumsView: View {
     @State private var CollectionNewName = ""
     @State private var CollectionNewDescriptione = ""
     @EnvironmentObject var homeVm: HomeViewModel
+    @EnvironmentObject var collectionVm : collectionViewModel
     @Environment(\.dismiss) var dismiss
     @State private  var selectedAbbum: albumModel? = nil
     @State private var sjowAlbumDetails = false
-
+    @State private var getId = ""
     var body: some View {
             ZStack {
                 Color.white
@@ -29,10 +30,13 @@ struct CollectionAlbumsView: View {
                         ForEach(Collection.albums){ album in
                             albumsRowView(album: album, ButtonAction: {
                                 withAnimation() {
-                                    reMoveAlbum.toggle()
-                                    DeleteCollection = false
-                                    ellipseTab = false
-                                    editCollection = false
+                                    getId = album.id
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        reMoveAlbum.toggle()
+                                        DeleteCollection = false
+                                        ellipseTab = false
+                                        editCollection = false
+                                    }
                                 }
                             }).onTapGesture {
                                 selectedAbbum = album
@@ -44,25 +48,53 @@ struct CollectionAlbumsView: View {
                     .onTapGesture {
                         ellipseTab = false
                     }
-//                if editCollection {
-//                    Color.black.opacity(0.6)
-//                        .ignoresSafeArea()
-//                        .onTapGesture {
-//                            withAnimation() {
-//                                editCollection = false
-//                            }
-//                        }
-//                  reuseablePopup(
-//                    collectionTitle: $CollectionNewName,
-//                    description: $CollectionNewDescriptione,
-//                    popupTitle: "Edit Your Collection",
-//                    titlePlaceHolder: (homeVm.user.albums.first?.collectionTitle)!,
-//                    testEditorPlaceHolder: (homeVm.user.albums.first?.collectionDescription)!,
-//                    buttonAction: {},
-//                    buttonTitle: "Save Changes",
-//                    dismiss: $editCollection
-//                  ).transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
-//                }
+                    .onChange(of: collectionVm.isUpdated) { _, newValue in
+                        if newValue {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                CollectionNewName = ""
+                                CollectionNewDescriptione = ""
+                                editCollection = false
+                            }
+                        }
+                    }
+                    .onChange(of: collectionVm.isDeleted) { _, newValue in
+                        if newValue {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                DeleteCollection = false
+                                collectionVm.isDeleted = false
+                                dismiss()
+                            }
+                        }
+                        }
+                    .onChange(of: collectionVm.removeAlbumSuccess) { _, newValue in
+                        if newValue {
+                            withAnimation() {
+                                reMoveAlbum = false
+                                collectionVm.removeAlbumSuccess = false
+                            }
+                        }
+                    }
+                if editCollection {
+                    Color.black.opacity(0.6)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation() {
+                                editCollection = false
+                            }
+                        }
+                  reuseablePopup(
+                    collectionTitle: $CollectionNewName,
+                    description: $CollectionNewDescriptione,
+                    popupTitle: "Edit Your Collection",
+                    titlePlaceHolder: Collection.collectionTitle,
+                    testEditorPlaceHolder: Collection.collectionDescription,
+                    buttonAction: {
+                        collectionVm.updateCollection(id: Collection.id, name: CollectionNewName, description: CollectionNewDescriptione)
+                    },
+                    buttonTitle: "Save Changes",
+                    dismiss: $editCollection
+                  ).transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
+                }
                 if DeleteCollection {
                     Color.black.opacity(0.6)
                         .ignoresSafeArea()
@@ -81,7 +113,10 @@ struct CollectionAlbumsView: View {
                                 DeleteCollection = false
                             }
                         },
-                        button2Action: {},
+                        button2Action: {
+                            collectionVm.deleteCollection(id: Collection.id)
+                            
+                        },
                         button1Role: .cancel,
                         button2Role: .destructive 
                     ).transition(AnyTransition.asymmetric(insertion: .move(edge: .bottom), removal:.move(edge: .bottom)))
@@ -104,7 +139,12 @@ struct CollectionAlbumsView: View {
                                 reMoveAlbum = false
                             }
                         },
-                        button2Action: {},
+                        button2Action: {
+                            collectionVm.removeAlbum(albumId: getId, collectionId: Collection.id)
+                            if Collection.albums.count == 1 && collectionVm.removeAlbumSuccess {
+                                dismiss()
+                            }
+                        },
                         button1Role: .cancel,
                         button2Role: .destructive
                     ).transition(AnyTransition.asymmetric(insertion: .move(edge: .bottom), removal:.move(edge: .bottom)))
@@ -183,6 +223,7 @@ extension CollectionAlbumsView {
 #Preview {
     CollectionAlbumsView(Collection: DeveloperPreview.instance.collection)
         .environmentObject(HomeViewModel())
+        .environmentObject(collectionViewModel())
 }
 
 
