@@ -30,8 +30,8 @@ class DeveloperPreview {
             reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
         ],
         replies: [
-            CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-            CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+            CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "cvb", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+            CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "cvbcv", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
         ],
                              isSaved: true, albumPlayLink: "id"
         )
@@ -50,8 +50,8 @@ class DeveloperPreview {
                reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
            ],
            replies: [
-               CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-               CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+            CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "bvcbcv", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+            CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "cvbcv", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
            ],
                    isSaved: true, albumPlayLink: ""
            ),
@@ -68,8 +68,8 @@ class DeveloperPreview {
                reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
            ],
            replies: [
-               CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-               CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+            CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "cvbcv", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+            CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "bvcbcv", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
            ],
                    isSaved: true, albumPlayLink: ""
            )
@@ -86,10 +86,10 @@ class DeveloperPreview {
         subscriptionPlan: "club",isOnTrial: false
     )
     
-    let comment =  CommentModel(id: "",image: "user6", name: "Sophie T.", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
+    let comment =  CommentModel(id: "",image: "user6", name: "Sophie T.", disPlayName: "fgfdg", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
     let comments = [
-        CommentModel(id: "",image: "user6", name: "Sophie T.", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!),
-        CommentModel(id: "",image: "user6", name: "Sophie T.", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!), CommentModel(id: "",image: "user6", name: "Sophie T.", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
+        CommentModel(id: "",image: "user6", name: "Sophie T.", disPlayName: "fdgdf", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!),
+        CommentModel(id: "",image: "user6", name: "Sophie T.", disPlayName: "fdgdf", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!), CommentModel(id: "",image: "user6", name: "Sophie T.", disPlayName: "nfg", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
     ]
     
     let collection = CollectionModel(id: "", collectionTitle: "night chill".capitalized, collectionDescription: "jjhjdsf dnjfdhhdfv hdfhdjv fdhjdhgfd jddf vfdhshkgfd fdhsfh dfhsj h fhbhdf", albums:[
@@ -106,8 +106,8 @@ class DeveloperPreview {
                reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
            ],
            replies: [
-               CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-               CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+            CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "fdgfd", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+            CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "fdgdf", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
            ],
                    isSaved: true, albumPlayLink: ""
            ),
@@ -124,8 +124,8 @@ class DeveloperPreview {
                reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
            ],
            replies: [
-               CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-               CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+            CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "fdgdfg", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+            CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "fgdgfd", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
            ],
                    isSaved: true, albumPlayLink: ""
            )
@@ -145,8 +145,8 @@ class DeveloperPreview {
                    reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                ],
                replies: [
-                   CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                   CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "fgfd", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "fdgfg", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                ],
                        isSaved: true, albumPlayLink: ""
                ),
@@ -163,8 +163,8 @@ class DeveloperPreview {
                    reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                ],
                replies: [
-                   CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                   CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "gfdgf", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "fgdg", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                ],
                        isSaved: true, albumPlayLink: ""
                )
@@ -183,8 +183,8 @@ class DeveloperPreview {
                    reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                ],
                replies: [
-                   CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                   CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "gdfgdf", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "gfdg", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                ],
                        isSaved: true, albumPlayLink: ""
                ),
@@ -201,8 +201,8 @@ class DeveloperPreview {
                    reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                ],
                replies: [
-                   CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                   CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "fdgfd", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "dfgfd", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                ],
                        isSaved: true, albumPlayLink: ""
                )
@@ -308,8 +308,8 @@ class DeveloperPreview {
                        reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                    ],
                    replies: [
-                       CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                       CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                    CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "fdsfsd", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                    CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "dsfds", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                    ],
                            isSaved: true, albumPlayLink: ""
                    ),
@@ -326,8 +326,8 @@ class DeveloperPreview {
                        reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                    ],
                    replies: [
-                       CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                       CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                    CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "dsfds", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                    CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "fdsfds", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                    ],
                            isSaved: true, albumPlayLink: ""
                    )
@@ -346,8 +346,8 @@ class DeveloperPreview {
                        reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                    ],
                    replies: [
-                       CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                       CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                    CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "fdsfsd", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                    CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "fdsfds", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                    ],
                            isSaved: true, albumPlayLink: ""
                    ),
@@ -364,8 +364,8 @@ class DeveloperPreview {
                        reviewsModel(id: "",personImage: "user2", personName: "Aisha R.", dateOfRating: ISO8601DateFormatter().date(from: "2024-11-24T14:00:00Z")!, rating: 4.5, reviewBody: "Absolutely cinematic. wacced out murals alone is top 5 of the year.")
                    ],
                    replies: [
-                       CommentModel(id: "",image: "user3", name: "Jordan K.", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
-                       CommentModel(id: "",image: "user4", name: "Priya S.", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
+                    CommentModel(id: "",image: "user3", name: "Jordan K.", disPlayName: "fdsfdsj", replieText: "Could not agree more, been on repeat since day one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-24T15:00:00Z")!),
+                    CommentModel(id: "",image: "user4", name: "Priya S.", disPlayName: "fdsfjd", replieText: "The production is insane on this one.", replieTime: ISO8601DateFormatter().date(from: "2024-11-25T09:00:00Z")!)
                    ],
                            isSaved: true, albumPlayLink: ""
                    )
