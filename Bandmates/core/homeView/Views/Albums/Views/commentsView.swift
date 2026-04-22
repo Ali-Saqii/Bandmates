@@ -9,9 +9,11 @@ import SwiftUI
 
 struct commentsView: View {
     @EnvironmentObject private var hvm : HomeViewModel
+    let albumId: String
     @State private var commentText = ""
     var comments : [CommentModel]
-
+    @State private var id: String? = nil
+    @FocusState private var isTextFieldFocused: Bool
     var body: some View {
         ZStack {
             Color.white
@@ -57,8 +59,15 @@ struct commentsView: View {
                                 VStack(alignment: .leading,spacing: 2) {
                                     Text(comment.name)
                                         .font(.dmSans(16, weight: .semiBold))
-                                    Text(comment.replieText)
-                                        .font(.dmSans(12, weight: .medium))
+                                    VStack(alignment:.leading) {
+                                        if let nam = comment.disPlayName {
+                                            Text(nam)
+                                                .font(.dmSans(14, weight: .medium))
+                                                .foregroundStyle(.blue)
+                                        }
+                                        Text(comment.replieText)
+                                            .font(.dmSans(12, weight: .medium))
+                                    }
                                         .padding(.all,8)
                                         .background(
                                             RoundedRectangle(cornerRadius: 10)
@@ -69,7 +78,8 @@ struct commentsView: View {
                                         Text("\(comment.replieTime.relativeTimeShort)")
                                             .font(.dmSans(12, weight: .medium))
                                         Button {
-                                            commentText = "@\(comment.name)\n"
+                                            getId(comment: comment)
+                                            isTextFieldFocused = true
                                         } label: {
                                             Text("reply".capitalized)
                                                 .foregroundStyle(.black)
@@ -93,6 +103,7 @@ struct commentsView: View {
                 .overlay(alignment:.bottom) {
                     HStack(alignment:.center,spacing: 15) {
                         TextField("", text: $commentText,axis: .vertical)
+                            .focused($isTextFieldFocused)
                             .keyboardType(.default)
                             .padding(.horizontal)
                             .padding(.vertical,15)
@@ -102,7 +113,7 @@ struct commentsView: View {
                                 
                             )
                         Button {
-                            
+                            sendComment()
                         } label: {
                             Image(systemName: "paperplane.fill")
                                 .foregroundStyle(.white)
@@ -113,13 +124,32 @@ struct commentsView: View {
                         )
                         
                     }.padding(.horizontal)
+                }.overlay {
+                    if hvm.isLoading {
+                        Rectangle()
+                            .fill(.textfieldcolor.opacity(0.5))
+                            .ignoresSafeArea()
+                            .overlay {
+                                ProgressView().tint(Color.background)
+                            }
+                    }
                 }
         }
+
          
     }
+    
+    private func sendComment() {
+        hvm.postComment(albumId: albumId, text: commentText, parentId: id)
+    }
+    private func getId(comment: CommentModel){
+        id = comment.id
+    }
+
 }
 #Preview {
-    commentsView(comments: [
-        CommentModel(id: "", image: "user6", name: "Sophie T.", replieText: "The smallest man whojjf dsjjdsjdfhjf  ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
+    commentsView(albumId: "", comments: [
+        CommentModel(id: "", image: "user6", name: "Sophie T.", disPlayName: "cvcxv", replieText: "The smallest man whojjf dsjjdsjdfhjf  ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
     ])
+    .environmentObject(HomeViewModel())
 }
