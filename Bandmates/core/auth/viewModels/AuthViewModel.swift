@@ -16,9 +16,30 @@ class AuthViewModel: ObservableObject {
     @Published var isSignedUp    = false
     @Published var errorMessage    = ""
     @Published var fieldErrors:    [String: String] = [:]
-    
+    @Published var user: userModel? = nil
+    private var userClass = UserClass()
     private var cancellables = Set<AnyCancellable>()
     
+    init() {
+        fetchProfile()
+    }
+    // get user
+    func fetchProfile() {
+        isLoading     = true
+        errorMessage  = ""
+
+        userClass.getUser()
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                if case .failure(let error) = completion {
+                    self?.errorMessage = error.localizedDescription
+                }
+            }, receiveValue: { [weak self] user in
+                self?.user = user
+            })
+            .store(in: &cancellables)
+    }
+
     func SignUp(userName:String,email:String,password:String,confirmPassword:String,avatar:UIImage? = nil,termsAndCondition:Bool) {
         guard termsAndCondition else {
             errorMessage = "you must agree to th terms and conditions"
