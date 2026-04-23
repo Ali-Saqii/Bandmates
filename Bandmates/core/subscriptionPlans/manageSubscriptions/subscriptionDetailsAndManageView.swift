@@ -8,18 +8,12 @@
 import SwiftUI
 
 struct subscriptionDetailsAndManageView: View {
+    @EnvironmentObject var avm: AuthViewModel
     let nameOfSubscriptionPlan: String
-    let price: Double
+    let price: String
     let Status: String
     let dateOfSubscription: Date
-    var nextBillingDate: Date {
-          Calendar.current.date(byAdding: .month, value: 1, to: dateOfSubscription) ?? Date()
-      }
-    var formattedDate: String {
-          let formatter = DateFormatter()
-          formatter.dateFormat = "dd-MM-yyyy"
-          return formatter.string(from: dateOfSubscription)
-      }
+    var nextBillingDate: Date
     var body: some View {
         VStack {
             VStack(spacing:25) {
@@ -34,7 +28,7 @@ struct subscriptionDetailsAndManageView: View {
                             .frame(width: 22, height: 22)
                             .padding(.leading,10)
                         Spacer()
-                        Text(nameOfSubscriptionPlan)
+                        Text("\(nameOfSubscriptionPlan) Membership")
                             .font(.system(size: 20))
                             .fontWeight(.bold)
                             .foregroundStyle(.white)
@@ -76,7 +70,21 @@ struct subscriptionDetailsAndManageView: View {
                     Text("Your subscription will automatically renew at $\(price) monthly unless canceled. Manage your subscription directly below.")
                         .multilineTextAlignment(.center)
                         .lineSpacing(0)
-                    buttonView(action: {}, buttonText: "Cancel Subscription", height: 55).padding(.horizontal,8)
+                    buttonView(action: {
+                        avm.cancelPlan()
+                    }, buttonText: "Cancel Subscription", height: 55).padding(.horizontal,8)
+                    if let error = avm.subErrorMessage {
+                        Text(error)
+                            .font(.dmSans(14, weight: .regular))
+                            .foregroundStyle(.red)
+                            .multilineTextAlignment(.center)
+                    }
+                    if let message = avm.subSucssMessage {
+                        Text(message)
+                            .font(.dmSans(14, weight: .regular))
+                            .foregroundStyle(.green)
+                            .multilineTextAlignment(.center)
+                    }
                 }.padding(.bottom,45)
             }.padding()
         }.background(
@@ -91,5 +99,6 @@ struct subscriptionDetailsAndManageView: View {
 }
 
 #Preview {
-    subscriptionDetailsAndManageView(nameOfSubscriptionPlan: "stadium Membership".capitalized, price:7.99, Status: "Active", dateOfSubscription: .now)
+    subscriptionDetailsAndManageView(nameOfSubscriptionPlan: "stadium Membership".capitalized, price:"7.99", Status: "Active", dateOfSubscription: .now, nextBillingDate: .now)
+        .environmentObject(AuthViewModel())
 }
