@@ -9,6 +9,7 @@ import SwiftUI
 
 struct homwView: View {
     @EnvironmentObject var homeVm: HomeViewModel
+    @StateObject var bvm = BandMatesViewModel()
     @State private var recentlyPlayedSeeAll = false
     @State private var recommendedAlbumsSeeAll = false
     @State private var seeAllBandmates = false
@@ -155,17 +156,19 @@ extension homwView {
     }
     private var bandmatesView: some View {
         VStack {
-            if let bandmates = homeVm.bandmates , !bandmates.isEmpty{
+            if let bandmates = bvm.users , !bandmates.isEmpty{
                 ForEach(Array(bandmates.prefix(3))) { mate in
                     NavigationLink {
                         orthersProfile(bandmate: mate)
+                            .environmentObject(bvm)
                     } label: {
                         OrtherUsersRowView(
                             personImage: mate.image,
                             PersonName: mate.fullName,
                             personUserName: mate.userName,
                             isRequested: mate.isRequested, buttonAction: {}
-                        ).transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
+                        )
+                        .transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
                     }
                 }
             }else if homeVm.isLoading {
@@ -180,4 +183,5 @@ extension homwView {
 #Preview {
     homwView()
         .environmentObject(HomeViewModel())
+        .environmentObject(BandMatesViewModel())
 }
