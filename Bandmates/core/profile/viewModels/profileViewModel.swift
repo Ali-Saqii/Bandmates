@@ -43,6 +43,7 @@ class ProfileViewModel:ObservableObject {
     }
     
     // MARK: - UPDATE User Profile
+    @Published var isUpdated = false
     func updateProfile(
         username    : String? = nil,
         displayName : String? = nil,
@@ -68,6 +69,7 @@ class ProfileViewModel:ObservableObject {
         }, receiveValue: { [weak self] success in
             if success {
                 self?.successMessage = "Profile updated successfully"
+                self?.isUpdated = true
                 self?.fetchProfile()        // ✅ refresh user after update
             }
         })
@@ -76,6 +78,8 @@ class ProfileViewModel:ObservableObject {
     
     
     // update password
+    
+   
     
     func updatePassword(
         oldPassword     : String,
