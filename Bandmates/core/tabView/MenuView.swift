@@ -28,7 +28,9 @@ struct MenuView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                AsyncImage(url: URL(string: vm.user.profileImage)) { phase in
+                AsyncImage(url: URL(string: vm.user.profileImage.hasPrefix("http")
+                                    ? vm.user.profileImage
+                                    : "http://localhost:3000/\(vm.user.profileImage)")) { phase in
                     if let image = phase.image {
                         image
                             .resizable()
