@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct stadiumSubscriptionView: View {
+    @EnvironmentObject var avm: AuthViewModel
     @State private var stadiumIsMonthly = true
     @State private var stadiumIsAnnually = false
     @State private var features = [
@@ -17,6 +18,16 @@ struct stadiumSubscriptionView: View {
         "Share albums with other users",
         "View & add comments on saved albums"
     ]
+    private var isNewUser: Bool {
+         avm.user?.subscriptionPlan == "club" && avm.user?.isOnTrial == false
+     }
+
+     private var buttonText: String {
+         isNewUser ? "Start 14-Day Free Trial" : "Upgrade to Stadium"
+     }
+    private var selectedPlan: String {
+        stadiumIsMonthly ? "stadium_monthly" : "stadium_annual"
+       }
     var body: some View {
         VStack(spacing:35)  {
             VStack(spacing:20) {
@@ -26,6 +37,9 @@ struct stadiumSubscriptionView: View {
             }
             seletingPlansButtonsView
             stadiumPlanSubscribeView
+        }.navigationDestination(isPresented: $avm.isSubscribe) {
+            subscriptionDetailsAndManageView( nameOfSubscriptionPlan: avm.subscriptionData?.membership ?? "", price: "", Status: "Active", dateOfSubscription: .now, nextBillingDate: avm.subscriptionData?.subscriptionEndsAt ?? .now)
+                .environmentObject(avm)
         }
     }
 }
@@ -60,7 +74,9 @@ extension stadiumSubscriptionView {
                 .font(.system(size: 13,weight: .semibold))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.gray)
-            buttonView(action: {}, buttonText: "Upgrade to Stadium", height: 55)
+            buttonView(action: {
+                avm.selectPlan(plan:selectedPlan )
+            }, buttonText: buttonText, height: 55)
                 .padding()
 
         }
@@ -68,4 +84,5 @@ extension stadiumSubscriptionView {
 }
 #Preview {
     stadiumSubscriptionView()
+        .environmentObject(AuthViewModel())
 }
