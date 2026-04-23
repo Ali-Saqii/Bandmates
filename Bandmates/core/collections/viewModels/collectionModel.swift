@@ -11,7 +11,7 @@ import Combine
 class collectionViewModel:ObservableObject {
     
     @Published var collections:[CollectionModel]? = nil
-    @Published var user = userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", subscriptionPlan: "club", isOnTrial: false)
+    @Published var user = userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", subscriptionPlan: "club", isOnTrial: false)
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var cErrorMessage: String? = nil
