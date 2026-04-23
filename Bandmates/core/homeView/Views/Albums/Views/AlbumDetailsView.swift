@@ -51,7 +51,8 @@ struct AlbumDetailsView: View {
                                 }
                         }
                 
-                    }.navigationBarBackButtonHidden(true)
+                    }.scrollIndicators(.hidden)
+                    .navigationBarBackButtonHidden(true)
                 }.toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         albumDetailsToolBarButton(action: {
