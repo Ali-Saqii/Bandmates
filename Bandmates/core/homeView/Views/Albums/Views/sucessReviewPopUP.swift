@@ -9,7 +9,30 @@ import SwiftUI
 
 struct sucessReviewPopUP: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        VStack() {
+            Spacer()
+            Image(systemName: "checkmark")
+                .foregroundStyle(.white)
+                .font(.title)
+                .fontWeight(.semibold)
+                .frame(width: 88, height: 88)
+                .background(
+                    Circle()
+                        .fill(Color.background)
+                )
+                Spacer()
+            Text("Review Submitted!")
+                .font(.dmSans(20, weight: .bold))
+                .foregroundStyle(Color.background)
+                .padding(.bottom)
+            
+        }.frame(maxWidth: .infinity)
+            .frame(height: 261)
+            .background(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .shadow(color:.textfieldcolor,radius: 15)
+            .padding(.horizontal,30)
     }
 }
 
