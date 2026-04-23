@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 struct userModel: Codable ,Identifiable, Hashable {
-    var id  = UUID().uuidString
+    let  id : String
     let profileImage : String
     let fullName: String
     let userName: String
@@ -30,33 +30,33 @@ struct AuthResponse: Codable {
 
 
 struct UserDTO: Codable {
-    let userId              : String
-    let userProfileImage    : String
-    let userName            : String
-    let userDisplayName     : String
-    let email               : String
-    let bio                 : String
-    let noOfFriends         : Int
-    let numberOfSavedAlbums : Int
-    let userMembeShip       : String
-    let isOnTrial           : Bool
-    let totalUsers          : Int
+    let id               : String
+    let profileImage     : String
+    let fullName         : String
+    let userName         : String
+    let Bio              : String
+    let waiting          : Int
+    let totalBandmates   : Int
+    let toralSavedAlbums : Int
+    let email            : String
+    let subscriptionPlan : String
+    let isOnTrial        : Bool
 }
 
 // MARK: - UserDTO → userModel
 extension UserDTO {
     func toUserModel() -> userModel {
         userModel(
-            id              : userId,
-            profileImage    : userProfileImage,
-            fullName        : userDisplayName.isEmpty ? userName : userDisplayName,
+            id: id,
+            profileImage    : profileImage,
+            fullName        : fullName,
             userName        : userName,
-            Bio             : bio,
-            waiting         : 0,
-            totalBandmates  : noOfFriends,
-            toralSavedAlbums: numberOfSavedAlbums,
+            Bio             : Bio,
+            waiting         : waiting,
+            totalBandmates  : totalBandmates,
+            toralSavedAlbums: toralSavedAlbums,
             email           : email,
-            subscriptionPlan: userMembeShip,
+            subscriptionPlan: subscriptionPlan,
             isOnTrial       : isOnTrial
         )
     }
