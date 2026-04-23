@@ -12,6 +12,7 @@ struct chooseSubscriptionView: View {
     @State private var club = true
     @State private var arena = false
     @State private var stadium = false
+    
     @Environment(\.dismiss) var dismiss
     var body: some View {
         ZStack {
@@ -29,18 +30,21 @@ struct chooseSubscriptionView: View {
                     }
                     if club {
                         clubMembershipView()
+                            .environmentObject(authVm)
                             .transition(.asymmetric(
                                 insertion: .move(edge: .trailing),
                                 removal: .move(edge: .leading)
                             ))
                     }else if arena {
                         arenasubscriptionView()
+                            .environmentObject(authVm)
                             .transition(.asymmetric(
                                 insertion: .move(edge: .trailing),
                                 removal: .move(edge: .leading)
                             ))
                     }else if stadium {
                         stadiumSubscriptionView()
+                            .environmentObject(authVm)
                             .transition(.asymmetric(
                                 insertion: .move(edge: .trailing),
                                 removal: .move(edge: .leading)
