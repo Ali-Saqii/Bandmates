@@ -16,6 +16,7 @@ struct EditProfileView: View {
     @State private var newUserName = ""
     @State private var newEmail = ""
     @State private var newBio = ""
+    @Environment(\.dismiss) var dissmiss
     var body: some View {
         ZStack{
             Color.white
@@ -29,7 +30,15 @@ struct EditProfileView: View {
                     .padding()
                 Spacer()
             }
-        }.onAppear(perform: {
+        }.onChange(of: pvm.isUpdated, { _, newValue in
+            if newValue {
+                newFullName = ""
+                newUserName = ""
+                dissmiss()
+                pvm.isUpdated = false
+            }
+        })
+        .onAppear(perform: {
             getNames()
         })
         .overlay(content: {
@@ -80,7 +89,9 @@ extension EditProfileView {
                                     .clipShape(Circle())
                             } else {
                                 if let user = pvm.user {
-                                    AsyncImage(url: URL(string: user.profileImage)) { phase in
+                                    AsyncImage(url: URL(string: user.profileImage.hasPrefix("http")
+                                                        ? user.profileImage
+                                                        : "http://localhost:3000/\(user.profileImage)")) { phase in
                                         if let image = phase.image {
                                             image
                                                 .resizable()
