@@ -22,16 +22,24 @@ struct MyBandView: View {
                             ForEach(Bandmates) { mate in
                                 MyBandRowView(personImage: mate.image, fullName: mate.fullName, userName: mate.userName)
                                     .onTapGesture {
-                                        selectedPerSon = mate
+                                        Bvm.fetchSavedAlbums(userId: mate.id)
+                                        if Bvm.isSavedAlbumFetched {
+                                            Bvm.isSavedAlbumFetched = false
+                                            selectedPerSon = mate
+                                        }
                                     }
                             }
                         }
                     }.padding(.horizontal)
               
-            }.scrollIndicators(.hidden)
+            }.refreshable {
+                Bvm.refresh()
+            }
+            .scrollIndicators(.hidden)
                 .scrollBounceBehavior(.basedOnSize)
                 .navigationDestination(item: $selectedPerSon, destination: { person in
                     orthersProfile(bandmate: person)
+                        .environmentObject(Bvm)
                 })
                 
             } else {
