@@ -11,7 +11,6 @@ struct orthersProfile: View {
     @EnvironmentObject var Bvm : BandMatesViewModel
     let bandmate: BandmateModel?
     @State private var showBandmates = false
-
     @State private var collectionCount = 0
     var body: some View {
         ZStack {
@@ -19,7 +18,7 @@ struct orthersProfile: View {
             if let bandMate = bandmate {
                 VStack(spacing:15) {
                     VStack(alignment:.center) {
-                        AsyncImage(url: URL(string: bandMate.image)) { phase in
+                        AsyncImage(url: URL(string: "http://localhost:3000/\(bandMate.image)")) { phase in
                             if let image = phase.image {
                                 image
                                     .resizable()
@@ -66,7 +65,7 @@ struct orthersProfile: View {
                     HStack() {
                         Spacer()
                         VStack {
-                            Text("\(bandMate.BandMates.count)")
+                            Text("\(bandmate?.bandmates ?? 0)")
                                 .foregroundStyle(.black)
                                 .font(.dmSans(16, weight: .semiBold))
                             Text("Bandmates")
@@ -79,7 +78,7 @@ struct orthersProfile: View {
                         }
                         Spacer()
                         VStack {
-                            Text("\(bandMate.savedCollection.count )")
+                            Text("\(bandmate?.collections ?? 0)")
                                 .foregroundStyle(.black)
                                 .font(.dmSans(16, weight: .semiBold))
                             Text("Collections")
@@ -88,16 +87,19 @@ struct orthersProfile: View {
                         }
                         Spacer()
                     }.padding(.horizontal,40)
-                    
-                    buttonView(action: {}, buttonText: "Send Band Request", height: 55)
-                        .padding(.horizontal,40)
+                    if !bandMate.isRequested && !bandMate.aretheyRequested {
+                        buttonView(action: {}, buttonText: "Send Band Request", height: 55)
+                            .padding(.horizontal,40)
+                    } else if bandMate.aretheyRequested {
+                        buttonView(action: {}, buttonText: "Accecpt Request", height: 55)
+                            .padding(.horizontal,40)
+                    }
                     VStack {
                         Text("Saved Collections")
                             .foregroundStyle(Color.background)
                             .font(.dmSans(16, weight: .bold))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading)
-                        
                         Divider()
                             .overlay(alignment: .leading) {
                                 RoundedRectangle(cornerRadius: 2)
@@ -108,15 +110,13 @@ struct orthersProfile: View {
                     }
                     VStack {
                         ScrollView {
-                            
-                            ForEach(bandMate.savedCollection) { collection in
-                              
-                                    ForEach(collection.albums) { album in
-                                        AlbumsRowView(albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSaved: album.isSaved)
-                                        
-                                    }
+                            if Bvm.userSavedAlbums == [] {
+                                NoBandmatesView(icon: "photo.artframe", height: 60, width: 60, title: "User have no SavedAlbum", subTitle: "User have still no saved albums", titleFont: .dmSans(16, weight: .bold), subTitleFont: .dmSans(12, weight: .medium), color: Color.background.opacity(0.6))
+                            } else {
+                                ForEach(Bvm.userSavedAlbums) { album in
+                                    AlbumsRowView(albumImage: album.albumName, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSaved: album.isSaved)
                                 }
-                            
+                            }
                         }.scrollIndicators(.hidden)
                     }
                 }
@@ -124,7 +124,7 @@ struct orthersProfile: View {
         }.navigationTitle("orther's profile".capitalized)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showBandmates) {
-                personBandMateView(bandmates: bandmate?.BandMates ?? [], name: bandmate?.fullName ?? "")
+//                personBandMateView(bandmates: bandmate?.BandMates ?? [], name: bandmate?.fullName ?? "")
             }
     }
     private func getcollectionCount(count: Int) {
