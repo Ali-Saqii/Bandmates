@@ -41,6 +41,7 @@ struct profileView: View {
               
                 Spacer()
             }.padding(.horizontal)
+            
         }.fullScreenCover(isPresented: $logoutAccount, content: {
             ZStack {
                 Color.black.opacity(0.6)
@@ -70,7 +71,7 @@ struct profileView: View {
         })
         .environmentObject(profileVm)
         .navigationDestination(isPresented: $editProfileView) {
-            EditProfileView(user: profileVm.user ?? userModel(profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "",subscriptionPlan: "Club",isOnTrial: false))
+            EditProfileView(user: profileVm.user ?? userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "",subscriptionPlan: "Club",isOnTrial: false))
                 .environmentObject(profileVm)
         }
         .navigationDestination(isPresented: $showHelpAndSupport) {
@@ -80,6 +81,7 @@ struct profileView: View {
         .navigationDestination(isPresented: $showBillingPlans) {
             chooseSubscriptionView()
                 .environmentObject(profileVm)
+                .environmentObject(aVm)
         }
         .navigationDestination(isPresented: $accountSetting) {
             AccountSetingView()
@@ -116,7 +118,9 @@ extension profileView {
             if let user  = profileVm.user {
                 HStack{
                     
-                    AsyncImage(url: URL(string:user.profileImage)) { phase in
+                    AsyncImage(url: URL(string: user.profileImage.hasPrefix("http")
+                                        ? user.profileImage
+                                        : "http://localhost:3000/\(user.profileImage)")) { phase in
                         if let image = phase.image {
                             image
                                 .resizable()
@@ -173,6 +177,9 @@ extension profileView {
                         }
                 }.padding(.horizontal)
                     .padding(.top)
+                    .onAppear {
+                        print("🖼️ Image URL: http://localhost:3000/\(user.profileImage)")
+                    }
                 VStack(alignment:.leading) {
                     Text("Bio")
                         .font(.dmSans(14, weight: .bold))
