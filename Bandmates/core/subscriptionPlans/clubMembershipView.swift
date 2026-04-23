@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct clubMembershipView: View {
+    @EnvironmentObject var avm: AuthViewModel
     @State private var features = [
         "Search & save up to 10 albums",
         "View Top 5 albums on chart",
         "Discover & connect with bandmates"
     ]
+ 
+
     var body: some View {
         VStack(spacing:35) {
             VStack(spacing:20) {
@@ -61,4 +64,5 @@ extension clubMembershipView {
 
 #Preview {
     clubMembershipView()
+        .environmentObject(AuthViewModel())
 }
