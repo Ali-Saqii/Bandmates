@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct personBandMateView: View {
-    let bandmates: [BandmateModel]
+    @EnvironmentObject var Bvm : BandMatesViewModel
     let name: String
     var body: some View {
         ZStack {
@@ -16,12 +16,12 @@ struct personBandMateView: View {
                 .ignoresSafeArea()
             ScrollView {
                 VStack {
-                    if !bandmates.isEmpty {
-                        ForEach(bandmates) { bandmate in
-                            MyBandRowView(personImage: bandmate.image, fullName: bandmate.fullName, userName: bandmate.userName)
-                        }
-                        
-                    } else {}
+//                    if !bandmates.isEmpty {
+//                        ForEach(bandmates) { bandmate in
+//                            MyBandRowView(personImage: bandmate.image, fullName: bandmate.fullName, userName: bandmate.userName)
+//                        }
+//                        
+//                    } else {}
                 }
             }.scrollIndicators(.hidden)
                 
@@ -30,5 +30,6 @@ struct personBandMateView: View {
 }
 
 #Preview {
-    personBandMateView(bandmates: DeveloperPreview.instance.Bandmates, name: DeveloperPreview.instance.profile.fullName)
+    personBandMateView(name: DeveloperPreview.instance.profile.fullName)
+        .environmentObject(BandMatesViewModel())
 }
