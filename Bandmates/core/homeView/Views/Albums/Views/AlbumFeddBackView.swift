@@ -90,6 +90,13 @@ struct AlbumFeddBackView: View {
             
                 Spacer()
             }
+            if hvm.reviewSuccess {
+                Color.black.opacity(0.6)
+                    .ignoresSafeArea()
+                  sucessReviewPopUP()
+            }
+            
+            
         }.overlay(content: {
             if hvm.isLoading {
                 Rectangle()
@@ -116,12 +123,14 @@ struct AlbumFeddBackView: View {
     }
     private func addFeedBack() {
         hvm.postReview(albumId:albumId , rating: starCount, reviewText: feddBackText)
-        message = hvm.reviewSuccess ? "Error while posting review" : "Sucesfully posted"
-        if hvm.reviewSuccess {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            message = ""
-                dismiss()
-            }
+     
+       ifSucess()
+    }
+    
+    private func ifSucess() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            hvm.reviewSuccess = false
+            dismiss()
         }
     }
 }
