@@ -14,7 +14,7 @@ struct MyBandRowView: View {
     
     var body: some View {
         HStack {
-                AsyncImage(url: URL(string: personImage)) { phase in
+                AsyncImage(url: URL(string: "http://localhost:3000/\(personImage)")) { phase in
                     if let image = phase.image {
                         image
                             .resizable()
