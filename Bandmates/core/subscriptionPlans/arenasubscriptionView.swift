@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct arenasubscriptionView: View {
+    @EnvironmentObject var avm: AuthViewModel
     @State private var features = [
         "Search & save up to 25 albums",
         "View Top 25 albums on chart",
@@ -17,6 +18,17 @@ struct arenasubscriptionView: View {
     ]
     @State private var isMonthly = true
     @State private var isAnnually = false
+    private var isNewUser: Bool {
+         avm.user?.subscriptionPlan == "club" && avm.user?.isOnTrial == false
+     }
+
+     private var buttonText: String {
+         isNewUser ? "Start 14-Day Free Trial" : "Upgrade to Arena"
+     }
+    
+    private var selectedPlan: String {
+           isMonthly ? "arena_monthly" : "arena_annual"
+       }
     var body: some View {
         VStack(spacing:35)  {
             VStack(spacing:20) {
@@ -27,6 +39,9 @@ struct arenasubscriptionView: View {
             seletingPlansButtonsView
             arenPlanSubscribeView
             
+        }.navigationDestination(isPresented: $avm.isSubscribe) {
+            subscriptionDetailsAndManageView( nameOfSubscriptionPlan: avm.subscriptionData?.membership ?? "", price: "", Status: "Active", dateOfSubscription: .now, nextBillingDate: avm.subscriptionData?.subscriptionEndsAt ?? .now)
+                .environmentObject(avm)
         }
     }
 }
@@ -61,7 +76,9 @@ extension arenasubscriptionView {
                 .font(.system(size: 13,weight: .semibold))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.gray)
-            buttonView(action: {}, buttonText: "Upgrade to Arena", height: 55)
+            buttonView(action: {
+                avm.selectPlan(plan:selectedPlan )
+            }, buttonText: buttonText, height: 55)
                 .padding()
 
         }
@@ -69,4 +86,5 @@ extension arenasubscriptionView {
 }
 #Preview {
     arenasubscriptionView()
+        .environmentObject(AuthViewModel())
 }
