@@ -33,7 +33,10 @@ struct DiscoverUsersView: View {
                             }
                         } else{}
                     }
-                }.scrollIndicators(.hidden)
+                }.refreshable {
+                    Bvm.refresh()
+                }
+                .scrollIndicators(.hidden)
                     .scrollBounceBehavior(.basedOnSize)
             } else {
                 NoBandmatesView(icon: "network.slash",height: 70,width: 80, title: "No internet!", subTitle: "Check your internet and try again later!!!", titleFont: .dmSans(20, weight: .semiBold), subTitleFont: .dmSans(14, weight: .semiBold), color: Color.background.opacity(0.5))
@@ -41,6 +44,7 @@ struct DiscoverUsersView: View {
         }
         .navigationDestination(item: $selectedPerson, destination: { person in
             orthersProfile(bandmate: person)
+                .environmentObject(Bvm)
         })
         }
     }

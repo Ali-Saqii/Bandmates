@@ -23,7 +23,10 @@ struct BandmatesRequestView: View {
                             }
                         }
                     }.padding(.horizontal)
-                }.scrollIndicators(.hidden)
+                }.refreshable {
+                    Bvm.refresh()
+                }
+                .scrollIndicators(.hidden)
                     .scrollBounceBehavior(.basedOnSize)
                     .background(
                         Color.white
