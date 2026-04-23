@@ -136,4 +136,55 @@ class AuthViewModel: ObservableObject {
             self.fieldErrors = [:]
         }
     }
+    
+    // Subscribe Plan
+    private let service = SubscriptionService()
+    @Published var subErrorMessage: String? = nil
+    @Published var subSucssMessage: String? = nil
+    @Published var subscriptionData: SubscriptionData?    = nil
+    @Published var isSubscribe = false
+    func selectPlan(plan: String) {
+        isLoading      = true
+        subErrorMessage   = nil
+        subSucssMessage = nil
+
+        service.selectPlan(plan: plan)
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                if case .failure(let error) = completion {
+                    print("\(error)")
+                    self?.errorMessage = error.localizedDescription
+                }
+            }, receiveValue: { [weak self] response in
+                self?.isLoading       = false
+                self?.subSucssMessage  = response.message
+                self?.subscriptionData = response.data
+                self?.isSubscribe = response.success
+                self?.fetchProfile()
+                print(response.success ? "✅ \(response.message)" : "❌ \(response.message)")
+            })
+            .store(in: &cancellables)
+    }
+    // caccel plan
+    
+    func cancelPlan() {
+        isLoading      = true
+        subErrorMessage   = nil
+        subSucssMessage = nil
+        
+        service.cancelPlan()
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                if case .failure(let error) = completion {
+                    self?.subErrorMessage = error.localizedDescription
+                }
+            }, receiveValue: { [weak self] response in
+                self?.isLoading      = false
+                self?.subSucssMessage = response.message
+                self?.subscriptionData = nil
+                self?.fetchProfile()
+                print(response.success ? "✅ \(response.message)" : "❌ \(response.message)")
+            })
+            .store(in: &cancellables)
+    }
 }
