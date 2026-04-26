@@ -29,6 +29,10 @@ class NetworkLayer {
             let container = try decoder.singleValueContainer()
             let dateStr = try container.decode(String.self)
 
+            if dateStr.isEmpty {
+                      return Date.distantPast
+                  }
+            
             if let date = formatter.date(from: dateStr) {
                 return date
             }
@@ -124,26 +128,21 @@ class NetworkLayer {
           }
       }
     //patch
-    static func patch<T: Encodable>(
+    static func patch(
         url: URL,
-        body: T,
         headers: [String: String] = [:]
     ) -> AnyPublisher<Data, Error> {
-        do {
-            let request = try buildRequest(
-                url: url,
-                method: "PATCH",
-                body: body,
-                headers: headers
-            )
-            return download(request: request)
-        } catch {
-            print("\(error)")
 
-            return Fail(error: error).eraseToAnyPublisher()
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+
+        headers.forEach { key, value in
+            request.setValue(value, forHTTPHeaderField: key)
         }
+
+        return download(request: request)
     }
-    // delete
+    //Delete
     static func delete(
          url: URL,
          headers: [String: String] = [:]
