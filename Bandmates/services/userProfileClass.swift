@@ -49,42 +49,7 @@ class UserClass {
                   .compactMap { $0.data?.toUserModel() }
                   .eraseToAnyPublisher()
     }
-    // update user
-//    func updateUser(
-//        username    : String? = nil,
-//        displayName : String? = nil,
-//        description : String? = nil,
-//        avatar      : UIImage?,
-//        email       : String? = nil
-//    ) -> AnyPublisher<Bool, Error> {
-//        guard let url = URL(string: UserClass.updateUserUrl) else {
-//            print("Invalid url")
-//            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
-//        }
-//        let avatarData = avatar?.jpegData(compressionQuality: 0.5)
-//        let body = UpdateUserBody(
-//            username    : username,
-//            displayName : displayName,
-//            description : description,
-//            avatar      : avatarData,
-//            email: email
-//        )
-//
-//        do {
-//            let request = try NetworkLayer.buildRequest(url: url, method: "PUT", body: body, headers: ["Authorization": "Bearer \(token)"] )
-//            return NetworkLayer.download(request: request)
-//                .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
-//                .handleEvents(receiveOutput: { [weak self] response in
-//                    self?.user = response.data?.toUserModel()
-//                })
-//                .map { $0.success }
-//                .eraseToAnyPublisher()
-//        } catch {
-//            print("Error: \(error.localizedDescription)")
-//            return Fail(error: error).eraseToAnyPublisher()
-//        }
-//    }
-//
+
     func updateUser(
         username: String? = nil,
         displayName: String? = nil,
