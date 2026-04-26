@@ -36,10 +36,11 @@ class HomeViewModel: ObservableObject {
      }
      
     init() {
+        fetchProfile()
         getAlbums()
         getSavedAlbums()
-        fetchProfile()
         fetchAndMapCollections()
+        fetchUsers()
     }
     @MainActor
      func fetchItems() async {
@@ -331,5 +332,43 @@ class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    // subscribe bandmates
+    
+    private(set) var currentPage: Int = 1
+    private(set) var totalPages: Int = 1
+    private let limit: Int = 10
+    
+    private let userService = BandmateClass()
+    
+    func fetchUsers() {
+
+        isLoading = true
+        errorMessage = nil
+
+        currentPage = 1
+        totalPages = 1
+
+        userService.fetchUsers(page: currentPage, limit: limit)
+            .sink { [weak self] completion in
+                guard let self else { return }
+
+                self.isLoading = false
+
+                if case .failure(let error) = completion {
+                    print("❌ Fetch Users Error:", error)
+                    self.errorMessage = error.localizedDescription
+                }
+
+            } receiveValue: { [weak self] response in
+                guard let self else { return }
+
+                self.bandmates = response.data
+                self.totalPages = response.pagination.totalPages
+                if response.data.isEmpty {
+                    self.bandmates = response.data
+                }
+            }
+            .store(in: &cancellables)
+    }
  
 }
