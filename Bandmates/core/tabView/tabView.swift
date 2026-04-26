@@ -51,10 +51,8 @@ struct tabView: View {
                     switch selectedTab {
                     case .home:       homwView().environmentObject(HomeViewModel())
                     case .collection: collectionView().environmentObject(HomeViewModel())
-                    case .charts:      StarDistributionChart(
-                        distribution: [10, 18, 55, 95, 42],
-                        growthPercent: 20
-                    ).environmentObject(HomeViewModel())
+                    case .charts: chartView()
+                    .environmentObject(HomeViewModel())
                     case .profile:    profileView().environmentObject(HomeViewModel())
                     }
                 }
