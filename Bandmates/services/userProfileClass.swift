@@ -50,41 +50,95 @@ class UserClass {
                   .eraseToAnyPublisher()
     }
     // update user
+//    func updateUser(
+//        username    : String? = nil,
+//        displayName : String? = nil,
+//        description : String? = nil,
+//        avatar      : UIImage?,
+//        email       : String? = nil
+//    ) -> AnyPublisher<Bool, Error> {
+//        guard let url = URL(string: UserClass.updateUserUrl) else {
+//            print("Invalid url")
+//            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+//        }
+//        let avatarData = avatar?.jpegData(compressionQuality: 0.5)
+//        let body = UpdateUserBody(
+//            username    : username,
+//            displayName : displayName,
+//            description : description,
+//            avatar      : avatarData,
+//            email: email
+//        )
+//
+//        do {
+//            let request = try NetworkLayer.buildRequest(url: url, method: "PUT", body: body, headers: ["Authorization": "Bearer \(token)"] )
+//            return NetworkLayer.download(request: request)
+//                .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
+//                .handleEvents(receiveOutput: { [weak self] response in
+//                    self?.user = response.data?.toUserModel()
+//                })
+//                .map { $0.success }
+//                .eraseToAnyPublisher()
+//        } catch {
+//            print("Error: \(error.localizedDescription)")
+//            return Fail(error: error).eraseToAnyPublisher()
+//        }
+//    }
+//
     func updateUser(
-        username    : String? = nil,
-        displayName : String? = nil,
-        description : String? = nil,
-        avatar      : UIImage?,
-        email       : String? = nil
+        username: String? = nil,
+        displayName: String? = nil,
+        description: String? = nil,
+        avatar: UIImage?,
+        email: String? = nil
     ) -> AnyPublisher<Bool, Error> {
+
         guard let url = URL(string: UserClass.updateUserUrl) else {
-            print("Invalid url")
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-        let avatarData = avatar?.jpegData(compressionQuality: 0.8)
-        let body = UpdateUserBody(
-            username    : username,
-            displayName : displayName,
-            description : description,
-            avatar      : avatarData,
-            email: email
-        )
 
-        do {
-            let request = try NetworkLayer.buildRequest(url: url, method: "PUT", body: body, headers: ["Authorization": "Bearer \(token)"] )
-            return NetworkLayer.download(request: request)
-                .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
-                .handleEvents(receiveOutput: { [weak self] response in
-                    self?.user = response.data?.toUserModel()
-                })
-                .map { $0.success }
-                .eraseToAnyPublisher()
-        } catch {
-            print("Error: \(error.localizedDescription)")
-            return Fail(error: error).eraseToAnyPublisher()
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+
+        let boundary = UUID().uuidString
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        var body = Data()
+
+        // helper
+        func append(_ key: String, _ value: String) {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+            body.append("\(value)\r\n".data(using: .utf8)!)
         }
+
+        // text fields
+        if let username = username { append("username", username) }
+        if let displayName = displayName { append("displayName", displayName) }
+        if let description = description { append("description", description) }
+        if let email = email { append("email", email) }
+
+        // image
+        if let avatar = avatar,
+           let imageData = avatar.jpegData(compressionQuality: 0.5) {
+
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"avatar\"; filename=\"avatar.jpg\"\r\n".data(using: .utf8)!)
+            body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+            body.append(imageData)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+
+        request.httpBody = body
+
+        return NetworkLayer.download(request: request)
+            .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
+            .map { $0.success }
+            .eraseToAnyPublisher()
     }
-    
     // update password
     func updatePassword(
         oldPassword     : String,
