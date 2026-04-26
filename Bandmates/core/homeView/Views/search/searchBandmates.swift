@@ -10,6 +10,7 @@ import SwiftUI
 struct searchBandmates: View {
     @EnvironmentObject var hvm : HomeViewModel
     @State private var selecteMate: BandmateModel? = nil
+    @StateObject var bvm = BandMatesViewModel()
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
@@ -23,7 +24,10 @@ struct searchBandmates: View {
                         ForEach(hvm.searchResults.bandmates) { mate in
                             OrtherUsersRowView(personImage: mate.image, PersonName: mate.fullName, personUserName: mate.userName, isRequested:mate.isRequested, buttonAction: {})
                                 .onTapGesture {
-                                    selecteMate = mate
+                                    bvm.fetchSavedAlbums(userId: mate.id)
+                                    if bvm.isSavedAlbumFetched {
+                                        selecteMate = mate
+                                    }
                                 }
                         }
                     } else {}
@@ -33,6 +37,7 @@ struct searchBandmates: View {
                 .navigationDestination(item: $selecteMate) { mate in
                     orthersProfile(bandmate: mate)
                         .environmentObject(hvm)
+                        .environmentObject(bvm)
                 }
         }
     }
