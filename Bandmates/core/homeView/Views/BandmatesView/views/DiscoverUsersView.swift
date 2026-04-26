@@ -25,10 +25,13 @@ struct DiscoverUsersView: View {
                                     personUserName: user.userName,
                                     isRequested: user.isRequested,
                                     buttonAction: {
-                                        
+                                        Bvm.sendRequest(to: user.id)
                                     }
                                 ).onTapGesture {
-                                    selectedPerson = user
+                                    Bvm.fetchSavedAlbums(userId: user.id)
+                                    if Bvm.isSavedAlbumFetched {
+                                        selectedPerson = user
+                                    }
                                 }
                             }
                         } else{}
