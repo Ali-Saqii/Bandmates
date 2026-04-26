@@ -14,12 +14,16 @@ struct BandmatesRequestView: View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
-            if Bvm.requestedNandmates != nil {
+            if Bvm.requestedNandmates != nil && Bvm.requestedNandmates != []{
                 ScrollView {
                     VStack {
                         if let requestedMates = Bvm.requestedNandmates {
                             ForEach(requestedMates) { mate in
-                                RequestedBandmatesRowView(personImage: mate.image, fullName: mate.fullName, userName: mate.userName, DeclineButton: {}, ApproveButton: {})
+                                RequestedBandmatesRowView(personImage: mate.image, fullName: mate.fullName, userName: mate.userName, DeclineButton: {
+                                    Bvm.rejectRequest(requestId: mate.id)
+                                }, ApproveButton: {
+                                    Bvm.acceptRequest(requestId: mate.id)
+                                })
                             }
                         }
                     }.padding(.horizontal)
