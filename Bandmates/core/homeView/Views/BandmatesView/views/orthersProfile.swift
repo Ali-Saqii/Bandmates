@@ -74,7 +74,11 @@ struct orthersProfile: View {
                             
                         }
                         .onTapGesture {
-                            showBandmates.toggle()
+                            Bvm.fetchBandmates(userId: bandmate?.id ?? "")
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                showBandmates = Bvm.isFriendsGet
+//                                Bvm.isFriendsGet = false
+                            }
                         }
                         Spacer()
                         VStack {
@@ -114,7 +118,7 @@ struct orthersProfile: View {
                                 NoBandmatesView(icon: "photo.artframe", height: 60, width: 60, title: "User have no SavedAlbum", subTitle: "User have still no saved albums", titleFont: .dmSans(16, weight: .bold), subTitleFont: .dmSans(12, weight: .medium), color: Color.background.opacity(0.6))
                             } else {
                                 ForEach(Bvm.userSavedAlbums) { album in
-                                    AlbumsRowView(albumImage: album.albumName, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSaved: album.isSaved)
+                                    AlbumsRowView(albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSaved: album.isSaved)
                                 }
                             }
                         }.scrollIndicators(.hidden)
@@ -124,12 +128,13 @@ struct orthersProfile: View {
         }.navigationTitle("orther's profile".capitalized)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showBandmates) {
-//                personBandMateView(bandmates: bandmate?.BandMates ?? [], name: bandmate?.fullName ?? "")
+                personBandMateView(name: bandmate?.fullName ?? "")
+                    .environmentObject(Bvm)
             }
     }
-    private func getcollectionCount(count: Int) {
-       collectionCount = collectionCount + count
-    }
+//    private func getcollectionCount(count: Int) {
+//       collectionCount = collectionCount + count
+//    }
 }
 
 #Preview {
