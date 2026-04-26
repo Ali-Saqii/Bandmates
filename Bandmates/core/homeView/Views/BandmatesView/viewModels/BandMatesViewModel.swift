@@ -12,30 +12,25 @@ class BandMatesViewModel : ObservableObject {
     @Published var MyBandMates: [BandmateModel]? = nil
     @Published var users: [BandmateModel]? = nil
     @Published var requestedNandmates: [BandmateModel]? = nil
-  
+    @Published var userBnadmates: [BandmateModel] = []
     @Published var isLoading: Bool = false
     @Published var isFetchingMore: Bool = false
     @Published var isSavedAlbumFetched = false
     @Published var errorMessage: String?
     @Published var successMessage: String?
-
-    // MARK: - Pagination
+    
     private(set) var currentPage: Int = 1
     private(set) var totalPages: Int = 1
     private let limit: Int = 10
-
-    // MARK: - Dependencies
+    
     private let userService = BandmateClass()
     private var cancellables = Set<AnyCancellable>()
-
-
+    
+    
     init() {
         fetchUsers()
-        getRequestedNandmates()
-        getMyBandMates()
-        
     }
-    
+
     // MARK: - Initial Fetch
        func fetchUsers() {
 
@@ -60,9 +55,13 @@ class BandMatesViewModel : ObservableObject {
                } receiveValue: { [weak self] response in
                    guard let self else { return }
 
-                   self.users = response.data
+                   self.users = response.data.filter {
+                       !$0.isFriend && !$0.aretheyRequested
+                   }
+                   self.requestedNandmates = response.data.filter { $0.aretheyRequested == true }
+                   self.MyBandMates = response.data.filter { $0.isFriend == true }
                    self.totalPages = response.pagination.totalPages
-                   self.isSavedAlbumFetched = true
+             
                    if response.data.isEmpty {
                        self.users = response.data
                        self.successMessage = "No users found."
@@ -71,7 +70,7 @@ class BandMatesViewModel : ObservableObject {
                .store(in: &cancellables)
        }
 
-       // MARK: - Pagination (Load More)
+       // Load More
        func loadMoreIfNeeded(currentItem: BandmateModel) {
 
            guard !isFetchingMore,
@@ -98,6 +97,9 @@ class BandMatesViewModel : ObservableObject {
                        guard let self else { return }
 
                        self.users?.append(contentsOf: response.data)
+                       self.requestedNandmates = response.data.filter { $0.aretheyRequested == true }
+                       self.MyBandMates = response.data.filter { $0.isFriend == true }
+
                        self.totalPages = response.pagination.totalPages
                    }
                    .store(in: &cancellables)
@@ -117,17 +119,6 @@ class BandMatesViewModel : ObservableObject {
            errorMessage = nil
            successMessage = nil
        }
-    
-    
-    private func getRequestedNandmates() {
-        guard let bandmates = users else { return }
-        requestedNandmates = bandmates.filter({$0.isRequested == true})
-    }
-    private func getMyBandMates() {
-        guard let orthersUsers = users else {return}
-        MyBandMates = orthersUsers.filter({$0.isFriend == true})
-    }
-    
     
     // getusers Collection
     
@@ -163,12 +154,15 @@ class BandMatesViewModel : ObservableObject {
              if case .failure(let error) = completion {
                  print("❌ Album Fetch Error:", error)
                  self.errorMessage = error.localizedDescription
+                 self.isSavedAlbumFetched = false
+
              }
 
          } receiveValue: { [weak self] response in
              guard let self else { return }
 
              self.total = response.total
+             self.isSavedAlbumFetched = true
 
              if self.currentPage == 1 {
                  self.userSavedAlbums = response.data
@@ -179,7 +173,7 @@ class BandMatesViewModel : ObservableObject {
          .store(in: &cancellables)
      }
 
-     // MARK: - PAGINATION
+     //  PAGINATION
     func loadMore(currentItem item: albumModel,userId:String) {
 
          guard let last = userSavedAlbums.last,
@@ -192,10 +186,145 @@ class BandMatesViewModel : ObservableObject {
          }
      }
 
-     // MARK: - REFRESH
+     // REFRESH
      func SavedAlbumRefresh(userId:String) {
          currentPage = 1
          total = 0
          fetchSavedAlbums(userId: userId)
+     }
+    
+    // get user's bandmates
+    
+    @Published var isFriendsGet = false
+    
+    func fetchBandmates(userId: String) {
+
+          isLoading = true
+          errorMessage = nil
+          currentPage = 1
+
+          userService.fetchBandmates(
+              userId: userId,
+              page: currentPage,
+              limit: limit
+          )
+          .sink { [weak self] completion in
+              self?.isLoading = false
+
+              if case .failure(let error) = completion {
+                  print("Error: \(error)")
+                  self?.errorMessage = error.localizedDescription
+              }
+
+          } receiveValue: { [weak self] response in
+              guard let self else { return }
+              self.isFriendsGet = response.success
+              self.userBnadmates = response.data
+              self.totalPages = response.pagination.totalPages
+          }
+          .store(in: &cancellables)
+      }
+
+      // Pagination
+    func loadMoreFriendsIfNeeded(currentItem: BandmateModel,userId:String) {
+
+          guard !isFetchingMore,
+                currentPage < totalPages else { return }
+
+          if currentItem.id == userBnadmates.last?.id {
+
+              isFetchingMore = true
+              currentPage += 1
+
+              userService.fetchBandmates(
+                  userId: userId,
+                  page: currentPage,
+                  limit: limit
+              )
+              .sink { [weak self] completion in
+                  self?.isFetchingMore = false
+
+                  if case .failure(let error) = completion {
+                      self?.errorMessage = error.localizedDescription
+                  }
+
+              } receiveValue: { [weak self] response in
+                  guard let self else { return }
+
+                  self.userBnadmates.append(contentsOf: response.data)
+                  self.totalPages = response.pagination.totalPages
+              }
+              .store(in: &cancellables)
+          }
+      }
+
+      // Refresh
+    func refreshUserBandmates(userId:String) {
+        fetchBandmates(userId: userId)
+      }
+    
+    //Friend Requests
+    func sendRequest(to userId: String) {
+        isLoading = true
+        errorMessage = nil
+        successMessage = nil
+        
+        userService.sendRequest(reciverId: userId)
+            .sink { [weak self] completion in
+                self?.isLoading = false
+                
+                if case .failure(let error) = completion {
+                    print("❌ Send Request Error:", error)
+                    self?.errorMessage = error.localizedDescription
+                }
+            } receiveValue: { [weak self] success in
+                
+                guard success else {
+                    print("Failed to send request")
+                    self?.errorMessage = "Failed to send request"
+                    return
+                }
+                self?.successMessage = "Friend request sent ✅"
+                self?.fetchUsers()
+            }
+            .store(in: &cancellables)
+    }
+    
+    func acceptRequest(requestId: String) {
+        isLoading = true
+        errorMessage = nil
+        
+        userService.acceptFriendRequest(requestId: requestId)
+            .sink { [weak self] completion in
+                self?.isLoading = false
+       
+                if case .failure(let error) = completion {
+                    print("Error: \(error)\n\(error.localizedDescription)")
+                    self?.errorMessage = error.localizedDescription
+                }
+            } receiveValue: { [weak self] _ in
+                self?.fetchUsers()
+                self?.successMessage = "Friend request accepted"
+            }
+            .store(in: &cancellables)
+    }
+    
+    func rejectRequest(requestId: String) {
+         isLoading = true
+         errorMessage = nil
+         
+         userService.rejectFriendRequest(requestId: requestId)
+             .sink { [weak self] completion in
+                 self?.isLoading = false
+                 
+                 if case .failure(let error) = completion {
+                     print("Error: \(error)")
+                     self?.errorMessage = error.localizedDescription
+                 }
+             } receiveValue: { [weak self] _ in
+                 self?.fetchUsers()
+                 self?.successMessage = "Friend request rejected"
+             }
+             .store(in: &cancellables)
      }
 }
