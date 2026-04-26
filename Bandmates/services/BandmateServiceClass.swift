@@ -45,4 +45,87 @@ class BandmateClass {
             .decode(type: BandmateResponse.self, decoder: NetworkLayer.decoder)
             .eraseToAnyPublisher()
     }
+    
+    // user's bandmates
+    func fetchBandmates(
+        userId: String,
+        page: Int,
+        limit: Int
+    ) -> AnyPublisher<BandmateResponse, Error> {
+
+        guard let url = URL(string:
+            "\(baseURL)/getUser/friends/\(userId)?page=\(page)&limit=\(limit)"
+        ) else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        return NetworkLayer.download(request: request)
+            .decode(type: BandmateResponse.self, decoder: NetworkLayer.decoder)
+            .eraseToAnyPublisher()
+    }
+    
+    // send request
+    
+    func sendRequest(reciverId: String) -> AnyPublisher<Bool, Error> {
+        
+        guard let url = URL(string: "\(baseURL)/friends/request") else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        
+        return NetworkLayer.post(
+            url: url,
+            body: requestBody(receiver_id: reciverId),
+            headers: ["Authorization": "Bearer \(token)"]
+        )
+        .decode(type: friendRequestResponse.self, decoder: NetworkLayer.decoder)
+        .map{$0.success}
+        .eraseToAnyPublisher()
+    }
+    
+    // Accept Request
+    func acceptFriendRequest(
+        requestId: String,
+    ) -> AnyPublisher<Bool, Error> {
+        
+        guard let url = URL(string: "\(baseURL)/friends/accept/\(requestId)") else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        
+        
+        return NetworkLayer.patch(
+            url: url,
+            headers: ["Authorization": "Bearer \(token)"]
+        )
+        .map { _ in true }
+        .eraseToAnyPublisher()
+    }
+    
+    // Reject Request
+    func rejectFriendRequest(
+        requestId: String,
+    ) -> AnyPublisher<Bool, Error> {
+        
+        guard let url = URL(string: "\(baseURL)/friends/reject/\(requestId)") else {
+            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
+        }
+        return NetworkLayer.patch(
+            url: url,
+            headers: ["Authorization": "Bearer \(token)"]
+        )
+        .map { _ in true }
+        .eraseToAnyPublisher()
+    }
+}
+
+struct requestBody: Codable {
+    let receiver_id: String
+}
+
+struct friendRequestResponse: Codable {
+    let success: Bool
+    let message: String
 }
