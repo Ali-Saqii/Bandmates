@@ -10,13 +10,13 @@ import SwiftUI
 struct MyBandView: View {
     @EnvironmentObject private var Bvm : BandMatesViewModel
     @State private var selectedPerSon: BandmateModel?  = nil
+    @Binding var tab: BandmatesviewTabs
     var body: some View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
             if Bvm.MyBandMates != nil && Bvm.MyBandMates != [] {
             ScrollView {
-                
                     VStack{
                         if let Bandmates = Bvm.MyBandMates {
                             ForEach(Bandmates) { mate in
@@ -46,7 +46,9 @@ struct MyBandView: View {
                 VStack(spacing:20) {
                     NoBandmatesView(icon: "figure.2",height: 70,width: 100, title: "You have no band", subTitle: "Start requesting with other music lovers to build your band!", titleFont: .dmSans(20, weight: .semiBold),subTitleFont: .dmSans(14, weight: .medium), color: Color.background.opacity(0.5))
                     
-                    buttonView(action: {}, buttonText: "Discover Bandmates", height: 55)
+                    buttonView(action: {
+                        tab = .discover
+                    }, buttonText: "Discover Bandmates", height: 55)
                         .padding(.horizontal,70)
                 }
                 
@@ -57,6 +59,6 @@ struct MyBandView: View {
 }
 
 #Preview {
-    MyBandView()
+    MyBandView(tab: .constant(.myBand))
         .environmentObject(BandMatesViewModel())
 }
