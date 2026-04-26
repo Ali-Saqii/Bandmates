@@ -28,7 +28,7 @@ struct Bandmates: View {
                 VStack {
                     BandematesViewHeader(selectedTab: $selectedTab)
                     switch selectedTab {
-                    case .myBand:       MyBandView()
+                    case .myBand:       MyBandView(tab: $selectedTab)
                             .transition(transition)
                             .environmentObject(Bvm)
                     case .request: BandmatesRequestView()
