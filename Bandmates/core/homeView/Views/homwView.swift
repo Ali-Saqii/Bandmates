@@ -166,7 +166,7 @@ extension homwView {
                             personImage: mate.image,
                             PersonName: mate.fullName,
                             personUserName: mate.userName,
-                            isRequested: mate.isRequested, buttonAction: {}
+                            isRequested: mate.isRequested, buttonAction: {bvm.sendRequest(to: mate.id)}
                         )
                         .transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
                     }
@@ -180,6 +180,8 @@ extension homwView {
         }
     }
 }
+//http://localhost:3000/user/friends/request
+
 #Preview {
     homwView()
         .environmentObject(HomeViewModel())
