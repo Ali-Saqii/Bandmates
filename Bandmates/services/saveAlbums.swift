@@ -31,7 +31,7 @@ class savedAlbums {
             savedAlbums = try container.viewContext.fetch(request)
         } catch let error {
             print("Error while fetching data:\(error)")
-
+            
         }
     }
     func addAlbums(album:albumModel) {
@@ -42,6 +42,17 @@ class savedAlbums {
         entity.playLink = album.albumPlayLink
         savechanges()
     }
+    func deleteAllAlbums() {
+        let request: NSFetchRequest<NSFetchRequestResult> = SavedAlbums.fetchRequest()
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
+        
+        do {
+            try container.viewContext.execute(deleteRequest)
+            savechanges()
+        } catch {
+            print("🔥 Delete all failed:", error.localizedDescription)
+        }
+    }
     private func save() {
         do {
             try container.viewContext.save()
@@ -51,6 +62,7 @@ class savedAlbums {
     }
     private func savechanges() {
         save()
+        deleteAllAlbums()
         getSavedAlbums()
     }
 }
