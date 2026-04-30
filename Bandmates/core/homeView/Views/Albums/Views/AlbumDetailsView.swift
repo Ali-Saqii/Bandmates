@@ -18,7 +18,6 @@ struct AlbumDetailsView: View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
-          
                 VStack(spacing:10) {
                     albumImageView
                     ScrollView {
@@ -50,7 +49,6 @@ struct AlbumDetailsView: View {
                                    
                                 }
                         }
-                
                     }.scrollIndicators(.hidden)
                     .navigationBarBackButtonHidden(true)
                 }.toolbar {
@@ -99,7 +97,6 @@ struct AlbumDetailsView: View {
         }
         .environmentObject(hvm)
     }
-
     @State var isSaved : Bool  = false
     private func isAlbumSaved() {
         self.isSaved = album.isSaved
@@ -148,7 +145,7 @@ struct AlbumDetailsView: View {
 extension AlbumDetailsView {
     private var albumImageView:some View {
         VStack {
-            AsyncImage(url: URL(string: album.image)) { phase in
+            AsyncImage(url: URL(string: "\(album.image)")) { phase in
                 phase
                     .resizable()
                     .ignoresSafeArea()
@@ -163,7 +160,6 @@ extension AlbumDetailsView {
                                     .font(.largeTitle.bold().uppercaseSmallCaps(true))
                                     .lineSpacing(0)
                             }
-                        
                     }
             } placeholder: {
                 ContentUnavailableView("No image found".capitalized, systemImage: "tray.2.fill")
@@ -178,8 +174,6 @@ extension AlbumDetailsView {
             .frame(height: UIScreen.main.bounds.height * 0.225)
         
     }
-   
-
     private var buttionsView: some View {
         HStack {
 
