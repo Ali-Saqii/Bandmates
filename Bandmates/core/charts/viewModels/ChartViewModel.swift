@@ -9,17 +9,14 @@ import Foundation
 import Combine
 
 class chartViewModel: ObservableObject {
-    
     @Published var chart: [AlbumRatingModel]? = nil
     @Published var isLoading = false
     @Published var message = ""
-    
     private var Service = chartService()
     private var cancellables = Set<AnyCancellable>()
     init() {
         getChartData()
     }
-    
     // Get char data
      func getChartData() {
         isLoading = true
@@ -52,7 +49,6 @@ class chartViewModel: ObservableObject {
                 }
             } receiveValue: {  [weak self ] chartAlbum in
                 self?.chart = chartAlbum.data
-                print("chart Albums loaded:")
             }
             .store(in: &cancellables)
     }
