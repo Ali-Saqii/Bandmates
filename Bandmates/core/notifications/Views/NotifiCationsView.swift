@@ -28,9 +28,9 @@ struct NotifiCationsView: View {
     @EnvironmentObject private var Nvm: NotificationViewModel
     private func countFor(_ tab: NotificationsTabs) -> Int {
         switch tab {
-        case .allNotifications:    return Nvm.Notifications?.count ?? 0
-        case .unreadNotifications: return Nvm.UnReadNotifications?.count ?? 0
-        case .readedNotifications: return Nvm.readedNotifications?.count ?? 0
+        case .allNotifications:    return Nvm.notifications.count
+        case .unreadNotifications: return Nvm.unreadNotifications.count
+        case .readedNotifications: return Nvm.readNotifications.count
         }
     }
     var body: some View {
@@ -38,8 +38,6 @@ struct NotifiCationsView: View {
             Color.white
                 .ignoresSafeArea()
             VStack(spacing: 15) {
-
-                // MARK: - Tab Header
                 HStack(spacing: 0) {
                     ForEach(NotificationsTabs.allCases, id: \.self) { tab in
                         Button {
@@ -67,9 +65,6 @@ struct NotifiCationsView: View {
                 }
                 .padding(.horizontal)
                 .background(Color.white)
-               
-             
-                // MARK: - Paging ScrollView
                 ScrollView(.horizontal) {
                     LazyHStack(spacing: 0) {
                         ForEach(NotificationsTabs.allCases, id: \.self) { tab in
