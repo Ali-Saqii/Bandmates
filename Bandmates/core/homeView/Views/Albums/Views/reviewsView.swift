@@ -21,7 +21,7 @@ struct reviewsView: View {
     var body: some View {
         VStack(alignment:.leading,spacing: 10){
             HStack(spacing:5) {
-                AsyncImage(url: URL(string: reView.personImage)) { phase in
+                AsyncImage(url: URL(string:"http://localhost:3000/\(reView.personImage)")) { phase in
                     if let image = phase.image {
                         image
                             .resizable()
