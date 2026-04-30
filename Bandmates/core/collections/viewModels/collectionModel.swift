@@ -19,7 +19,25 @@ class collectionViewModel:ObservableObject {
      @Published var currentPage: Int       = 1
      @Published var totalPages: Int        = 1
      @Published var isFetchingMore: Bool   = false
+    @Published var CollectionSearchText = ""
+    @Published var filteredCollections:[CollectionModel] = []
     
+    // search collection
+    func searchCollection() {
+        guard let collections = collections else {
+            filteredCollections = []
+            return
+        }
+
+        guard !CollectionSearchText.isEmpty else {
+            filteredCollections = collections
+            return
+        }
+
+        filteredCollections = collections.filter {
+            $0.collectionTitle.localizedCaseInsensitiveContains(CollectionSearchText)
+        }
+    }
     
     
     private let collectionClass = CollectionClass()
