@@ -14,6 +14,7 @@ struct SignUp: View {
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var agreedToTerms: Bool = false
+    @State private var goToTerms: Bool = false
     @State private var showPassword: Bool = false
     @State private var showConfirmPassword: Bool = false
     @State private var profileImage: UIImage? = nil
@@ -76,7 +77,6 @@ struct SignUp: View {
             }
         }
     private func signUp() {
-        
         AuthVm.SignUp(
             userName: fullName, email: email, password: password, confirmPassword: confirmPassword,avatar: profileImage, termsAndCondition: agreedToTerms)
     }
@@ -123,7 +123,6 @@ extension SignUp {
                                             .fill(.background.opacity(0.2))
                                             .frame(width: 80,height: 80)
                                     )
-                                
                             }
                         }.offset(y: appeared ? 0 : 20)
                     )
@@ -144,6 +143,8 @@ extension SignUp {
                 .font(.default)
                 .foregroundColor(.black)
             
+        }.navigationDestination(isPresented: $goToTerms) {
+            termsOfServicesView()
         }
     }
     private var textFieldsView: some View {
@@ -242,7 +243,7 @@ extension SignUp {
                 Text("I agree to the")
                     .font(.system(size: 15))
                     .foregroundColor(.black)
-                textButton(action: {}, text: "terms and condition", color: .background, textSize: 15)
+                textButton(action: {goToTerms.toggle()}, text: "terms and condition", color: .background, textSize: 15)
                     .underline()
             }.offset(y: appeared ? 0 : 20)
             
