@@ -94,8 +94,6 @@ class BandmateClass {
         guard let url = URL(string: "\(baseURL)/friends/accept/\(requestId)") else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-        
-        
         return NetworkLayer.patch(
             url: url,
             headers: ["Authorization": "Bearer \(token)"]
@@ -108,7 +106,6 @@ class BandmateClass {
     func rejectFriendRequest(
         requestId: String,
     ) -> AnyPublisher<Bool, Error> {
-        
         guard let url = URL(string: "\(baseURL)/friends/reject/\(requestId)") else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
