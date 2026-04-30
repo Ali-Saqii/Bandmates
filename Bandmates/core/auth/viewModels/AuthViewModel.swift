@@ -19,7 +19,8 @@ class AuthViewModel: ObservableObject {
     @Published var user: userModel? = nil
     private var userClass = UserClass()
     private var cancellables = Set<AnyCancellable>()
-    
+    private let recentlyPlayedService = savedAlbums()
+
     init() {
         fetchProfile()
     }
@@ -134,6 +135,7 @@ class AuthViewModel: ObservableObject {
             self.isSignedUp = false
             self.errorMessage = ""
             self.fieldErrors = [:]
+            self.recentlyPlayedService.deleteAllAlbums()
         }
     }
     

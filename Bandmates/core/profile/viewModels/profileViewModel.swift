@@ -19,9 +19,9 @@ class ProfileViewModel:ObservableObject {
     @Published var passwordError    : String?    = nil
     @Published var isPrivate       : Bool    = false
     @Published var visibilityError : String? = nil
-    
-     private let userClass    = UserClass()
-     private var cancellables = Set<AnyCancellable>()
+    private let recentlyPlayedService = savedAlbums()
+    private let userClass    = UserClass()
+    private var cancellables = Set<AnyCancellable>()
 
     init() {
         fetchProfile()
@@ -121,6 +121,7 @@ class ProfileViewModel:ObservableObject {
                  if success {
                      UserDefaults.standard.removeObject(forKey: "auth_token")
                      self?.user = nil
+                     self?.recentlyPlayedService.deleteAllAlbums()
                  }
              })
              .store(in: &cancellables)
