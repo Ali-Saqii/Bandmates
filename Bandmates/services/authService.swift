@@ -50,7 +50,6 @@ class AuthService {
             .dataTaskPublisher(for: request)
             .map(\.data)
             .handleEvents(receiveOutput: { data in
-                        print("🔴 Raw Response: \(String(data: data, encoding: .utf8) ?? "nil")")
                     })
             .decode(type: AuthResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
@@ -80,7 +79,6 @@ class AuthService {
             .dataTaskPublisher(for: request)
             .map(\.data)
             .handleEvents(receiveOutput: { data in
-                        print("🔴 Raw Response: \(String(data: data, encoding: .utf8) ?? "nil")")
                     })
             .decode(type: AuthResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
