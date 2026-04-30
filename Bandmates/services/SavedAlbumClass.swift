@@ -27,7 +27,6 @@ class SaveAlbumService {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
 
-        // 🔐 Auth Header
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
         return NetworkLayer.download(request: request)
