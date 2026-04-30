@@ -13,19 +13,15 @@ struct allNotificationView: View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
-            if nvm.Notifications != nil {
+            if !nvm.notifications.isEmpty {
                 ScrollView {
-                    if let allNotifications = nvm.Notifications {
                         VStack(spacing: 10) {
-                            ForEach(allNotifications) { notification in
+                            ForEach(nvm.notifications) { notification in
                                 notificationRowView(Notification: notification)
                                     .padding(.horizontal)
                                 Divider()
                             }
                         }
-                    } else {
-                        
-                    }
                 }.scrollIndicators(.hidden)
                     .scrollBounceBehavior(.basedOnSize)
             } else {
