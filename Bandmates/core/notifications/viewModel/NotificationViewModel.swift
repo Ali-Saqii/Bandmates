@@ -7,98 +7,157 @@
 
 import Foundation
 import Combine
+import UserNotifications
 
+@MainActor
 class NotificationViewModel: ObservableObject {
-    @Published var Notifications: [NotificationModel]? = nil
-    @Published var readedNotifications: [NotificationModel]? = nil
-    @Published var UnReadNotifications: [NotificationModel]? = nil
+    @Published var notifications: [AppNotification] = []
+    @Published var unreadCount: Int = 0
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
+
+    var readNotifications: [AppNotification] {
+        notifications.filter { $0.is_read }
+    }
+
+    var unreadNotifications: [AppNotification] {
+        notifications.filter { !$0.is_read }
+    }
+    private let service             = NotificationService.shared
+    private let notificationManager = NotificationManager.shared
+    private var cancellables        = Set<AnyCancellable>()
+    private var pollingTask: Task<Void, Never>?
+
     init() {
-        getNotifications()
-        getReadedNotifications()
-        getUnReadedNotifications()
+        setupPushListener()
+        startPolling()
+        Task { await fetchFromBackend() }
     }
-    
-    private func getNotifications() {
-        Notifications = [
-            NotificationModel(
-                title: "Bandmate Request",
-                body: "Alex Rivera wants to join your band 'The Echoes'.",
-                Date: Date().adding(hours: -1),
-                isRead: false
-            ),
-            NotificationModel(
-                title: "New Comment on Album",
-                body: "Jordan left a comment on your album 'Midnight Sessions'.",
-                Date: Date().adding(hours: -3),
-                isRead: false
-            ),
-            NotificationModel(
-                title: "Subscription Renewed",
-                body: "Your Pro Plan subscription has been successfully renewed for $9.99/month.",
-                Date: Date().adding(hours: -5),
-                isRead: true
-            ),
-            NotificationModel(
-                title: "Bandmate Request Accepted",
-                body: "Sam Loch accepted your request to join 'Neon Wolves'.",
-                Date: Date().adding(days: -1),
-                isRead: false
-            ),
-            NotificationModel(
-                title: "Payment Failed",
-                body: "We couldn't process your subscription payment. Please update your billing info.",
-                Date: Date().adding(days: -1),
-                isRead: true
-            ),
-            NotificationModel(
-                title: "Album Liked",
-                body: "Your album 'Fade to Blue' received 128 new likes today.",
-                Date: Date().adding(days: -2),
-                isRead: false
-            ),
-            NotificationModel(
-                title: "New Bandmate Suggestion",
-                body: "Based on your genre, Maya Tones could be a great fit for your band.",
-                Date: Date().adding(days: -3),
-                isRead: true
-            ),
-            NotificationModel(
-                title: "Comment Reply",
-                body: "Chris replied to your comment on 'Summer Riff Vol. 2'.",
-                Date: Date().adding(days: -4),
-                isRead: true
-            ),
-            NotificationModel(
-                title: "Subscription Expiring Soon",
-                body: "Your Pro Plan expires in 3 days. Renew now to keep your features.",
-                Date: Date().adding(days: -5),
-                isRead: false
-            ),
-            NotificationModel(
-                title: "Collaboration Invite",
-                body: "Luna Beats invited you to collaborate on the track 'Golden Hour'.",
-                Date: Date().adding(days: -6),
-                isRead: false
-            )
-        ]
+
+    deinit {
+        pollingTask?.cancel()
     }
-    private func getReadedNotifications() {
-        guard let notifications = Notifications else {return}
-        self.readedNotifications = notifications.filter({$0.isRead == true})
+    private func setupPushListener() {
+        NotificationCenter.default.publisher(for: .newNotificationReceived)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                Task { await self?.fetchFromBackend() }
+            }
+            .store(in: &cancellables)
     }
-    
-    private func getUnReadedNotifications() {
-        guard let notifications = Notifications else {return}
-        self.UnReadNotifications = notifications.filter({$0.isRead == false})
+
+    private func startPolling() {
+        pollingTask = Task {
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(5))
+                await checkForNewNotifications()
+            }
+        }
+    }
+
+    private func checkForNewNotifications() async {
+        do {
+            let count = try await service.getUnreadCount()
+            if count > unreadCount {
+                await fetchFromBackend()
+            }
+        } catch {
+            print("Polling check failed: \(error)")
+        }
+    }
+
+    func fetchFromBackend() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            // Fetch both at the same time
+            async let notifFetch = service.getNotifications()
+            async let countFetch = service.getUnreadCount()
+            let (response, count) = try await (notifFetch, countFetch)
+
+            let fetched = response.data
+
+            let existingIds = Set(notifications.map { $0.id })
+            let newOnes = fetched.filter { !existingIds.contains($0.id) }
+
+            for notif in newOnes {
+                await showLocalBanner(notif)
+            }
+            notifications = fetched
+            unreadCount   = count
+            notificationManager.updateBadge(count: count)
+
+        } catch {
+            errorMessage = "Failed to load: \(error.localizedDescription)"
+        }
+    }
+    private func showLocalBanner(_ notif: AppNotification) async {
+        let content          = UNMutableNotificationContent()
+        content.title        = notif.title
+        content.body         = notif.body
+        content.sound        = .default
+        content.badge        = (unreadCount + 1) as NSNumber
+        content.userInfo     = ["type": notif.type, "id": notif.id]
+
+        let request = UNNotificationRequest(
+            identifier: notif.id,
+            content: content,
+            trigger: nil
+        )
+        try? await UNUserNotificationCenter.current().add(request)
+    }
+    func markAsRead(_ notification: AppNotification) async {
+        guard !notification.is_read else { return }
+        do {
+            try await service.markAsRead(id: notification.id)
+
+            if let i = notifications.firstIndex(where: { $0.id == notification.id }) {
+                notifications[i] = notification.asRead()
+            }
+            unreadCount = max(0, unreadCount - 1)
+            notificationManager.updateBadge(count: unreadCount)
+
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func markAllAsRead() async {
+        do {
+            try await service.markAllAsRead()
+            notifications = notifications.map { $0.asRead() }
+            unreadCount   = 0
+            notificationManager.clearBadge()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    func delete(_ notification: AppNotification) async {
+        do {
+            try await service.deleteNotification(id: notification.id)
+            notifications.removeAll { $0.id == notification.id }
+            if !notification.is_read {
+                unreadCount = max(0, unreadCount - 1)
+                notificationManager.updateBadge(count: unreadCount)
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func clearAll() async {
+        do {
+            try await service.clearAll()
+            notifications = []
+            unreadCount   = 0
+            notificationManager.clearBadge()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    func onScreenAppear() async {
+        await fetchFromBackend()
+        notificationManager.clearBadge()
     }
 }
-
-
-private extension Date {
-    func adding(days: Int = 0, hours: Int = 0) -> Date {
-        Calendar.current.date(byAdding: DateComponents(day: days, hour: hours), to: self) ?? self
-    }
-}
-
-
-
