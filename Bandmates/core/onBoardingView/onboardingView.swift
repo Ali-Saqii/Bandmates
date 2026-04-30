@@ -17,6 +17,7 @@ struct onboardingView: View {
     @State private var showLogin = false
     @State private var currentPage = 0
     @State private var showSignUP = false
+    @EnvironmentObject var AuthVm: AuthViewModel // ← use this instead of @StateObject
 
     let pages: [OnboardingPage] = [
         OnboardingPage(
@@ -42,13 +43,13 @@ struct onboardingView: View {
                 .transition(.asymmetric(
                     insertion: .move(edge: .trailing),
                     removal: .move(edge: .leading)
-                ))
+                )).environmentObject(AuthVm)
         } else if showSignUP {
             SignUp(showSignUp: $showSignUP, showLogin: $showLogin)
                 .transition(.asymmetric(
                     insertion: .move(edge: .trailing),
                     removal: .move(edge: .leading)
-                ))
+                )).environmentObject(AuthVm)
         } else {
             OnboardingContainerView(pages: pages, currentPage: $currentPage, showLogin: $showLogin, showSignUp: $showSignUP)
                 .transition(.asymmetric(
@@ -60,4 +61,5 @@ struct onboardingView: View {
 }
 #Preview {
     onboardingView()
+        .environmentObject(AuthViewModel())
 }
