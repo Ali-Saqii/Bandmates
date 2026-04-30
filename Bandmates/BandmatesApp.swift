@@ -11,6 +11,8 @@ import SwiftUI
 struct BandmatesApp: App {
     @StateObject var vm: HomeViewModel = HomeViewModel()
     @StateObject var authVM = AuthViewModel()
+    @StateObject private var notificationManager = NotificationManager.shared
+
     var body: some Scene {
         WindowGroup {
             NavigationStack {
@@ -20,6 +22,11 @@ struct BandmatesApp: App {
                     .onAppear {
                         authVM.checkAuthStatus()
                     }
+                    .environmentObject(notificationManager)
+                    .task {
+                        await NotificationManager.shared.requestPermission()
+                    }
+                   
             }
         }
     }
