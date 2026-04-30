@@ -9,7 +9,7 @@ import SwiftUI
 
 struct homeViewNotificationButton: View {
     let action: () -> Void
-    let notificationCount : Int?
+    let notificationCount : Int
     var body: some View {
         Button {
             action()
@@ -21,8 +21,8 @@ struct homeViewNotificationButton: View {
                         .fill(Color.black)
                         .frame(width: 45, height: 45)
                         .overlay(alignment:.topTrailing) {
-                            if let count = notificationCount {
-                                Text("\(count)")
+                            if notificationCount != 0 {
+                                Text("\(notificationCount)")
                                     .foregroundStyle(.white)
                                     .font(.caption)
                                     .fontWeight(.bold)
