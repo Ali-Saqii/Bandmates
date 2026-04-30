@@ -11,12 +11,12 @@ import Combine
 
 class ProfileViewModel:ObservableObject {
     @Published var user             : userModel? = nil
-     @Published var isLoading        : Bool       = false
-     @Published var errorMessage     : String?    = nil
-     @Published var successMessage   : String?    = nil
-     @Published var isDeleted        : Bool       = false
-     @Published var passwordSuccess  : Bool       = false
-     @Published var passwordError    : String?    = nil
+    @Published var isLoading        : Bool       = false
+    @Published var errorMessage     : String?    = nil
+    @Published var successMessage   : String?    = nil
+    @Published var isDeleted        : Bool       = false
+    @Published var passwordSuccess  : Bool       = false
+    @Published var passwordError    : String?    = nil
     @Published var isPrivate       : Bool    = false
     @Published var visibilityError : String? = nil
     
@@ -41,8 +41,7 @@ class ProfileViewModel:ObservableObject {
             })
             .store(in: &cancellables)
     }
-    
-    // MARK: - UPDATE User Profile
+    // UPDATE User Profile
     @Published var isUpdated = false
     func updateProfile(
         username    : String? = nil,
@@ -63,24 +62,18 @@ class ProfileViewModel:ObservableObject {
         .sink(receiveCompletion: { [weak self] completion in
             self?.isLoading = false
             if case .failure(let error) = completion {
-                print("Error: \(error)")
                 self?.errorMessage = error.localizedDescription
             }
         }, receiveValue: { [weak self] success in
             if success {
                 self?.successMessage = "Profile updated successfully"
                 self?.isUpdated = true
-                self?.fetchProfile()        // ✅ refresh user after update
+                self?.fetchProfile()
             }
         })
         .store(in: &cancellables)
     }
-    
-    
     // update password
-    
-   
-    
     func updatePassword(
         oldPassword     : String,
         newPassword     : String,
@@ -98,7 +91,6 @@ class ProfileViewModel:ObservableObject {
         .sink(receiveCompletion: { [weak self] completion in
             self?.isLoading = false
             if case .failure(let error) = completion {
-                print("Error: \(error)")
                 self?.passwordError = error.localizedDescription
             }
         }, receiveValue: { [weak self] success in
@@ -143,7 +135,6 @@ class ProfileViewModel:ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
-                    print("Error: \(error)")
                     self?.visibilityError = error.localizedDescription
                 }
             }, receiveValue: { [weak self] success in
