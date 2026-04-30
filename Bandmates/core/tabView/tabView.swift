@@ -85,7 +85,7 @@ struct tabView: View {
                     ToolbarItem {
                         homeViewNotificationButton(action: {
                             showNotifications.toggle()
-                        }, notificationCount: Nvm.UnReadNotifications?.count)
+                        }, notificationCount: Nvm.unreadNotifications.count)
                         
                     }.sharedBackgroundVisibility(.hidden)
                 }
@@ -131,7 +131,7 @@ struct tabView: View {
         if selectedTab == .home {
             return "Bandmates"
         } else if selectedTab == .charts {
-            return "Chart"
+            return "Ranking Chart"
         } else if selectedTab == .profile {
                 return "Profile"
             } else if selectedTab == .collection {
