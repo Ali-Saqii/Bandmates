@@ -147,12 +147,10 @@ class AuthViewModel: ObservableObject {
         isLoading      = true
         subErrorMessage   = nil
         subSucssMessage = nil
-
         service.selectPlan(plan: plan)
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
-                    print("\(error)")
                     self?.errorMessage = error.localizedDescription
                 }
             }, receiveValue: { [weak self] response in
@@ -161,7 +159,6 @@ class AuthViewModel: ObservableObject {
                 self?.subscriptionData = response.data
                 self?.isSubscribe = response.success
                 self?.fetchProfile()
-                print(response.success ? "✅ \(response.message)" : "❌ \(response.message)")
             })
             .store(in: &cancellables)
     }
@@ -183,7 +180,6 @@ class AuthViewModel: ObservableObject {
                 self?.subSucssMessage = response.message
                 self?.subscriptionData = nil
                 self?.fetchProfile()
-                print(response.success ? "✅ \(response.message)" : "❌ \(response.message)")
             })
             .store(in: &cancellables)
     }
