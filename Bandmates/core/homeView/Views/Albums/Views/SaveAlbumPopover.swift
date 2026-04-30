@@ -13,7 +13,6 @@ struct SaveAlbumPopover: View {
     @Binding var showPopUp : Bool
     let albumId: String
     var body: some View {
-        
         GeometryReader { geo in
             VStack {
                 HStack {
