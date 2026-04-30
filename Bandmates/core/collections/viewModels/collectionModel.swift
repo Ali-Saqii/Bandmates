@@ -16,9 +16,9 @@ class collectionViewModel:ObservableObject {
     @Published var errorMessage: String? = nil
     @Published var cErrorMessage: String? = nil
     @Published var successMessage: String? = nil
-     @Published var currentPage: Int       = 1
-     @Published var totalPages: Int        = 1
-     @Published var isFetchingMore: Bool   = false
+    @Published var currentPage: Int       = 1
+    @Published var totalPages: Int        = 1
+    @Published var isFetchingMore: Bool   = false
     @Published var CollectionSearchText = ""
     @Published var filteredCollections:[CollectionModel] = []
     
@@ -28,12 +28,12 @@ class collectionViewModel:ObservableObject {
             filteredCollections = []
             return
         }
-
+        
         guard !CollectionSearchText.isEmpty else {
             filteredCollections = collections
             return
         }
-
+        
         filteredCollections = collections.filter {
             $0.collectionTitle.localizedCaseInsensitiveContains(CollectionSearchText)
         }
@@ -77,7 +77,6 @@ class collectionViewModel:ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
-                    print("error: \(error)")
                     self?.cErrorMessage = error.localizedDescription
                 }
             }, receiveValue: { [weak self] response in
@@ -129,7 +128,6 @@ class collectionViewModel:ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
-                    print("error:\(error)")
                     self?.cCErrorMessage = error.localizedDescription
                 }
             }, receiveValue: { [weak self] response in
@@ -149,14 +147,13 @@ class collectionViewModel:ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
-                    print(error)
                     self?.errorMessage = error.localizedDescription
                 }
             }, receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 self.successMessage = response.message
                 self.isDeleted = response.success
-                self.collections?.removeAll { $0.id == id } // ← remove locally, no refetch needed
+                self.collections?.removeAll { $0.id == id }
             })
             .store(in: &cancellables)
     }
@@ -170,14 +167,12 @@ class collectionViewModel:ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
-                    print(error)
                     self?.errorMessage = error.localizedDescription
                 }
             }, receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 self.successMessage = response.message
                 self.isUpdated = response.success
-                // ← update locally without refetch
                 if let index = self.collections?.firstIndex(where: { $0.id == id }) {
                     let old = self.collections![index]
                     self.collections?[index] = CollectionModel(
@@ -191,15 +186,12 @@ class collectionViewModel:ObservableObject {
             .store(in: &cancellables)
     }
     
-    // MARK: - Remove Album
+    // Remove Album
     @Published var removeAlbumSuccess: Bool    = false
     @Published var removeAlbumError  : String? = nil
-
     private var token: String {
          UserDefaults.standard.string(forKey: "auth_token") ?? ""
      }
-    
-    
     func removeAlbum(albumId: String, collectionId: String) {
         guard !token.isEmpty else {
             removeAlbumError = "No token found"
@@ -215,13 +207,11 @@ class collectionViewModel:ObservableObject {
                 self?.isLoading = false
                 if case .failure(let error) = completion {
                     self?.removeAlbumError = error.localizedDescription
-                    print("❌ Remove Album Error:", error.localizedDescription)
                 }
             }, receiveValue: { [weak self] success in
                 self?.isLoading          = false
                 self?.removeAlbumSuccess = success
                 if success {
-                    print("✅ Album removed successfully")
                     self?.fetchCollections()
                 }
             })
