@@ -9,9 +9,11 @@ import SwiftUI
 
 struct orthersProfile: View {
     @EnvironmentObject var Bvm : BandMatesViewModel
+    @StateObject var Hvm : HomeViewModel = HomeViewModel()
     let bandmate: BandmateModel?
     @State private var showBandmates = false
     @State private var collectionCount = 0
+    @State private var selectedALbum: albumModel? = nil
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
@@ -119,6 +121,9 @@ struct orthersProfile: View {
                             } else {
                                 ForEach(Bvm.userSavedAlbums) { album in
                                     AlbumsRowView(albumImage: album.image, albumName: album.albumName, artistName: album.albumArtistName, ratingCount: album.averageRating, totalRatingcount: album.totalRatingCount, isAlBumSaved: album.isSaved)
+                                        .onTapGesture {
+                                            selectedALbum = album
+                                        }
                                 }
                             }
                         }.scrollIndicators(.hidden)
@@ -131,6 +136,10 @@ struct orthersProfile: View {
                 personBandMateView(name: bandmate?.fullName ?? "")
                     .environmentObject(Bvm)
             }
+            .navigationDestination(item: $selectedALbum) { album in
+                AlbumDetailsView(album: album)
+                    .environmentObject(Hvm)
+            }
     }
 //    private func getcollectionCount(count: Int) {
 //       collectionCount = collectionCount + count
@@ -140,4 +149,5 @@ struct orthersProfile: View {
 #Preview {
     orthersProfile(bandmate: DeveloperPreview.instance.Bandmate)
         .environmentObject(BandMatesViewModel())
+        .environmentObject(HomeViewModel())
 }
