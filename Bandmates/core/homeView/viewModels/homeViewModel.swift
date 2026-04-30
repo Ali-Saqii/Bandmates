@@ -40,7 +40,6 @@ class HomeViewModel: ObservableObject {
         getAlbums()
         getSavedAlbums()
         fetchAndMapCollections()
-        fetchUsers()
     }
     @MainActor
      func fetchItems() async {
@@ -48,6 +47,7 @@ class HomeViewModel: ObservableObject {
          try? await Task.sleep(nanoseconds: 1_500_000_000)
         fetchProfile()
          getAlbums()
+         fetchUsers()
      }
  
     
@@ -85,11 +85,9 @@ class HomeViewModel: ObservableObject {
                     break
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
-                    print("❌ Error:", error)
                 }
             } receiveValue: {  [weak self ] albums in
                 self?.albums = albums
-                print("🎧 Albums loaded:", albums.count)
             }
             .store(in: &cancellables)
 
@@ -119,16 +117,12 @@ class HomeViewModel: ObservableObject {
         
         return "\(timeOfDay)!"
     }
-    
     // openAlbumfunction
-  
-
     func openLink(_ urlString: String) {
         guard let url = URL(string: urlString) else {
             print("❌ Invalid URL")
             return
         }
-
         UIApplication.shared.open(url)
     }
     // search album and viewModel
