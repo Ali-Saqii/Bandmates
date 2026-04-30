@@ -73,24 +73,24 @@ class AlbumDetailsService {
             return Fail(error: error).eraseToAnyPublisher()
         }
     }
-            //      post comment
+    //post comment
   
     func postComment(
         albumId  : String,
         text     : String,
-        parentId : String? = nil,   // ✅ optional — pass only for replies
+        parentId : String? = nil,
         token    : String
     ) -> AnyPublisher<Bool, Error> {
-
+        
         guard let url = URL(string: "\(commentBaseURL)/\(albumId)") else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-
+        
         let body = CommentBody(
             text      : text,
             parent_id : parentId
         )
-
+        
         do {
             let request = try NetworkLayer.buildRequest(
                 url     : url,
@@ -98,11 +98,10 @@ class AlbumDetailsService {
                 body    : body,
                 headers : ["Authorization": "Bearer \(token)"]
             )
-
+            
             return NetworkLayer.download(request: request)
-                .decode(type: ReviewResponse.self, decoder: NetworkLayer.decoder)  // ✅ reuse same response struct
+                .decode(type: ReviewResponse.self, decoder: NetworkLayer.decoder)
                 .handleEvents(receiveOutput: { response in
-                    print(response.success ? "✅ Comment posted" : "❌ \(response.message)")
                 })
                 .map { $0.success }
                 .eraseToAnyPublisher()
@@ -137,7 +136,6 @@ class AlbumDetailsService {
             return NetworkLayer.download(request: request)
                 .decode(type: ReviewResponse.self, decoder: NetworkLayer.decoder)
                 .handleEvents(receiveOutput: { response in
-                    print(response.success ? "✅ Album saved: \(response.message)" : "❌ \(response.message)")
                 })
                 .map { $0.success }
                 .eraseToAnyPublisher()
@@ -145,7 +143,6 @@ class AlbumDetailsService {
             return Fail(error: error).eraseToAnyPublisher()
         }
     }
-
     // ── Remove Album ───────────────────────────────────────────────────────────────
     func removeAlbum(
         albumId      : String,
@@ -164,26 +161,22 @@ class AlbumDetailsService {
         return NetworkLayer.download(request: request)
             .decode(type: ReviewResponse.self, decoder: NetworkLayer.decoder)
             .handleEvents(receiveOutput: { response in
-                print(response.success ? "✅ Album removed: \(response.message)" : "❌ \(response.message)")
             })
             .map { $0.success }
             .eraseToAnyPublisher()
     }
 }
-// MARK: - Review Body
 struct ReviewBody: Codable {
     let rating      : Int
     let review_text : String
 }
-
-// MARK: - Review Response
 struct ReviewResponse: Codable {
     let success : Bool
     let message : String
 }
 struct CommentBody: Codable {
     let text      : String
-    let parent_id : String?     // ✅ optional — nil for new comment, id for reply
+    let parent_id : String?
 }
 struct SaveAlbumBody: Codable {
     let album_id      : String
