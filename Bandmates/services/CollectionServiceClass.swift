@@ -10,19 +10,14 @@ import Combine
 import UIKit
 
 class CollectionClass {
-    
-    
-    
     private let baseURL = "http://localhost:3000/user/get/collection"
-   private let createUrl = "http://localhost:3000/user/create/collection"
+    private let createUrl = "http://localhost:3000/user/create/collection"
     private let deleteCollectionURL = "http://localhost:3000/user/delete/collection"
     private let updateUrl = "http://localhost:3000/user/update/collection"
     private var authHeader: [String: String] {
-           let token = UserDefaults.standard.string(forKey: "auth_token") ?? ""
-           return ["Authorization": "Bearer \(token)"]
-       }
-       
-        
+        let token = UserDefaults.standard.string(forKey: "auth_token") ?? ""
+        return ["Authorization": "Bearer \(token)"]
+    }
         func getUserCollections(page: Int = 1) -> AnyPublisher<CollectionResponse, Error> {
             guard let token = UserDefaults.standard.string(forKey: "auth_token"),
                   let url = URL(string: "\(baseURL)?page=\(page)") else {
