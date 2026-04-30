@@ -18,8 +18,8 @@ class UserClass {
     static let updateUserUrl = "http://localhost:3000/user/update"
     static let updatePassword = "http://localhost:3000/user/changePassword"
     private var token: String {
-         UserDefaults.standard.string(forKey: "auth_token") ?? ""
-     }
+        UserDefaults.standard.string(forKey: "auth_token") ?? ""
+    }
     private var cancellables = Set<AnyCancellable>()
     
     // make a request
@@ -36,7 +36,7 @@ class UserClass {
         guard let url = URL(string: UserClass.getUserProfileUrl) else {
             print("Error: in valid url")
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
-
+            
         }
         
         let request = makeAuthRequest(url: url, method: "GET")
@@ -44,12 +44,12 @@ class UserClass {
         return NetworkLayer.download(request: request)
             .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
             .handleEvents(receiveOutput: { [weak self] response in
-                      self?.user = response.data?.toUserModel()    //
-                  })
-                  .compactMap { $0.data?.toUserModel() }
-                  .eraseToAnyPublisher()
+                self?.user = response.data?.toUserModel()    //
+            })
+            .compactMap { $0.data?.toUserModel() }
+            .eraseToAnyPublisher()
     }
-
+    
     func updateUser(
         username: String? = nil,
         displayName: String? = nil,
@@ -57,48 +57,45 @@ class UserClass {
         avatar: UIImage?,
         email: String? = nil
     ) -> AnyPublisher<Bool, Error> {
-
+        
         guard let url = URL(string: UserClass.updateUserUrl) else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
-
+        
         let boundary = UUID().uuidString
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
+        
         var body = Data()
-
+        
         // helper
         func append(_ key: String, _ value: String) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
             body.append("\(value)\r\n".data(using: .utf8)!)
         }
-
+        
         // text fields
         if let username = username { append("username", username) }
         if let displayName = displayName { append("displayName", displayName) }
         if let description = description { append("description", description) }
         if let email = email { append("email", email) }
-
+        
         // image
         if let avatar = avatar,
            let imageData = avatar.jpegData(compressionQuality: 0.5) {
-
+            
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"avatar\"; filename=\"avatar.jpg\"\r\n".data(using: .utf8)!)
             body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
             body.append(imageData)
             body.append("\r\n".data(using: .utf8)!)
         }
-
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-
         request.httpBody = body
-
         return NetworkLayer.download(request: request)
             .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
             .map { $0.success }
@@ -110,42 +107,48 @@ class UserClass {
         newPassword     : String,
         confirmPassword : String
     ) -> AnyPublisher<Bool, Error> {
-
+        
         guard let url = URL(string: UserClass.updatePassword) else {
+            print("❌ Invalid URL:", UserClass.updatePassword)
+            
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-
+        print("🔐 updatePassword called")
+        print("🔗 URL:", UserClass.updatePassword)
+        print("🔑 Token:", token.isEmpty ? "❌ EMPTY TOKEN" : "✅ token exists")
         // MARK: - Client Side Validation
         guard !oldPassword.isEmpty else {
             return Fail(error: NSError(domain: "", code: 0,
-                userInfo: [NSLocalizedDescriptionKey: "Old password cannot be empty"]))
-                .eraseToAnyPublisher()
+                                       userInfo: [NSLocalizedDescriptionKey: "Old password cannot be empty"]))
+            .eraseToAnyPublisher()
         }
-
+        
         guard newPassword.count >= 8 else {
             return Fail(error: NSError(domain: "", code: 0,
-                userInfo: [NSLocalizedDescriptionKey: "Password must be at least 8 characters"]))
-                .eraseToAnyPublisher()
+                                       userInfo: [NSLocalizedDescriptionKey: "Password must be at least 8 characters"]))
+            .eraseToAnyPublisher()
         }
-
+        
         guard newPassword == confirmPassword else {
             return Fail(error: NSError(domain: "", code: 0,
-                userInfo: [NSLocalizedDescriptionKey: "Passwords do not match"]))
-                .eraseToAnyPublisher()
+                                       userInfo: [NSLocalizedDescriptionKey: "Passwords do not match"]))
+            .eraseToAnyPublisher()
         }
-
+        
         guard newPassword != oldPassword else {
             return Fail(error: NSError(domain: "", code: 0,
-                userInfo: [NSLocalizedDescriptionKey: "New password must be different from old password"]))
-                .eraseToAnyPublisher()
+                                       userInfo: [NSLocalizedDescriptionKey: "New password must be different from old password"]))
+            .eraseToAnyPublisher()
         }
-
+        
         let body = UpdatePasswordBody(
             oldPassword     : oldPassword,
             newPassword     : newPassword,
             confirmPassword : confirmPassword
         )
-
+        if let encoded = try? JSONEncoder().encode(body) {
+            print("📦 Request body:", String(data: encoded, encoding: .utf8) ?? "nil")
+        }
         do {
             let request = try NetworkLayer.buildRequest(
                 url     : url,
@@ -153,22 +156,45 @@ class UserClass {
                 body    : body,
                 headers : ["Authorization": "Bearer \(token)"]
             )
-
+            print("📤 Request headers:", request.allHTTPHeaderFields ?? [:])
+            
             return NetworkLayer.download(request: request)
                 .tryMap { data -> Data in
-                        print("📦 Raw:", String(data: data, encoding: .utf8) ?? "nil")
-                        return data
-                    }
+                    print("📦 Raw:", String(data: data, encoding: .utf8) ?? "nil")
+                    
+                    return data
+                }
                 .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
-                .handleEvents(receiveOutput: { response in
-                    print(response.success ? "✅ Password updated" : "❌ \(response.message)")
-                    print(response.message)
-                })
+                .handleEvents(
+                    receiveOutput: { response in
+                        print(response.success ? "✅ Password updated" : "❌ Failed")
+                        print("📩 Message:", response.message)
+                    },
+                    receiveCompletion: { completion in
+                        if case .failure(let error) = completion {
+                            print("🔥 Completion error:", error.localizedDescription)
+                            // Print full error
+                            print("🔥 Full error:", error)
+                        }
+                    }
+                ).handleEvents(
+                    receiveOutput: { response in
+                        print(response.success ? "✅ Password updated" : "❌ Failed")
+                        print("📩 Message:", response.message)
+                    },
+                    receiveCompletion: { completion in
+                        if case .failure(let error) = completion {
+                            print("🔥 Completion error:", error.localizedDescription)
+                            // Print full error
+                            print("🔥 Full error:", error)
+                        }
+                    }
+                )
                 .map { $0.success }
                 .eraseToAnyPublisher()
         } catch {
             print("Error\(error.localizedDescription)")
-
+            
             return Fail(error: error).eraseToAnyPublisher()
         }
     }
@@ -178,9 +204,7 @@ class UserClass {
             print("❌ Error: invalid URL")
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-
         let request = makeAuthRequest(url: url, method: "DELETE")
-
         return NetworkLayer.download(request: request)
             .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
             .handleEvents(receiveOutput: { [weak self] response in
@@ -193,25 +217,22 @@ class UserClass {
             .map { $0.success }
             .eraseToAnyPublisher()
     }
-    
     // collection visibility
     func updateSavedAlbumsVisibility(isPrivate: Bool) -> AnyPublisher<Bool, Error> {
         guard let url = URL(string: UserClass.updateVisibilityUrl) else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }
-
         do {
             let request = try NetworkLayer.buildRequest(
                 url     : url,
                 method  : "PUT",
-                body    : ["isPrivate": isPrivate],     // ✅ inline dictionary, no separate struct
+                body    : ["isPrivate": isPrivate],
                 headers : ["Authorization": "Bearer \(token)"]
             )
-
+            
             return NetworkLayer.download(request: request)
                 .decode(type: UserResponse.self, decoder: NetworkLayer.decoder)
                 .handleEvents(receiveOutput: { response in
-                    print(response.success ? "✅ Visibility updated: \(isPrivate)" : "❌ \(response.message)")
                 })
                 .map { $0.success }
                 .eraseToAnyPublisher()
