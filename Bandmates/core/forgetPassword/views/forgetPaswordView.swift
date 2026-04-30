@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct forgetPaswordView: View {
-    @State private var textFieldText = ""
+    @StateObject private var fVM = ForgotPasswordViewModel()
+    @State private var showSucessView = false
     var body: some View {
         ZStack {
             Color.white
@@ -25,14 +26,34 @@ struct forgetPaswordView: View {
                         .lineSpacing(-3)
                 }.frame(maxWidth: .infinity)
                 VStack(spacing:50) {
-                    InputField(label: "", placeholder: "Enter email", text: $textFieldText)
+                    InputField(label: "", placeholder: "Enter email", text: $fVM.email)
                         .padding(.horizontal,30)
-                    buttonView(action: {}, buttonText: "Send", height: 55)
+                    buttonView(action: {
+                        fVM.sendResetLink()
+                    }, buttonText: "Send", height: 55)
                         .padding(.horizontal,28)
+                        .overlay {
+                            if fVM.isLoading {
+                                ProgressView().tint(.green)
+                            }
+                        }
+                    if let error = fVM.errorMessage {
+                        Text(error)
+                            .font(.dmSans(14, weight: .semiBold))
+                            .foregroundStyle(.red)
+                    }
+                    if let sucess = fVM.successMessage {
+                        Text(sucess)
+                            .font(.dmSans(14, weight: .semiBold))
+                            .foregroundStyle(.green)
+                    }
                 }
                 Spacer()
             }
-           
+            if fVM.isEmailSent {
+                passwordResetConfirmationView( showsucessSheet: $fVM.isEmailSent)
+                    .transition(.scale.animation(.easeInOut(duration: 0.5)))
+            }
         }
     }
 }
