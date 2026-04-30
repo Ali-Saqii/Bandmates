@@ -10,7 +10,6 @@ import SwiftUI
 struct collectionView: View {
     @EnvironmentObject var homeVm : HomeViewModel
     @StateObject var collectionVM = collectionViewModel()
-    @State private var searchText = ""
     @State private var showAddCollection = false
     @State private var showEditCollection = false
     @State private var DeleteCollection = false
@@ -30,10 +29,7 @@ struct collectionView: View {
                     Image(systemName: "magnifyingglass")
                         .foregroundStyle(.gray)
                         .padding(.leading)
-                        .onTapGesture {
-                            print(searchText)
-                        }
-                    TextField("Search Any Collection here ...", text: $searchText)
+                    TextField("Search Any Collection here ...", text: $collectionVM.CollectionSearchText)
                 }.frame(maxWidth:.infinity)
                     .frame(height: 60)
                     .background(Color.textfieldcolor.opacity(0.7))
