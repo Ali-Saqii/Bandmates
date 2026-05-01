@@ -34,7 +34,7 @@ class ForgotPasswordViewModel: ObservableObject {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let body = ["email": email]
+        let body = ["email": email.lowercased()]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
         URLSession.shared.dataTaskPublisher(for: request)
