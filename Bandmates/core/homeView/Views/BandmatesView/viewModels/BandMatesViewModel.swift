@@ -312,7 +312,7 @@ class BandMatesViewModel : ObservableObject {
     func rejectRequest(requestId: String) {
          isLoading = true
          errorMessage = nil
-         
+         print(requestId)
          userService.rejectFriendRequest(requestId: requestId)
              .sink { [weak self] completion in
                  self?.isLoading = false
