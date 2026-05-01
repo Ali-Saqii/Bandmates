@@ -45,7 +45,6 @@ class NotificationViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-
     private func startPolling() {
         pollingTask = Task {
             while !Task.isCancelled {
@@ -54,7 +53,6 @@ class NotificationViewModel: ObservableObject {
             }
         }
     }
-
     private func checkForNewNotifications() async {
         do {
             let count = try await service.getUnreadCount()
@@ -65,13 +63,10 @@ class NotificationViewModel: ObservableObject {
             print("Polling check failed: \(error)")
         }
     }
-
     func fetchFromBackend() async {
         isLoading = true
         defer { isLoading = false }
-
         do {
-            // Fetch both at the same time
             async let notifFetch = service.getNotifications()
             async let countFetch = service.getUnreadCount()
             let (response, count) = try await (notifFetch, countFetch)
@@ -87,7 +82,6 @@ class NotificationViewModel: ObservableObject {
             notifications = fetched
             unreadCount   = count
             notificationManager.updateBadge(count: count)
-
         } catch {
             errorMessage = "Failed to load: \(error.localizedDescription)"
         }
@@ -122,7 +116,6 @@ class NotificationViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
-
     func markAllAsRead() async {
         do {
             try await service.markAllAsRead()
@@ -145,7 +138,6 @@ class NotificationViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
-
     func clearAll() async {
         do {
             try await service.clearAll()
