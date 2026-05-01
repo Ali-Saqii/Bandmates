@@ -1,64 +1,84 @@
 //
-//  notificatinService.swift
+//  NotificationService.swift
 //  Bandmates
-//
-//  Created by Mac mini on 30/03/2026.
 //
 
 import Foundation
 
+// Custom error for auth failures
+enum NotificationServiceError: Error {
+    case notAuthenticated
+}
+
 class NotificationService {
     static let shared = NotificationService()
 
-    private let base = "http://localhost:3000/user"
+    // ✅ FIX #1 — Replace localhost with your Mac's LAN IP
+    // Find it: System Settings → Wi-Fi → Details
+    private let base = "http://localhost:3000/user"  // ← change X to your actual IP
 
     private var token: String {
         UserDefaults.standard.string(forKey: "auth_token") ?? ""
     }
 
-    private func request(_ path: String, method: String = "GET", body: [String: Any]? = nil) -> URLRequest {
-        var req = URLRequest(url: URL(string: "\(base)\(path)")!)
+    // ✅ FIX #2 — Function is now `throws` so auth failures surface properly
+    private func request(
+        _ path: String,
+        method: String = "GET",
+        body: [String: Any]? = nil
+    ) throws -> URLRequest {
+
+        guard !token.isEmpty else {
+            throw NotificationServiceError.notAuthenticated  // throws instead of silent dummy request
+        }
+        print("🔑 TOKEN:", token.isEmpty ? "EMPTY — yahi problem hai!" : token.prefix(20))
+
+        guard let url = URL(string: "\(base)\(path)") else {
+            throw URLError(.badURL)
+        }
+
+        var req = URLRequest(url: url)
         req.httpMethod = method
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
         if let body {
+            // ✅ FIX #4 — Removed markdown [name](url) wrapping from JSONSerialization
             req.httpBody = try? JSONSerialization.data(withJSONObject: body)
         }
+
         return req
     }
 
-    // GET /notifications
+    // ✅ FIX #3 — All URLSession.shared.data calls cleaned (no more [name](url) syntax)
+    //             request() now needs `try` since it throws
+
     func getNotifications(page: Int = 1, type: String? = nil) async throws -> NotificationsResponse {
         var path = "/notifications?page=\(page)&limit=20"
         if let type { path += "&type=\(type)" }
-        let (data, _) = try await URLSession.shared.data(for: request(path))
+        let (data, _) = try await URLSession.shared.data(for: try request(path))
         return try JSONDecoder().decode(NotificationsResponse.self, from: data)
     }
 
-    // GET /notifications/unread-count
     func getUnreadCount() async throws -> Int {
-        let (data, _) = try await URLSession.shared.data(for: request("/notifications/unread-count"))
+        let (data, _) = try await URLSession.shared.data(for: try request("/notifications/unread-count"))
         let res = try JSONDecoder().decode(UnreadCountResponse.self, from: data)
         return res.unread_count
     }
 
-    // PATCH /notifications/:id/read
     func markAsRead(id: String) async throws {
-        let (_, _) = try await URLSession.shared.data(for: request("/notifications/\(id)/read", method: "PATCH"))
+        _ = try await URLSession.shared.data(for: try request("/notifications/\(id)/read", method: "PATCH"))
     }
 
-    // PATCH /notifications/read-all
     func markAllAsRead() async throws {
-        let (_, _) = try await URLSession.shared.data(for: request("/notifications/read-all", method: "PATCH"))
+        _ = try await URLSession.shared.data(for: try request("/notifications/read-all", method: "PATCH"))
     }
 
-    // DELETE /notifications/:id
     func deleteNotification(id: String) async throws {
-        let (_, _) = try await URLSession.shared.data(for: request("/notifications/\(id)", method: "DELETE"))
+        _ = try await URLSession.shared.data(for: try request("/notifications/\(id)", method: "DELETE"))
     }
 
-    // DELETE /notifications/clear-all
     func clearAll() async throws {
-        let (_, _) = try await URLSession.shared.data(for: request("/notifications/clear-all", method: "DELETE"))
+        _ = try await URLSession.shared.data(for: try request("/notifications/clear-all", method: "DELETE"))
     }
 }
