@@ -62,7 +62,6 @@ class savedAlbums {
     }
     private func savechanges() {
         save()
-        deleteAllAlbums()
         getSavedAlbums()
     }
 }
