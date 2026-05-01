@@ -50,8 +50,6 @@ class ForgotPasswordViewModel: ObservableObject {
                 do {
                     let decoded = try JSONDecoder().decode(ForgotPasswordResponse.self, from: data)
                     self?.isEmailSent = true
-                    print("✅ Success:", decoded.message)
-                    print("🔑 Token:", decoded.token)
                 } catch {
                     self?.errorMessage = "Something went wrong"
                 }
