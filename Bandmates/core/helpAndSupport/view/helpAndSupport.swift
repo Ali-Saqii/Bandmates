@@ -8,18 +8,16 @@
 import SwiftUI
 
 struct helpAndSupport: View {
-    @State private var name = ""
-    @State private var contactNumber = ""
-    @State private var email = ""
-    @State private var feddBackText = ""
+    @StateObject private var viewModel = HelpSupportViewModel()
     @State private var feedBackPlaceHolde = "Your feedback is important to us..."
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
             VStack(spacing:20) {
             
-                TextField("Enter Name", text: $name)
+                TextField("Enter Name", text: $viewModel.name)
                     .keyboardType(.default)
                     .autocapitalization(.words)
                     .font(.system(size: 15))
@@ -30,7 +28,7 @@ struct helpAndSupport: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.inputBorder, lineWidth: 1)
                     )
-                TextField("Your Contact Number", text: $contactNumber)
+                TextField("Your Contact Number", text: $viewModel.contactNumber)
                     .keyboardType(.decimalPad)
                     .autocapitalization(.none)
                     .font(.system(size: 15))
@@ -41,7 +39,7 @@ struct helpAndSupport: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.inputBorder, lineWidth: 1)
                     )
-                TextField("Your email", text: $email)
+                TextField("Your email", text: $viewModel.email)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .font(.system(size: 15))
@@ -53,7 +51,7 @@ struct helpAndSupport: View {
                             .stroke(Color.inputBorder, lineWidth: 1)
                     )
 
-                TextEditor(text: $feddBackText)
+                TextEditor(text: $viewModel.feedback)
                     .padding(.horizontal)
                     .frame(height: 200)
                     .scrollContentBackground(.hidden)
@@ -75,7 +73,10 @@ struct helpAndSupport: View {
                             }
                     })
                    
-                buttonView(action: {}, buttonText: "Send", height: 50)
+                buttonView(action: {
+                    viewModel.sendFeedback()
+                    dissmiss()
+                }, buttonText: "Send", height: 50)
                     .padding(.vertical)
                 Divider()
                 
@@ -116,6 +117,9 @@ struct helpAndSupport: View {
                 .navigationTitle("Help & Support")
                 .navigationBarTitleDisplayMode(.inline)
         }
+    }
+    private func dissmiss() {
+        if viewModel.isFeeBackSent{dismiss()}
     }
 }
 
