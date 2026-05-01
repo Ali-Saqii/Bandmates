@@ -58,9 +58,7 @@ struct changePasswordView: View {
                 }
                 buttonView(action: {
                     changePassword()
-                    if pvm.passwordSuccess {
-                        dismiss()
-                    }
+                   
                 }, buttonText: "Change Password", height: 50)
                     .padding(.top)
                 Spacer()
@@ -88,6 +86,9 @@ struct changePasswordView: View {
     }
     private func changePassword() {
         pvm.updatePassword(oldPassword: oldPassword, newPassword: newPassword, confirmPassword: ConfirmNewPassword)
+        if pvm.passwordSuccess {
+            dismiss()
+        }
     }
 }
 
