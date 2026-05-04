@@ -23,10 +23,10 @@ struct albumsView: View {
                         Image(systemName: "magnifyingglass")
                             .foregroundStyle(.gray)
                             .padding(.leading)
-                        TextField("search desire albums", text: $SearchText)
-                            .onTapGesture {
-                                
-                            }
+                        TextField("search desire albums", text: $hvm.AlbumSearchText)
+                            .onChange(of: hvm.AlbumSearchText) { _, _ in
+                                hvm.searchAlbum()
+                               }
                     }.frame(maxWidth:.infinity)
                         .frame(height: 60)
                         .background(Color.textfieldcolor.opacity(0.7))
@@ -35,7 +35,7 @@ struct albumsView: View {
                     ScrollView {
                         VStack {
                             if let albums = hvm.albums {
-                                ForEach(albums.indices, id: \.self) { index in
+                                ForEach(!hvm.AlbumSearchText.isEmpty ? hvm.filteredAlbums.indices : albums.indices, id: \.self) { index in
                                     AlbumsRowView(
                                         albumImage: albums[index].image,
                                         albumName: albums[index].albumName,
@@ -44,7 +44,7 @@ struct albumsView: View {
                                         totalRatingcount: albums[index].totalRatingCount,
                                         isAlBumSaved: albums[index].isSaved
                                     ).onTapGesture {
-                                        selectedAlbum = albums[index] // ✅ this triggers the navigation
+                                        selectedAlbum = albums[index] 
                                     }
                                     .transition(.asymmetric(insertion:.move(edge: .top), removal: .move(edge: .top)))
                                 }
