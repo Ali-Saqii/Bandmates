@@ -113,6 +113,7 @@ class NotificationViewModel: ObservableObject {
             notificationManager.updateBadge(count: unreadCount)
 
         } catch {
+            print("Error: \(error)")
             errorMessage = error.localizedDescription
         }
     }
