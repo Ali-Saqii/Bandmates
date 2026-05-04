@@ -11,7 +11,7 @@ struct collectionVisiBilityView: View {
     @EnvironmentObject var pvm : ProfileViewModel
     @Binding var showSheet : Bool
     @State private var isVisibilityPrivate = false
-    @State private var isVisibilityPublic = true
+    @State private var isVisibilityPublic = false
     
 
     var body: some View {
@@ -102,6 +102,9 @@ struct collectionVisiBilityView: View {
             .frame(maxHeight: .infinity, alignment: .bottom)
         
             .ignoresSafeArea(edges:.bottom)
+            .onAppear {
+                getVisiBilityStatus()
+            }
           
     }
     
@@ -112,6 +115,17 @@ struct collectionVisiBilityView: View {
             pvm.updateSavedAlbumsVisibility(isPrivate: false)
         }
         
+    }
+    
+    private func getVisiBilityStatus() {
+        guard let visibilityIsPivate = pvm.user?.savedAlbumsVisibility else {return}
+        if visibilityIsPivate {
+            print("\(visibilityIsPivate)")
+            isVisibilityPrivate = true
+        } else {
+            print("\(visibilityIsPivate)")
+            isVisibilityPublic = true
+        }
     }
 }
 
