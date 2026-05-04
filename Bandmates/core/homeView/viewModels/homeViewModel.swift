@@ -10,9 +10,11 @@ import Combine
 import UIKit
 
 class HomeViewModel: ObservableObject {
-    @Published var user = userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "",subscriptionPlan: "club",isOnTrial:false)
+    @Published var user = userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "",subscriptionPlan: "club",isOnTrial:false, savedAlbumsVisibility: false)
     @Published var albums: [albumModel]? = nil
+    @Published var filteredAlbums: [albumModel] = []
     @Published var searchText = ""
+    @Published var AlbumSearchText = ""
     @Published var recentlyplayed : [SavedAlbums] = []
     @Published var bandmates: [BandmateModel]? = nil
     @Published var isLoading: Bool = false
@@ -34,7 +36,13 @@ class HomeViewModel: ObservableObject {
     private var token: String {
          UserDefaults.standard.string(forKey: "auth_token") ?? ""
      }
-     
+    func searchAlbum() {
+        guard let allAlbums = albums else { return }
+            filteredAlbums = allAlbums.filter { album in
+                album.albumName.localizedCaseInsensitiveContains(AlbumSearchText) ||
+                album.albumArtistName.localizedCaseInsensitiveContains(AlbumSearchText)
+        }
+    }
     init() {
         fetchProfile()
         getAlbums()
