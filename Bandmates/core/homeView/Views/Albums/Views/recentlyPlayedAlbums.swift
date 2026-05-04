@@ -16,20 +16,20 @@ struct recentlyPlayedAlbums: View {
             Color.white
                 .ignoresSafeArea(.all)
             VStack(spacing:0) {
-                HStack(spacing:10) {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(.gray)
-                        .padding(.leading)
-                    TextField("search desire albums", text: $SearchText)
-                        .onTapGesture {
-                            
-                        }
-                }.frame(maxWidth:.infinity)
-                    .frame(height: 60)
-                    .background(Color.textfieldcolor.opacity(0.7))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .padding(.horizontal,20)
-                    .padding(.bottom)
+//                HStack(spacing:10) {
+//                    Image(systemName: "magnifyingglass")
+//                        .foregroundStyle(.gray)
+//                        .padding(.leading)
+//                    TextField("search desire albums", text: $SearchText)
+//                        .onTapGesture {
+//                            
+//                        }
+//                }.frame(maxWidth:.infinity)
+//                    .frame(height: 60)
+//                    .background(Color.textfieldcolor.opacity(0.7))
+//                    .clipShape(RoundedRectangle(cornerRadius: 10))
+//                    .padding(.horizontal,20)
+//                    .padding(.bottom)
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(hvm.recentlyplayed.indices , id: \.self) { index in
@@ -41,7 +41,7 @@ struct recentlyPlayedAlbums: View {
                     }
                 }.scrollIndicators(.hidden)
             }
-        }
+        }.navigationTitle("Recently Played Albums")
     }
 }
 
