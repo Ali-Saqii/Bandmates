@@ -15,7 +15,12 @@ struct AccountSetingView: View {
     @State private var TermsofServices = false
     @State private var PrivacyPolicy = false
     @State private var DeleteAccount = false
-    @State private var text = ""
+    private var text: String {
+        if pVm.user?.savedAlbumsVisibility == true {
+            return "Private"
+        }
+        return "Public"
+    }
     var body: some View {
         ZStack {
             Color.white
