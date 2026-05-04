@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AppNotification: Identifiable, Codable {
+struct AppNotification: Identifiable, Codable,Hashable {
     let id: String
     let user_id: String
     let type: String
@@ -18,14 +18,14 @@ struct AppNotification: Identifiable, Codable {
     let createdAt: String
 }
 
-struct NotificationsResponse: Codable {
+struct NotificationsResponse: Codable,Hashable {
     let success: Bool
     let total: Int
     let page: Int
     let data: [AppNotification]
 }
 
-struct UnreadCountResponse: Codable {
+struct UnreadCountResponse: Codable,Hashable {
     let success: Bool
     let unread_count: Int
 }
