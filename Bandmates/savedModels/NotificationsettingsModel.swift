@@ -6,3 +6,14 @@
 //
 
 import Foundation
+struct NotificationSettings: Codable {
+    var systemAnnouncements:  Bool
+    var bandmateActivity:     Bool
+    var commentsNotification: Bool
+    var collectionUpdates:    Bool
+}
+
+struct NotificationSettingsResponse: Codable {
+    let success: Bool
+    let data: NotificationSettings
+}
