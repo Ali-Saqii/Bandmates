@@ -27,20 +27,24 @@ struct CollectionAlbumsView: View {
                     .ignoresSafeArea(.all)
                 ScrollView {
                     VStack {
-                        ForEach(Collection.albums){ album in
-                            albumsRowView(album: album, ButtonAction: {
-                                withAnimation() {
-                                    getId = album.id
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        reMoveAlbum.toggle()
-                                        DeleteCollection = false
-                                        ellipseTab = false
-                                        editCollection = false
+                        if !Collection.albums.isEmpty {
+                            ForEach(Collection.albums){ album in
+                                albumsRowView(album: album, ButtonAction: {
+                                    withAnimation() {
+                                        getId = album.id
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                            reMoveAlbum.toggle()
+                                            DeleteCollection = false
+                                            ellipseTab = false
+                                            editCollection = false
+                                        }
                                     }
+                                }).onTapGesture {
+                                    selectedAbbum = album
                                 }
-                            }).onTapGesture {
-                                selectedAbbum = album
                             }
+                        }else {
+                            NoBandmatesView(icon: "qusetionmark", height: 77, width: 77, title: "Empty", subTitle: "Save album in this collection ", titleFont: .dmSans(16, weight: .semiBold), subTitleFont: .dmSans(14, weight: .regular), color: Color.background.opacity(0.6))
                         }
                     }.padding()
                        
