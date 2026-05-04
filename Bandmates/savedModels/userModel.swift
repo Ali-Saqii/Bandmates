@@ -20,6 +20,7 @@ struct userModel: Codable ,Identifiable, Hashable {
     let email: String
     let subscriptionPlan: String
     let isOnTrial: Bool
+    let savedAlbumsVisibility:Bool
 }
 struct AuthResponse: Codable {
     let success: Bool
@@ -41,6 +42,8 @@ struct UserDTO: Codable {
     let email            : String
     let subscriptionPlan : String
     let isOnTrial        : Bool
+    let savedAlbumsVisibility : Bool
+
 }
 
 // MARK: - UserDTO → userModel
@@ -57,7 +60,8 @@ extension UserDTO {
             toralSavedAlbums: toralSavedAlbums,
             email           : email,
             subscriptionPlan: subscriptionPlan,
-            isOnTrial       : isOnTrial
+            isOnTrial: isOnTrial,
+            savedAlbumsVisibility: savedAlbumsVisibility,
         )
     }
 }
