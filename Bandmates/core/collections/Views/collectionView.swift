@@ -30,11 +30,15 @@ struct collectionView: View {
                         .foregroundStyle(.gray)
                         .padding(.leading)
                     TextField("Search Any Collection here ...", text: $collectionVM.CollectionSearchText)
+                        .onChange(of: collectionVM.CollectionSearchText) { _, _ in
+                            collectionVM.searchCollection()
+                            }
                 }.frame(maxWidth:.infinity)
                     .frame(height: 60)
                     .background(Color.textfieldcolor.opacity(0.7))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .padding(.horizontal,20)
+                   
                 if collectionVM.isLoading && ((collectionVM.collections?.isEmpty) != nil) {
                     ProgressView()
                         .tint(Color.background)
@@ -44,7 +48,7 @@ struct collectionView: View {
                 ScrollView{
                     VStack(spacing:15) {
                         if let Collection = collectionVM.collections, !Collection.isEmpty {
-                            ForEach(Collection) { collection in
+                            ForEach(!collectionVM.CollectionSearchText.isEmpty ? collectionVM.filteredCollections : Collection) { collection in
                                 CollectiomRowView(Collection: collection, editAction: {
                                     getId = collection.id
                                     withAnimation() {
@@ -170,6 +174,7 @@ struct collectionView: View {
                 .environmentObject(homeVm)
                 .environmentObject(collectionVM) 
         }
+      
         
         .fullScreenCover(isPresented: $DeleteCollection, content: {
             ZStack {
