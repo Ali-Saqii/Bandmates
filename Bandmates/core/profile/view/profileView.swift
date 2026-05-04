@@ -71,7 +71,7 @@ struct profileView: View {
         })
         .environmentObject(profileVm)
         .navigationDestination(isPresented: $editProfileView) {
-            EditProfileView(user: profileVm.user ?? userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "",subscriptionPlan: "Club",isOnTrial: false))
+            EditProfileView(user: profileVm.user ?? userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "",subscriptionPlan: "Club",isOnTrial: false, savedAlbumsVisibility: false ))
                 .environmentObject(profileVm)
         }
         .navigationDestination(isPresented: $showHelpAndSupport) {
