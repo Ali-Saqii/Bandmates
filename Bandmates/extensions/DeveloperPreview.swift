@@ -83,7 +83,7 @@ class DeveloperPreview {
         totalBandmates: 128,
         toralSavedAlbums: 47,
         email: "jhjhfds@email.com", 
-        subscriptionPlan: "club",isOnTrial: false
+        subscriptionPlan: "club",isOnTrial: false, savedAlbumsVisibility: true
     )
     
     let comment =  CommentModel(id: "",image: "user6", name: "Sophie T.", disPlayName: "fgfdg", replieText: "The smallest man who ever lived deserved its own album.", replieTime: ISO8601DateFormatter().date(from: "2024-04-21T16:00:00Z")!)
