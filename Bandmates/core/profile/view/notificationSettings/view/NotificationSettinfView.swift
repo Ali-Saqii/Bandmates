@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct NotificationSettinfView: View {
+    @StateObject var nsVM = NotificationSettingsViewModel()
     @EnvironmentObject var pvm : ProfileViewModel
     @State private var enableSystemAnnouncements = false
     @State private var enableBandmateActivity = false
@@ -17,54 +18,56 @@ struct NotificationSettinfView: View {
         ZStack {
             Color.white
                 .ignoresSafeArea()
-            VStack(spacing:30) {
+            VStack(spacing: 0) {
+                settingRow(
+                    title: "System Announcements",
+                    isOn: $nsVM.settings.systemAnnouncements,
+                    key: "systemAnnouncements"
+                )
                 Divider()
-                HStack {
-                    Text("System Announcements")
-                        .foregroundStyle(.black)
-                        .font(.dmSans(16, weight: .semiBold))
-                    Spacer()
-                    Toggle("", isOn: $enableSystemAnnouncements)
-                        .tint(Color.background)
-                        .scaleEffect(0.8)
-                        .frame(width: 44, height: 28)
-                }
-                HStack {
-                    Text("Bandmate Activity")
-                        .foregroundStyle(.black)
-                        .font(.dmSans(16, weight: .semiBold))
-                    Spacer()
-                    Toggle("", isOn: $enableBandmateActivity)
-                        .tint(Color.background)
-                        .scaleEffect(0.8)
-                        .frame(width: 44, height: 28)
-                }
-                HStack {
-                    Text("Comments Notification")
-                        .foregroundStyle(.black)
-                        .font(.dmSans(16, weight: .semiBold))
-                    Spacer()
-                    Toggle("", isOn: $enableCommentsNotification)
-                        .tint(Color.background)
-                        .scaleEffect(0.8)
-                        .frame(width: 44, height: 28)
-                }
-                HStack {
-                    Text("Collection Updates")
-                        .foregroundStyle(.black)
-                        .font(.dmSans(16, weight: .semiBold))
-                    Spacer()
-                    Toggle("", isOn: $enableCollectionUpdates)
-                        .tint(Color.background)
-                        .scaleEffect(0.8)
-                        .frame(width: 44, height: 28)
-                }
+                settingRow(
+                    title: "Bandmate Activity",
+                    isOn: $nsVM.settings.bandmateActivity,
+                    key: "bandmateActivity"
+                )
+                Divider()
+                settingRow(
+                    title: "Comments Notification",
+                    isOn: $nsVM.settings.commentsNotification,
+                    key: "commentsNotification"
+                )
+                Divider()
+                settingRow(
+                    title: "Collection Updates",
+                    isOn: $nsVM.settings.collectionUpdates,
+                    key: "collectionUpdates"
+                )
                 Spacer()
-            }.padding(.horizontal)
+            }
+            .padding(.top, 20)
         }.navigationTitle("Notification Settings")
             .navigationBarTitleDisplayMode(.inline)
+          
+    }
+    func settingRow(title: String, isOn: Binding<Bool>, key: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.dmSans(16, weight: .semiBold))
+                .foregroundColor(.black)
+            Spacer()
+            Toggle("", isOn: isOn)
+                .labelsHidden()
+                .scaleEffect(0.7)
+                .tint(Color.background)
+                .onChange(of: isOn.wrappedValue) { _, newValue in
+                    nsVM.updateSetting(key: key, value: newValue)
+                }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
     }
 }
+
 
 #Preview {
     NotificationSettinfView()
