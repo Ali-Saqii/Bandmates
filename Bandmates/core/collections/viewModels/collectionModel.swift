@@ -11,7 +11,7 @@ import Combine
 class collectionViewModel:ObservableObject {
     
     @Published var collections:[CollectionModel]? = nil
-    @Published var user = userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", subscriptionPlan: "club", isOnTrial: false)
+    @Published var user = userModel(id: "", profileImage: "", fullName: "", userName: "", Bio: "", waiting: 0, totalBandmates: 0, toralSavedAlbums: 0, email: "", subscriptionPlan: "club", isOnTrial: false, savedAlbumsVisibility: true )
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var cErrorMessage: String? = nil
@@ -22,23 +22,18 @@ class collectionViewModel:ObservableObject {
     @Published var CollectionSearchText = ""
     @Published var filteredCollections:[CollectionModel] = []
     
-    // search collection
     func searchCollection() {
-        guard let collections = collections else {
-            filteredCollections = []
-            return
-        }
+        guard let collections = collections else { return }
         
-        guard !CollectionSearchText.isEmpty else {
+        if CollectionSearchText.isEmpty {
             filteredCollections = collections
-            return
-        }
-        
-        filteredCollections = collections.filter {
-            $0.collectionTitle.localizedCaseInsensitiveContains(CollectionSearchText)
+        } else {
+            filteredCollections = collections.filter { collection in
+                collection.collectionTitle.localizedCaseInsensitiveContains(CollectionSearchText) ||
+                collection.collectionDescription.localizedCaseInsensitiveContains(CollectionSearchText) == true
+            }
         }
     }
-    
     
     private let collectionClass = CollectionClass()
     private let userClass    = UserClass()
@@ -206,6 +201,7 @@ class collectionViewModel:ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
+                    print(error)
                     self?.removeAlbumError = error.localizedDescription
                 }
             }, receiveValue: { [weak self] success in
