@@ -29,7 +29,7 @@ enum AppTab: Int, CaseIterable {
         }
     }
 }
-struct tabView: View {
+struct AppTabView: View {
     @StateObject private var Nvm = NotificationViewModel()
     @State private var selectedTab: AppTab = .home
     @State private var showMenu = false
@@ -38,6 +38,8 @@ struct tabView: View {
     @State private var notiCount : Int? = nil
     @Environment(\.requestReview) private var requestReview
     @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject  var homeViewModel : HomeViewModel
+
     let appID = "YOUR_APP_ID"
     
     var appStoreURL: URL {
@@ -49,11 +51,11 @@ struct tabView: View {
             VStack(spacing: 0) {
                 ZStack {
                     switch selectedTab {
-                    case .home:       homwView().environmentObject(HomeViewModel())
-                    case .collection: collectionView().environmentObject(HomeViewModel())
+                    case .home:       homwView().environmentObject(homeViewModel)
+                    case .collection: collectionView().environmentObject(homeViewModel)
                     case .charts: chartView()
-                    .environmentObject(HomeViewModel())
-                    case .profile:    profileView().environmentObject(HomeViewModel())
+                    .environmentObject(homeViewModel)
+                    case .profile:    profileView().environmentObject(homeViewModel)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -153,7 +155,7 @@ struct ShareSheet: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 #Preview {
-    tabView()
+    AppTabView()
         .environmentObject(HomeViewModel())
         .environmentObject(AuthViewModel())
 }

@@ -77,7 +77,7 @@ struct LoginView: View {
                 if newValue { showTabView = true }
             }
             .navigationDestination(isPresented: $AuthVm.isLoggedIn, destination: {
-                tabView()
+                AppTabView()
             })
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct UnReadNotificationView: View {
     @EnvironmentObject var nvm : NotificationViewModel
+    @StateObject var vm = HomeViewModel()
     @State private var selectedNotification:AppNotification? = nil
     
     @Environment(\.dismiss) var dismiss
@@ -24,13 +25,15 @@ struct UnReadNotificationView: View {
                             ForEach(nvm.unreadNotifications) { notification in
                                
                                     notificationRowView(Notification: notification)
-                                    .padding(.horizontal)
                                     .onTapGesture {
                                         selectedNotification = notification
+                                        print("\(notification)")
                                         Task {
                                             await nvm.markAsRead(notification)
                                         }
                                     }
+                                    .padding(.horizontal)
+                                    
                                     
                                 Divider()
                             }
@@ -42,14 +45,18 @@ struct UnReadNotificationView: View {
                 }
             
         }.navigationDestination(item: $selectedNotification) { notification in
-            if notification.type == "" {
+            if notification.type == "bandmate_activity" {
                 Bandmates()
-            }else if notification.type == "" {
+                    .environmentObject(vm)
+            }else if notification.type == "comment" {
                 albumsView()
-            }else if notification.type == "" {
+                    .environmentObject(vm)
+            }else if notification.type == "collection_update'" {
                 collectionView()
+                    .environmentObject(vm)
             } else {
-                homwView()
+                AppTabView()
+                    .environmentObject(vm)
             }
         }
     }

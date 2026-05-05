@@ -48,27 +48,28 @@ struct homwView: View {
                 .tint(Color.background)
         }.navigationDestination(isPresented: $seeAllBandmates) {
             Bandmates()
-                .environmentObject(HomeViewModel())
+                .environmentObject(homeVm)
         }
         .navigationDestination(isPresented: $recommendedAlbumsSeeAll) {
             albumsView()
-                .environmentObject(HomeViewModel())
+                .environmentObject(homeVm)
         }
         .navigationDestination(isPresented: $recentlyPlayedSeeAll) {
             recentlyPlayedAlbums()
-                .environmentObject(HomeViewModel())
+                .environmentObject(homeVm)
         }
         .navigationDestination(isPresented: $search) {
             searchResults()
-                .environmentObject(HomeViewModel())
+                .environmentObject(homeVm)
         }
+        .environmentObject(homeVm)
     }
 }
 
 extension homwView {
     private var greetinTextView: some View {
         HStack {
-            Text("hey \(homeVm.user.fullName),".capitalized)
+            Text("hey \(homeVm.user.fullName),".capitalized) // error is present here
             Text(homeVm.greeting)
                 .font(.headline)
                 .bold()

@@ -169,7 +169,8 @@ struct collectionView: View {
               ).environmentObject(homeVm)
                     .transition(AnyTransition.asymmetric(insertion:.scale, removal:.move(edge: .leading)))
             }
-        }.navigationDestination(item: $selesctedCollection) { collection in
+        }.navigationBarBackButtonHidden(true)
+        .navigationDestination(item: $selesctedCollection) { collection in
             CollectionAlbumsView(Collection: collection)
                 .environmentObject(homeVm)
                 .environmentObject(collectionVM) 
