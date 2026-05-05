@@ -53,7 +53,6 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         
         do {
             let (_, _) = try await URLSession.shared.data(for: req)
-            print("✅ Device token registered")
         } catch {
             print("❌ Failed to register token: \(error)")
         }

@@ -15,6 +15,7 @@ class NotificationViewModel: ObservableObject {
     @Published var unreadCount: Int = 0
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
+    private var shownNotificationIds = Set<String>()
 
     var readNotifications: [AppNotification] {
         notifications.filter { $0.is_read }
@@ -73,11 +74,12 @@ class NotificationViewModel: ObservableObject {
 
             let fetched = response.data
 
-            let existingIds = Set(notifications.map { $0.id })
-            let newOnes = fetched.filter { !existingIds.contains($0.id) }
+//            let existingIds = Set(notifications.map { $0.id })
+            let newOnes = fetched.filter { !shownNotificationIds.contains($0.id) }
 
             for notif in newOnes {
                 await showLocalBanner(notif)
+                shownNotificationIds.insert(notif.id)
             }
             notifications = fetched
             unreadCount   = count
